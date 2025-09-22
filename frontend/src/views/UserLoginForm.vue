@@ -61,7 +61,7 @@
       <div class="px-6 py-4 text-center">
         <button
           type="button"
-          @click="onSwitchToRegister"
+          @click="router.push('/registration-form')"
           class="text-sm text-blue-600 hover:text-blue-500"
         >
           Don't have an account? Sign up
@@ -74,6 +74,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
+import router from '../router'
 // Reactive form data
 let formData = reactive({
   email: '',
@@ -113,10 +114,5 @@ const handleSubmit = () => {
   }
 
   console.log('Data submitted:', formData.email, formData.password)
-}
-
-// Dummy function for switching to register (parent should pass it)
-const onSwitchToRegister = () => {
-  console.log('Switch to register clicked')
 }
 </script>
