@@ -1,7 +1,13 @@
-<script setup lang="ts"></script>
+<script setup>
+import { useStore } from 'vuex';
+const store = useStore()
+console.log(store.getters.doubleCount)
+</script>
 
 <template>
-  <router-view></router-view>
+  <p class="text-red-800">Hello</p>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
