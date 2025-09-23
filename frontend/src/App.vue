@@ -5,7 +5,7 @@ console.log(store.getters.doubleCount)
 </script>
 
 <template>
-  <h1>Hi</h1>
+  <p class="text-red-800">Hello</p>
 </template>
 
 <style scoped>
