@@ -1,12 +1,12 @@
+<template>
+  <RouterView/>
+</template>
+
+
 <script setup>
-import { useStore } from 'vuex';
-const store = useStore()
-console.log(store.getters.doubleCount)
+    import { RouterView } from 'vue-router';
 </script>
 
-<template>
-  <p class="text-red-800">Hello</p>
-</template>
 
 <style scoped>
 
