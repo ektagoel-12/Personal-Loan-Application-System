@@ -6,6 +6,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import RaiseTicketView from '@/views/RaiseTicketView.vue'
 import AdminTicketView from '@/views/AdminTicketView.vue'
 import UserTicketsView from '@/views/UserTicketsView.vue'
+import EmiCalculator from '@/views/EmiCalculator.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,8 +18,9 @@ const router = createRouter({
     { path : '/loan' , component : LoanComponent},
     {path: '/raise-ticket',component: RaiseTicketView},
     {path: '/admin-ticket-view', component:AdminTicketView},
-    {path: '/user-ticket-view', component: UserTicketsView}
-  ],
+    {path: '/user-ticket-view', component: UserTicketsView},
+    { path: '/calculator',component: EmiCalculator }
+  ]
 })
 
 export default router
