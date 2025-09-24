@@ -1,5 +1,4 @@
 import AdminDashboard from '../views/AdminDashboard.vue'
-import LoanDetails from '../views/LoanDetails.vue'
 import ApplicationStatus from '../views/ApplicationStatus.vue'
 import EmiCalculator from '../views/EmiCalculator.vue'
 import HomePage from '../views/HomePage.vue'
@@ -15,7 +14,6 @@ const router = createRouter({
   routes: [
     { path: '/', component: HomePage },
     { path: '/admin', component: AdminDashboard },
-    { path: '/admin/loans/:id', component: LoanDetails, props: true},
     { path: '/application/status', component: ApplicationStatus },
     { path: '/emi', component: EmiCalculator },
     { path: '/loan', component: LoanApplicationForm },
