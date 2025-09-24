@@ -117,7 +117,7 @@
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-black  hover:bg-indigo-500 text-white py-2 rounded-lg flex items-center justify-center"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg flex items-center justify-center"
           >
             Create Account
           </button>
