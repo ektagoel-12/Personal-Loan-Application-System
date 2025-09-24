@@ -1,229 +1,243 @@
 <template>
-  <div class="landing-page">
-    <!-- Navigation Header -->
-    <nav class="nav-header">
-      <div class="nav-container">
-        <div class="nav-brand">
-          <div class="brand-icon">₹</div>
-          <span class="brand-text">LoanEase</span>
-        </div>
-        <div class="nav-links">
-          <router-link to="/login-form" class="nav-link">Login</router-link>
-          <router-link to="/registration-form" class="nav-link nav-cta">Get Started</router-link>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-container">
-        <div class="hero-content">
-          <div class="hero-text">
-            <h1 class="hero-title">
-              Your Dream Loan,
-              <span class="gradient-text">Just a Click Away</span>
-            </h1>
-            <p class="hero-description">
-              Experience the fastest, most secure way to get personal loans in India. 
-              From application to approval in just 24 hours.
-            </p>
-            <div class="hero-features">
-              <div class="feature-item">
-                <CheckCircle class="feature-icon" />
-                <span>Instant Approval</span>
-              </div>
-              <div class="feature-item">
-                <Shield class="feature-icon" />
-                <span>100% Secure</span>
-              </div>
-              <div class="feature-item">
-                <Clock class="feature-icon" />
-                <span>24/7 Support</span>
-              </div>
-            </div>
-            <div class="hero-actions">
-              <router-link to="/registration-form" class="btn-primary">
-                Apply Now
-                <ArrowRight class="btn-icon" />
-              </router-link>
-            </div>
-          </div>
-          <div class="hero-visual">
-            <div class="money-flow-container">
-              <div class="floating-money">
-                <div v-for="n in 12" :key="n" class="money-note" :class="`note-${n}`">
-                  ₹
+    <div class="landing-page">
+        <!-- Navigation Header -->
+        <nav class="nav-header">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <div class="brand-icon">₹</div>
+                    <span class="brand-text">LoanEase</span>
                 </div>
-              </div>
-              <div class="central-icon">
-                <div class="rupee-symbol">₹</div>
-              </div>
-              <div class="flow-lines">
-                <div v-for="n in 6" :key="n" class="flow-line" :class="`line-${n}`"></div>
-              </div>
+                <div class="nav-links">
+                    <router-link to="/login-form" class="nav-link">Login</router-link>
+                    <router-link to="/registration-form" class="nav-link nav-cta">Get Started</router-link>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </nav>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-      <div class="stats-container">
-        <div class="stat-item">
-          <div class="stat-number">₹50K Cr+</div>
-          <div class="stat-label">Loans Disbursed</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">10L+</div>
-          <div class="stat-label">Happy Customers</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">24 Hours</div>
-          <div class="stat-label">Quick Approval</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">8.99%</div>
-          <div class="stat-label">Starting Interest</div>
-        </div>
-      </div>
-    </section>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            Your Dream Loan,
+                            <span class="gradient-text">Just a Click Away</span>
+                        </h1>
+                        <p class="hero-description">
+                            Experience the fastest, most secure way to get personal loans in India.
+                            From application to approval in just 24 hours.
+                        </p>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <CheckCircle class="feature-icon" />
+                                <span>Instant Approval</span>
+                            </div>
+                            <div class="feature-item">
+                                <Shield class="feature-icon" />
+                                <span>100% Secure</span>
+                            </div>
+                            <div class="feature-item">
+                                <Clock class="feature-icon" />
+                                <span>24/7 Support</span>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <router-link to="/registration-form" class="btn-primary">
+                                Apply Now
+                                <ArrowRight class="btn-icon" />
+                            </router-link>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="money-flow-container">
+                            <div class="floating-money">
+                                <div v-for="n in 12" :key="n" class="money-note" :class="`note-${n}`">
+                                    ₹
+                                </div>
+                            </div>
+                            <div class="central-icon">
+                                <div class="rupee-symbol">₹</div>
+                            </div>
+                            <div class="flow-lines">
+                                <div v-for="n in 6" :key="n" class="flow-line" :class="`line-${n}`"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <div class="features-container">
-        <div class="section-header">
-          <h2 class="section-title">Why Choose LoanEase?</h2>
-          <p class="section-description">
-            We make personal loans simple, fast, and transparent
-          </p>
-        </div>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              <Zap class="feature-icon-large" />
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number">₹50K Cr+</div>
+                    <div class="stat-label">Loans Disbursed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10L+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24 Hours</div>
+                    <div class="stat-label">Quick Approval</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8.99%</div>
+                    <div class="stat-label">Starting Interest</div>
+                </div>
             </div>
-            <h3 class="feature-title">Lightning Fast</h3>
-            <p class="feature-description">
-              Get loan approval in just 24 hours with minimal documentation
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              <Calculator class="feature-icon-large" />
-            </div>
-            <h3 class="feature-title">EMI Calculator</h3>
-            <p class="feature-description">
-              Plan your finances with our interactive EMI calculator
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              <HeadphonesIcon class="feature-icon-large" />
-            </div>
-            <h3 class="feature-title">24/7 Support</h3>
-            <p class="feature-description">
-              Round-the-clock customer support for all your queries
-            </p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon-wrapper">
-              <TrendingUp class="feature-icon-large" />
-            </div>
-            <h3 class="feature-title">Competitive Rates</h3>
-            <p class="feature-description">
-              Best-in-class interest rates starting from 8.99% per annum
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <!-- How It Works -->
-    <section class="process-section">
-      <div class="process-container">
-        <div class="section-header">
-          <h2 class="section-title">How It Works</h2>
-          <p class="section-description">Simple steps to get your loan approved</p>
-        </div>
-        <div class="process-steps">
-          <div class="step-item">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <h3 class="step-title">Apply Online</h3>
-              <p class="step-description">Fill out our simple online application form</p>
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="features-container">
+                <div class="section-header">
+                    <h2 class="section-title">Why Choose LoanEase?</h2>
+                    <p class="section-description">
+                        We make personal loans simple, fast, and transparent
+                    </p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <Zap class="feature-icon-large" />
+                        </div>
+                        <h3 class="feature-title">Lightning Fast</h3>
+                        <p class="feature-description">
+                            Get loan approval in just 24 hours with minimal documentation
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <Calculator class="feature-icon-large" />
+                        </div>
+                        <h3 class="feature-title">EMI Calculator</h3>
+                        <p class="feature-description">
+                            Plan your finances with our interactive EMI calculator
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <HeadphonesIcon class="feature-icon-large" />
+                        </div>
+                        <h3 class="feature-title">24/7 Support</h3>
+                        <p class="feature-description">
+                            Round-the-clock customer support for all your queries
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <TrendingUp class="feature-icon-large" />
+                        </div>
+                        <h3 class="feature-title">Competitive Rates</h3>
+                        <p class="feature-description">
+                            Best-in-class interest rates starting from 8.99% per annum
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="step-connector"></div>
-          <div class="step-item">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <h3 class="step-title">Document Verification</h3>
-              <p class="step-description">Upload required documents for verification</p>
-            </div>
-          </div>
-          <div class="step-connector"></div>
-          <div class="step-item">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <h3 class="step-title">Get Approved</h3>
-              <p class="step-description">Receive approval and loan amount in 24 hours</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="cta-container">
-        <div class="cta-content">
-          <h2 class="cta-title">Ready to Get Your Loan?</h2>
-          <p class="cta-description">
-            Join thousands of satisfied customers who chose LoanEase for their financial needs
-          </p>
-          <div class="cta-actions">
-            <router-link to="/loan-application" class="btn-primary-large">
-              Apply for Loan
-              <ArrowRight class="btn-icon" />
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </section>
+        <!-- How It Works -->
+        <section class="process-section">
+            <div class="process-container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-description">Simple steps to get your loan approved</p>
+                </div>
+                <div class="process-steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Apply Online</h3>
+                            <p class="step-description">Fill out our simple online application form</p>
+                        </div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Document Verification</h3>
+                            <p class="step-description">Upload required documents for verification</p>
+                        </div>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3 class="step-title">Get Approved</h3>
+                            <p class="step-description">Receive approval and loan amount in 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <div class="brand-icon">₹</div>
-            <span class="brand-text">LoanEase</span>
-          </div>
-          <div class="footer-links">
-            <div class="footer-section">
-              <h4 class="footer-title">Products</h4>
-              <a href="#" class="footer-link">Personal Loans</a>
-              <a href="#" class="footer-link">EMI Calculator</a>
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-container">
+                <div class="cta-content">
+                    <h2 class="cta-title">Ready to Get Your Loan?</h2>
+                    <p class="cta-description">
+                        Join thousands of satisfied customers who chose LoanEase for their financial needs
+                    </p>
+                    <div class="cta-actions">
+                        <router-link to="/loan-application" class="btn-primary-large">
+                            Apply for Loan
+                            <ArrowRight class="btn-icon" />
+                        </router-link>
+                    </div>
+                </div>
             </div>
-            <div class="footer-section">
-              <h4 class="footer-title">Support</h4>
-              <a href="#" class="footer-link">Help Center</a>
-              <a href="#" class="footer-link">Contact Us</a>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <!-- Brand Section -->
+                    <div class="footer-brand">
+                        <div class="brand-icon">₹</div>
+                        <span class="brand-text">LoanEase</span>
+                    </div>
+
+                    <!-- Footer Links -->
+                    <div class="footer-links">
+                        <!-- Products Section -->
+                        <div class="footer-section">
+                            <h4 class="footer-title">Products</h4>
+                            <a href="/login-form" class="footer-link">Personal Loans</a>
+                            <a href="/login-form" class="footer-link">EMI Calculator</a>
+                            <a href="/login-form" class="footer-link">Loan Status</a>
+                            <a href="/login-form" class="footer-link">Support Tickets</a>
+                        </div>
+
+                        <!-- Admin Section -->
+                        <div class="footer-section">
+                            <h4 class="footer-title">Admin Tools</h4>
+                            <a href="/login-form" class="footer-link">Review Applications</a>
+                            <a href="/login-form" class="footer-link">Manage Support</a>
+                            <a href="/login-form" class="footer-link">Admin Dashboard</a>
+                        </div>
+
+                        <!-- Company Section -->
+                        <div class="footer-section">
+                            <h4 class="footer-title">Company</h4>
+                            <a href="/" class="footer-link">About Us</a>
+                            <a href="mailto:loanease@gmail.com" class="footer-link">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <p>&copy; 2024 LoanEase. All rights reserved.</p>
+                </div>
             </div>
-            <div class="footer-section">
-              <h4 class="footer-title">Company</h4>
-              <a href="#" class="footer-link">About Us</a>
-              <a href="#" class="footer-link">Privacy Policy</a>
-            </div>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2024 LoanEase. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  </div>
+        </footer>
+
+    </div>
 </template>
 
 <script setup>
@@ -279,7 +293,7 @@ import { CheckCircle, Shield, Clock, ArrowRight, Zap, Calculator, HeadphonesIcon
 .brand-text {
   font-size: 24px;
   font-weight: 700;
-  color: #2d1b4e;
+  color: white;
 }
 
 .nav-links {
@@ -738,6 +752,7 @@ import { CheckCircle, Shield, Clock, ArrowRight, Zap, Calculator, HeadphonesIcon
   background: #1e293b;
   color: white;
   padding: 60px 0 30px;
+  text-align: center;
 }
 
 .footer-container {
@@ -751,10 +766,13 @@ import { CheckCircle, Shield, Clock, ArrowRight, Zap, Calculator, HeadphonesIcon
   grid-template-columns: 1fr 2fr;
   gap: 60px;
   margin-bottom: 40px;
+  flex-direction: column;
+  align-items: center;
 }
 
 .footer-links {
   display: grid;
+  justify-content: center;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
 }
@@ -764,6 +782,10 @@ import { CheckCircle, Shield, Clock, ArrowRight, Zap, Calculator, HeadphonesIcon
   font-weight: 600;
   margin-bottom: 16px;
   color: white;
+}
+
+.footer-section {
+  text-align: center;
 }
 
 .footer-link {
