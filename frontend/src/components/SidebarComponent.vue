@@ -48,6 +48,7 @@ import {
   TrendingUp,
   CreditCard
 } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 
 // Dummy user (replace with Pinia or provide/inject later)
 const user = ref({
@@ -55,22 +56,24 @@ const user = ref({
   role: 'admin'
 })
 
+const router = useRouter();
+
 const activeSection = ref('dashboard')
 const onSectionChange = (section) => {
   activeSection.value = section
-  console.log('Changed section to:', section)
+  router.push(section)
 }
 
 const customerItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, key: 'dashboard' },
-  { title: 'My Loans', icon: FileText, key: 'loans' },
+  { title: 'Dashboard', icon: LayoutDashboard, key: '' },
+  { title: 'My Loans', icon: FileText, key: 'loan' },
   { title: 'EMI Calculator', icon: Calculator, key: 'calculator' },
   { title: 'Support', icon: MessageSquare, key: 'support' }
 ]
 
 const adminItems = [
   { title: 'Admin Dashboard', icon: TrendingUp, key: 'admin-dashboard' },
-  { title: 'Loan Applications', icon: FileText, key: 'admin-loans' },
+  { title: 'Loan Applications', icon: FileText, key: 'loan' },
   { title: 'User Management', icon: Users, key: 'users' },
   { title: 'EMI Calculator', icon: Calculator, key: 'calculator' },
   { title: 'Support Tickets', icon: MessageSquare, key: 'admin-support' }
