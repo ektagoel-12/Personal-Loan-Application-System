@@ -5,7 +5,11 @@ console.log(store.getters.doubleCount)
 </script>
 
 <template>
-  <p class="text-red-800">Hello</p>
+
+   <div id="app">
+    <router-view />
+  </div>
+
 </template>
 
 <style scoped>
