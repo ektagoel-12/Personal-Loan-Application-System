@@ -1,12 +1,7 @@
-<script setup>
-import { useStore } from 'vuex';
-
-const store = useStore()
-console.log(store.getters.doubleCount)
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <RouterView></RouterView>
+  <router-view></router-view>
 </template>
 
 <style scoped></style>
