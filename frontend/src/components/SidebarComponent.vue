@@ -72,11 +72,11 @@ const customerItems = [
 ]
 
 const adminItems = [
-  { title: 'Admin Dashboard', icon: TrendingUp, key: 'admin-dashboard' },
+  { title: 'Admin Dashboard', icon: TrendingUp, key: 'admin' },
   { title: 'Loan Applications', icon: FileText, key: 'loan' },
   { title: 'User Management', icon: Users, key: 'users' },
   { title: 'EMI Calculator', icon: Calculator, key: 'calculator' },
-  { title: 'Support Tickets', icon: MessageSquare, key: 'admin-support' }
+  { title: 'Support Tickets', icon: MessageSquare, key: 'admin-ticket-view' }
 ]
 
 const menuItems = computed(() => (user.value.role === 'admin' ? adminItems : customerItems))
