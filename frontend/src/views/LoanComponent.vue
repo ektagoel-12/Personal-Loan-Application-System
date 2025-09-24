@@ -17,6 +17,7 @@ const showModel = ref(false)
 const statusMap = {
   APPROVED: { label: "Approved", class: "bg-green-100 text-green-800" },
   UNDER_REVIEW: { label: "Under Review", class: "bg-blue-100 text-blue-800" },
+  PENDING: { label: "Pending", class: "bg-yellow-100 text-yellow-800" },
 }
 
 
@@ -67,6 +68,7 @@ const viewLoan = (loan) =>{
         <option value="ALL">All Status</option>
         <option value="APPROVED">Approved</option>
         <option value="UNDER_REVIEW">Under Review</option>
+        <option value="PENDING">Pending</option>
       </select>
       <input
         type="date"
