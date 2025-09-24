@@ -1,58 +1,85 @@
-// src/store/dashboard.js
 import { createStore } from "vuex";
 
 const store = createStore({
-  state: {
-    stats: {
-      totalApplications: 1250,
-      growth: 12,
-      approvalRate: 78,
-      approvalGrowth: 5,
-      pending: 45,
-      avgIncome: 125000,
-      monthlyTrends: {
-        months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        values: [70, 90, 100, 110, 120, 130],
+  state() {
+    return {
+      // your counter + user state
+      count: 0,
+      user: null,
+      
+      //stats
+      stats: {
+        totalApplications: 1250,
+        growth: 12,
+        approvalRate: 78,
+        approvalGrowth: 5,
+        pending: 45,
+        avgIncome: 125000,
+        monthlyTrends: {
+          months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+          values: [70, 90, 100, 110, 120, 130],
+        },
+        statusDistribution: {
+          approved: 78,
+          pending: 15,
+          rejected: 7,
+        }
       },
-      statusDistribution: {
-        approved: 78,
-        pending: 15,
-        rejected: 7,
-      },
-    },
-    applications: [
-      {
-        id: "L001",
-        applicant: "John Smith",
-        amount: 250000,
-        income: 80000,
-        creditScore: 720,
-        purpose: "Home Purchase",
-        date: "2024-01-10",
-        status: "pending",
-      },
-      {
-        id: "L002",
-        applicant: "Sarah Johnson",
-        amount: 150000,
-        income: 95000,
-        creditScore: 680,
-        purpose: "Business Expansion",
-        date: "2024-01-09",
-        status: "pending",
-      },
-      {
-        id: "L003",
-        applicant: "Mike Davis",
-        amount: 75000,
-        income: 60000,
-        creditScore: 750,
-        purpose: "Personal",
-        date: "2024-01-08",
-        status: "pending",
-      },
-    ],
-    loading: false,
+      // loan application state
+      applications: [
+        {
+          id: "LA2024001",
+          applicant: "Sarah Johnson",
+          creditScore: 680,
+          income: 95000,
+          amount: 250000,
+          purpose: "Home Purchase",
+          status: "APPROVED",
+          appliedDate: "2024-01-05",
+          lastUpdated: "2024-01-08",
+          emi: 15000,
+          interestRate: 8.5,
+          tenure: 20,
+          remarks: "Application approved after document verification.",
+          progress: 100,
+        },
+        {
+          id: "LA2024002",
+          applicant: "Mike Davis",
+          creditScore: 750,
+          income: 60000,
+          amount: 150000,
+          purpose: "Business Expansion",
+          status: "UNDER_REVIEW",
+          appliedDate: "2024-01-10",
+          lastUpdated: "2024-01-12",
+          emi: 12000,
+          interestRate: 9.0,
+          tenure: 15,
+          remarks: "Additional income documents required.",
+          progress: 65,
+        },{
+          id: "LA20240232",
+          applicant: "Mike Davis",
+          creditScore: 750,
+          income: 60000,
+          amount: 150000,
+          purpose: "Business Expansion",
+          status: "PENDING",
+          appliedDate: "2024-01-10",
+          lastUpdated: "2024-01-12",
+          emi: 12000,
+          interestRate: 9.0,
+          tenure: 15,
+          remarks: "Additional income documents required.",
+          progress: 65,
+        }
+      ],
+      searchTerm: "",
+      statusFilter: "all",
+      dateRange: { from: null, to: null },
+      selectedApplication: null,
+    };
   },
   mutations: {
     SET_LOADING(state, val) {
@@ -81,7 +108,7 @@ const store = createStore({
     stats: (state) => state.stats,
     applications: (state) => state.applications,
     isLoading: (state) => state.loading,
-    
+    isLoggedIn: (state) => !!state.user,
   },
 });
 

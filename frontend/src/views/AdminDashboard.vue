@@ -77,7 +77,7 @@
               </span>
             </td>
             <td>{{ app.purpose }}</td>
-            <td>{{ app.date }}</td>
+            <td>{{ app.appliedDate }}</td>
             <td>
               <button @click="updateStatus(app.id,'APPROVED')"  class="bg-green-500 text-white px-2 py-1 rounded">✔</button>
               <button @click="updateStatus(app.id, 'REJECTED')" class="bg-red-500 text-white px-2 py-1 rounded ml-2">✖</button>
@@ -109,7 +109,7 @@ const isLoading = computed(() => store.getters.isLoading);
 // derived computed
 const filteredApps = computed(() =>
   applications.value.filter((a) =>
-    a.applicant.toLowerCase().includes(search.value.toLowerCase()) && a.status === 'pending' )
+    a.applicant.toLowerCase().includes(search.value.toLowerCase()) && a.status === 'PENDING' )
 );
 
 // actions (dispatch)
