@@ -2,7 +2,7 @@ package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import tech.zetapioneers.loan_application.Enums.Status;
+import tech.zetapioneers.loan_application.enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

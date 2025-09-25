@@ -1,4 +1,4 @@
-package tech.zetapioneers.loan_application.DTO;
+package tech.zetapioneers.loan_application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

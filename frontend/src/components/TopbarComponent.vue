@@ -101,6 +101,10 @@ const toggleTheme = () => {
 
 const logout = () => {
   console.log('Logging out...')
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken')
+  localStorage.removeItem('currUser')
+  router.push("/login-form")
 }
 
 const getInitials = (name) => {
