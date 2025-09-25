@@ -1,4 +1,4 @@
-package tech.zetapioneers.loan_application.Entities;
+package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.zetapioneers.loan_application.Enums.Role;
+import tech.zetapioneers.loan_application.enums.Role;
 
 import java.sql.Date;
 

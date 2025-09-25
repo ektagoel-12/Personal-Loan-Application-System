@@ -1,7 +1,7 @@
 package tech.zetapioneers.loan_application.services;
 
 import org.springframework.stereotype.Service;
-import tech.zetapioneers.loan_application.Entities.User;
+import tech.zetapioneers.loan_application.entities.User;
 
 @Service
 public interface JwtService {

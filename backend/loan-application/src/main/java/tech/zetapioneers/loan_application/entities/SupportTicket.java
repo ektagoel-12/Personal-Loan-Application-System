@@ -1,4 +1,4 @@
-package tech.zetapioneers.loan_application.Entities;
+package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
