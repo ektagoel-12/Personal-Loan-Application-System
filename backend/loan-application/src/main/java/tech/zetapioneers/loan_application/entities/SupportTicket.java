@@ -2,6 +2,7 @@ package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
 
 import java.sql.Date;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "support_tickets")
+@NoArgsConstructor
 public class SupportTicket {
 
     @Id
@@ -35,10 +37,10 @@ public class SupportTicket {
 
     private final LocalDateTime createAt=LocalDateTime.now();
 
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt=LocalDateTime.now();
 
 
-    private String response;
+    private String response="";
 
 
 }

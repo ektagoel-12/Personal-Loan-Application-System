@@ -12,14 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class SupportTicketDto {
-    private Long id;
-    private User user;
-    private LoanApplication loan;
+public class SupportTicketRequestDto {
+    private String userEmail;
+    private Long loanId;
     private String subject;
     private String description;
-    private TicketStatus status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String response;
 }

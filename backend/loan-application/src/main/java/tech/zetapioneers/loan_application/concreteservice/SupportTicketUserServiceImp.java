@@ -1,12 +1,14 @@
 package tech.zetapioneers.loan_application.concreteservice;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import tech.zetapioneers.loan_application.dto.SupportTicketDto;
+import tech.zetapioneers.loan_application.dto.SupportTicketRequestDto;
+import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
+import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.repositories.SupportTicketRepository;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
 import tech.zetapioneers.loan_application.services.SupportTicketUserService;
@@ -18,23 +20,57 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
     @Autowired
     SupportTicketRepository supportTicketRepository;
     @Autowired
-    UserRepository userRepository;
+    LoanApplicationRepository loanApplicationRepository;
     @Autowired
-    ModelMapper modelMapper;
-
-    @Override
-    public ResponseEntity<SupportTicketDto> createTicket(SupportTicketDto supportTicketDto) {
-        SupportTicket supportTicket=modelMapper.map(supportTicketDto,SupportTicket.class);
-        SupportTicket createdTicket=supportTicketRepository.save(supportTicket);
-        return ResponseEntity.status(201).body(modelMapper.map(createdTicket,SupportTicketDto.class));
+    UserRepository userRepository;
+    //  map SupportTicket → SupportTicketResponseDto
+    private SupportTicketResponseDto mapToDto(SupportTicket ticket) {
+        SupportTicketResponseDto dto = new SupportTicketResponseDto();
+        dto.setId(ticket.getId());
+        dto.setUserEmail(ticket.getUser().getEmail());
+        dto.setLoanId(ticket.getLoan() != null ? ticket.getLoan().getId() : null);
+        dto.setSubject(ticket.getSubject());
+        dto.setDescription(ticket.getDescription());
+        dto.setStatus(ticket.getStatus());
+        dto.setCreateAt(ticket.getCreateAt());
+        dto.setUpdatedAt(ticket.getUpdatedAt());
+        dto.setResponse(ticket.getResponse());
+        return dto;
     }
 
-    @Override
-    public ResponseEntity<List<SupportTicketDto>> getTicketsByUser(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: "+email));
-        List<SupportTicketDto> response=supportTicketRepository.findByUser(user)
-                .stream().map(supportTicket -> modelMapper.map(supportTicket,SupportTicketDto.class)).toList();
-        return ResponseEntity.status(200).body(response);
+        @Override
+        public ResponseEntity<SupportTicketResponseDto> createTicket(SupportTicketRequestDto dto) {
+            User user = userRepository.findByEmail(dto.getUserEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            LoanApplication loan = null;
+            if (dto.getLoanId() != null) {
+                loan = loanApplicationRepository.findById(dto.getLoanId()).orElse(null);
+            }
+
+            SupportTicket ticket = new SupportTicket();
+            ticket.setUser(user);
+            ticket.setLoan(loan);
+            ticket.setSubject(dto.getSubject());
+            ticket.setDescription(dto.getDescription());
+            SupportTicket savedTicket = supportTicketRepository.save(ticket);
+
+            // mapping to ResponseDto
+            SupportTicketResponseDto responseDto = this.mapToDto(savedTicket);
+
+            return ResponseEntity.status(201).body(responseDto);
+        }
+
+        @Override
+        public ResponseEntity<List<SupportTicketResponseDto>> getTicketsByUser(String email) {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            List<SupportTicket> tickets = supportTicketRepository.findByUser(user);
+
+            List<SupportTicketResponseDto> response = tickets.stream()
+                    .map(this::mapToDto).toList();
+
+            return ResponseEntity.ok(response);
+        }
     }
-}
