@@ -1,10 +1,16 @@
 package tech.zetapioneers.loan_application.DTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AdminLoansList {
     private Long id;
     private Double amount;
