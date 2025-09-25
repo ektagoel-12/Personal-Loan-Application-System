@@ -173,9 +173,11 @@ import {
   Calculator,
   AlertCircle,
 } from "lucide-vue-next";
+import { useStore } from "vuex";
 
+const store = useStore()
 // Mock Auth context
-const user = ref({ name: "John Doe" });
+const user = ref(store.getters.currentUser);
 
 // Mock loan data
 const mockLoanData = {

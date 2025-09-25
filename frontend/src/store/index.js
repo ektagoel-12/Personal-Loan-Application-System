@@ -91,8 +91,10 @@ const store = createStore({
         app.status = status;
         console.log(`Application ${id} status updated to ${status}`);
       }
+    },
+    UPDATE_CURR_USER(state,payload){
+      state.user = payload
     }
-
   },
   actions: {
     async fetchDashboardData({ commit }) {
@@ -103,12 +105,16 @@ const store = createStore({
     updateApplicationStatus({ commit }, payload) {
       commit("UPDATE_APPLICATION_STATUS", payload);
     },
+    setCurrentUser({commit},payload){
+      commit("UPDATE_CURR_USER",payload);
+    }
   },
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
     isLoading: (state) => state.loading,
-    isLoggedIn: (state) => !!state.user,
+    isLoggedIn: (state) => state.user,
+    currentUser: (state) => state.user
   },
 });
 

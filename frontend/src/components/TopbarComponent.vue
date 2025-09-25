@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <!-- Left side -->
       <div class="flex items-center space-x-4">
-        <h1 class="text-xl">LoanFlow</h1>
+        <h1 class="text-xl cursor-pointer" @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')" >LoanFlow</h1>
         <span
           v-if="user"
           class="px-2 py-1 rounded text-xs font-medium"
@@ -85,13 +85,11 @@
 <script setup>
 import { ref } from 'vue'
 import { Bell, Moon, Sun, LogOut, Settings, User } from 'lucide-vue-next'
-
-// Dummy auth + theme context replacements
-const user = ref({
-  name: 'John Doe',
-  email: 'john@example.com',
-  role: 'admin'
-})
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+const store = useStore()
+const router = useRouter()
+const user = ref(store.getters.currentUser)
 
 const theme = ref('light')
 const isMenuOpen = ref(false)

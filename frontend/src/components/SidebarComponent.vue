@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
       <CreditCard class="h-5 w-5" />
-      <span class="font-semibold">LoanFlow</span>
+      <span class="font-semibold cursor-pointer" @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')">LoanFlow</span>
     </div>
 
     <!-- Menu Items -->
@@ -49,12 +49,12 @@ import {
   CreditCard
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
-// Dummy user (replace with Pinia or provide/inject later)
-const user = ref({
-  name: 'John Doe',
-  role: 'admin'
-})
+const store = useStore()
+
+
+const user = ref(store.getters.currentUser);
 
 const router = useRouter();
 
@@ -65,10 +65,9 @@ const onSectionChange = (section) => {
 }
 
 const customerItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, key: '' },
   { title: 'My Loans', icon: FileText, key: 'loan' },
   { title: 'EMI Calculator', icon: Calculator, key: 'calculator' },
-  { title: 'Support', icon: MessageSquare, key: 'support' }
+  { title: 'Support', icon: MessageSquare, key: 'user-ticket-view' }
 ]
 
 const adminItems = [
@@ -79,5 +78,5 @@ const adminItems = [
   { title: 'Support Tickets', icon: MessageSquare, key: 'admin-ticket-view' }
 ]
 
-const menuItems = computed(() => (user.value.role === 'admin' ? adminItems : customerItems))
+const menuItems = computed(() => (user.value.role === 'ADMIN' ? adminItems : customerItems))
 </script>
