@@ -44,13 +44,6 @@
       <h3 class="mb-4">Loan Applications</h3>
       <div class="flex items-center gap-4 mb-4">
       <input v-model="search" placeholder="Search applications..." class="border rounded px-3 py-2 mb-4" />
-        <select v-model="selectedStatus" class="border rounded px-3 py-2 mb-4">
-          <option value="">All Status</option>
-          <option value="PENDING">Pending</option>
-          <option value="APPROVED">Approved</option>
-          <option value="UNDER_REVIEW">Under Review</option>
-        </select>
-
       </div>
 
 
@@ -118,26 +111,35 @@ const stats = computed(() => store.getters.stats);
 const applications = computed(() => store.getters.applications);
 const isLoading = computed(() => store.getters.isLoading);
 
-const selectedStatus = ref("");
-
-
-// derived computed
-const filteredApps = computed(() =>{
-  return applications.value.filter(a =>{
-    const matchesSearch = a.applicant.toLowerCase().includes(search.value.toLowerCase());
-    const matchesStatus = selectedStatus.value ? a.status === selectedStatus.value : true;
-
-    return matchesSearch && matchesStatus;
-  });
-});
+const filteredApps = computed(() =>
+  applications.value.filter((a) =>
+    a.applicant.toLowerCase().includes(search.value.toLowerCase()) && (a.status === 'PENDING' || a.status==='NEW') )
+);
 
 // actions (dispatch)
 const fetchDashboardData = () => store.dispatch("fetchDashboardData");
 
 const updateStatus= (id, status) => {store.dispatch("updateApplicationStatus", { id, status });}
+
+const autoUpdateStatuses = () => {
+  const now = new Date();
+  applications.value.forEach(app => {
+    if (app.status === 'PENDING') {
+      const appDate = new Date(app.appliedDate);
+      console.log(appDate);
+      const hoursPassed = (now - appDate) / (1000 * 60 * 60);
+      console.log(hoursPassed);
+      if (hoursPassed < 48) {
+        updateStatus(app.id, 'NEW');
+      }
+    }
+  });
+};
+
 // lifecycle
 onMounted(() => {
   fetchDashboardData();
+  autoUpdateStatuses();
 });
 </script>
 
