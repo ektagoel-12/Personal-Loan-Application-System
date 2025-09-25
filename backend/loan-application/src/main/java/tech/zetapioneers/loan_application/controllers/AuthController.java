@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.zetapioneers.loan_application.dto.AuthResponse;
+import tech.zetapioneers.loan_application.DTO.LoginRequest;
 import tech.zetapioneers.loan_application.DTO.RegisterRequest;
 import tech.zetapioneers.loan_application.Entities.User;
 import tech.zetapioneers.loan_application.concreteservice.AuthServiceImpl;
@@ -20,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest body){
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest body){
         User user = new User();
         user.setName(body.getName());
         user.setEmail(body.getEmail());
@@ -28,5 +30,10 @@ public class AuthController {
         user.setCreditScore(body.getCreditScore());
         user.setPassword(body.getPassword());
         return new ResponseEntity<>(authService.register(user), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody LoginRequest body){
+        return new ResponseEntity<>(authService.login(body.getEmail(), body.getPassword()),HttpStatus.OK);
     }
 }

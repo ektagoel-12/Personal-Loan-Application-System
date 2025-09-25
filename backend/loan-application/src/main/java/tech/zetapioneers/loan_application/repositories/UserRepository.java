@@ -1,8 +1,8 @@
-package tech.zetapioneers.loan_application.respositories;
+package tech.zetapioneers.loan_application.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.Entities.User;
 
 import java.util.Optional;
 

@@ -22,7 +22,7 @@ import SidebarComponent from './components/SidebarComponent.vue'
 import TopbarComponent from './components/TopbarComponent.vue'
 
 const route = useRoute()
-const isAuthRoute = computed(() => ['/login-form', '/registration-form'].includes(route.path))
+const isAuthRoute = computed(() => ['/', '/login-form', '/registration-form'].includes(route.path))
 </script>
 
 <style scoped>

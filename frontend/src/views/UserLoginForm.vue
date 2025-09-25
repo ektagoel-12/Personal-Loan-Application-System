@@ -75,6 +75,11 @@
 import { reactive, ref } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
 import router from '../router'
+import { makeRequestWithoutToken } from '@/utils/requests'
+import { useStore } from 'vuex'
+
+const store = useStore()
+
 // Reactive form data
 let formData = reactive({
   email: '',
@@ -98,7 +103,7 @@ const validEmail = (email) => {
 const validPassword = (password) => password.length >= 2
 
 // Handle form submission
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!validEmail(formData.email)) {
     errors.email = 'Invalid email'
     return
@@ -113,6 +118,25 @@ const handleSubmit = () => {
     errors.password = null
   }
 
-  console.log('Data submitted:', formData.email, formData.password)
+  const response = await makeRequestWithoutToken("POST","/auth/login",formData);
+
+  localStorage.setItem('token',response.data["accessToken"]);
+  localStorage.setItem('refreshToken',response.data["refreshToken"]);
+
+  store.dispatch("setCurrentUser",{
+      name : response.data["name"],
+      email : response.data["email"],
+      role : response.data["role"],
+      creditScore : response.data["creditScore"],
+      income : response.data["income"],
+  })
+  
+  if(response.data["role"] == "ADMIN"){
+    router.push("/admin")
+  }
+  else{
+    router.push("/user-dashboard")
+  }
+
 }
 </script>
