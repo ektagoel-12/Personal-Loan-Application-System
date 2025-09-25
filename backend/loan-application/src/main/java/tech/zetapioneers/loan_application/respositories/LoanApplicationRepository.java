@@ -6,19 +6,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tech.zetapioneers.loan_application.Entities.LoanApplication;
 import tech.zetapioneers.loan_application.Entities.User;
+import tech.zetapioneers.loan_application.Enums.Status;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface LoanApplicationRepository extends JpaRepository<LoanApplication, User> {
-    List<LoanApplication> findByStatus(String status);
+    List<LoanApplication> findByStatus(Status status);
 
-    List<LoanApplication> findByStatusIgnoreCase(String status);
-    List<LoanApplication> findByApplicantNameContainingIgnoreCase(String search);
-    List<LoanApplication> findByStatusIgnoreCaseAndApplicantNameContainingIgnoreCase(String status, String search);
-
-    long countByStatusIgnoreCase(String status);
+    long countByStatus(Status status);
 
     @Query("SELECT count(l) FROM LoanApplication l WHERE l.applicationDate BETWEEN :start AND :end")
     long countBetweenDates(@Param("start") LocalDate start, @Param("end") LocalDate end);
