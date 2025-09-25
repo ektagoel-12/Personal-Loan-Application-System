@@ -2,6 +2,7 @@ package tech.zetapioneers.loan_application.Entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import tech.zetapioneers.loan_application.Enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,33 +14,29 @@ public class LoanApplication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; //
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Double amount;
+    private Double amount; //
     private Integer tenureMonths;
-    private Double income;
+    private Double income; //
     private Integer creditScore;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status; //
 
-    private LocalDate applicationDate;
+    private LocalDate applicationDate; //
     private String purpose;
 
     @ManyToOne
     @JoinColumn(name = "reviewed_by")
-    private User reviewedBy;
+    private User reviewedBy; //
 
-    private LocalDateTime reviewedAt;
-    private String reviewRemarks;
-
-    public enum Status {
-        NEW, UNDER_REVIEW, APPROVED, REJECTED
-    }
+    private LocalDateTime reviewedAt; //
+    private String reviewRemarks; //
 
     // getters and setters
 }

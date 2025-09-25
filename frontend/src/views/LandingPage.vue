@@ -183,7 +183,7 @@
                         Join thousands of satisfied customers who chose LoanEase for their financial needs
                     </p>
                     <div class="cta-actions">
-                        <router-link to="/loan-application" class="btn-primary-large">
+                        <router-link to="/login-form" class="btn-primary-large">
                             Apply for Loan
                             <ArrowRight class="btn-icon" />
                         </router-link>
