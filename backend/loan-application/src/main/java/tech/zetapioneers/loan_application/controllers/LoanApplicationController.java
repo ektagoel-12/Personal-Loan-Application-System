@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.Entities.LoanApplication;
 import tech.zetapioneers.loan_application.Entities.User;
 import tech.zetapioneers.loan_application.respositories.LoanApplicationRepository;
-import tech.zetapioneers.loan_application.respositories.UserRepository;
+import tech.zetapioneers.loan_application.repositories.UserRepository;
 import tech.zetapioneers.loan_application.services.UserService;
 
 import java.util.List;
