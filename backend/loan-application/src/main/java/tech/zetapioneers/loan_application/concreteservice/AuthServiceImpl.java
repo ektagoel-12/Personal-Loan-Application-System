@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.AuthResponse;
-import tech.zetapioneers.loan_application.Entities.User;
-import tech.zetapioneers.loan_application.Enums.Role;
+import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.Role;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
 import tech.zetapioneers.loan_application.services.AuthService;
 

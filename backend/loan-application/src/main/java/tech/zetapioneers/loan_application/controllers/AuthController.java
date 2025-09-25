@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.dto.AuthResponse;
-import tech.zetapioneers.loan_application.DTO.LoginRequest;
-import tech.zetapioneers.loan_application.DTO.RegisterRequest;
-import tech.zetapioneers.loan_application.Entities.User;
+import tech.zetapioneers.loan_application.dto.LoginRequest;
+import tech.zetapioneers.loan_application.dto.RegisterRequest;
+import tech.zetapioneers.loan_application.entities.User;
 import tech.zetapioneers.loan_application.concreteservice.AuthServiceImpl;
 
 @RestController

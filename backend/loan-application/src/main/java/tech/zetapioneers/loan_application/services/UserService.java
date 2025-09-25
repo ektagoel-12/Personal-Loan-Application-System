@@ -1,7 +1,7 @@
 package tech.zetapioneers.loan_application.services;
 
-import tech.zetapioneers.loan_application.DTO.UpdateUserRequest;
-import tech.zetapioneers.loan_application.Entities.User;
+import tech.zetapioneers.loan_application.dto.UpdateUserRequest;
+import tech.zetapioneers.loan_application.entities.User;
 
 import java.util.List;
 import java.util.Optional;

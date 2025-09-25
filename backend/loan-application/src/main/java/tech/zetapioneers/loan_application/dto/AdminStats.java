@@ -1,4 +1,4 @@
-package tech.zetapioneers.loan_application.DTO;
+package tech.zetapioneers.loan_application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +14,9 @@ import java.util.Map;
 @Builder
 public class AdminStats {
     private long totalApplications;
-    private double growth;
     private double approvalRate;
-    private double approvalGrowth;
     private long pending;
     private double avgIncome;
-    private List<Map<String,Object>> monthlyTrends;
-    private List<Map<String,Object>> statusDistribution;
+    private List<Map<String,Long>> monthlyTrends;
+    private Map<String,Long> statusDistribution;
 }
