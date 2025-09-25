@@ -11,28 +11,31 @@ import LandingPage from '../views/LandingPage.vue'
 import { useStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
 import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
+import LoanForm from '@/views/LoanForm.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/',component: LandingPage, name: "LandingPage" },
-    { path: '/user-dashboard', meta: { requiresAuth: true } ,component: HomeDashboard, name: "HomeDashboard" },
-    { path: '/login-form', component: UserLoginForm, name: "UserLoginForm" },
-    { path:'/registration-form',component:UserRegistrationForm,name:"UserRegistrationForm"},
-    { path : '/loan' , meta: { requiresAuth: true },component : LoanComponent},
-    {path: '/raise-ticket',meta: { requiresAuth: true },component: RaiseTicketView},
-    {path: '/admin-ticket-view',meta: { requiresAdminAuth: true }, component:AdminTicketView},
-    {path: '/user-ticket-view',meta: { requiresAuth: true },component: UserTicketsView},
+    { path: '/',component: LandingPage },
+    { path: '/user-dashboard', meta: { requiresAuth: true } ,component: HomeDashboard},
+    { path: '/login-form', component: UserLoginForm },
+    { path: '/registration-form',component:UserRegistrationForm },
+    { path: '/loan' , meta: { requiresAuth: true },component : LoanComponent},
+    { path: '/raise-ticket',meta: { requiresAuth: true },component: RaiseTicketView},
+    { path: '/admin-ticket-view',meta: { requiresAdminAuth: true }, component:AdminTicketView},
+    { path: '/user-ticket-view',meta: { requiresAuth: true },component: UserTicketsView},
     { path: '/calculator', meta: { requiresAuth: true },component: EmiCalculator },
     { path: '/admin',meta: { requiresAdminAuth: true },component: AdminDashboard},
-    { path: '/repayment', component: RepaymentSchedule}
+    { path: '/repayment', component: RepaymentSchedule},
+    { path: '/applyLoan', component: LoanForm},
   ]
 })
 
 router.beforeEach((to, from, next) => {
   const store = useStore()
   const user = store.getters.currentUser
-  console.log(user)
+  
   if(to.meta.requiresAdminAuth){
     if(user && user.role === "ADMIN"){
       next()
