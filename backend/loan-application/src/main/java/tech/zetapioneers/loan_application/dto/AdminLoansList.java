@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tech.zetapioneers.loan_application.enums.LoanType;
 
 import java.time.LocalDate;
 
@@ -13,13 +14,11 @@ import java.time.LocalDate;
 @Builder
 public class AdminLoansList {
     private Long id;
+    private String name;
     private Double amount;
-    private Integer tenureMonths;
     private Double income;
     private Integer creditScore;
+    private LoanType type;
+    private LocalDate applicationDate;
     private String status;
-    private String purpose;
-    private LocalDate reviewedAt;
-    private Long reviewedBy;
-    private String reviewRemarks;
 }
