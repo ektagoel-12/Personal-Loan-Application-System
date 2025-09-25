@@ -3,7 +3,7 @@ package tech.zetapioneers.loan_application.concreteservice;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import tech.zetapioneers.loan_application.Entities.User;
+import tech.zetapioneers.loan_application.entities.User;
 import tech.zetapioneers.loan_application.services.JwtService;
 
 import javax.crypto.Mac;
