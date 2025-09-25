@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "requestType": "Application Status",
+    "subject": "Need update on my loan application",
+    "description": "I applied last week, but haven’t received any update.",
+    "status": "In Progress",
+    "adminResponse": "Your application is under review, expected in 2 days."
+  },
+  {
+    "id": 2,
+    "requestType": "EMI Query",
+    "subject": "Incorrect EMI amount",
+    "description": "My EMI is showing higher than expected.",
+    "status": "Resolved",
+    "adminResponse": "We have corrected your EMI schedule. Please check again."
+  },
+    {
+    "id": 3,
+    "requestType": "EMI Query",
+    "subject": "Incorrect EMI amount",
+    "description": "My EMI is showing higher than expected.",
+    "status": "Pending",
+    "adminResponse": "We have corrected your EMI schedule. Please check again."
+  },
+    {
+    "id": 4,
+    "requestType": "EMI Query",
+    "subject": "Incorrect EMI amount",
+    "description": "My EMI is showing higher than expected.",
+    "status": "In Progress",
+    "adminResponse": "We have corrected your EMI schedule. Please check again."
+ }, 
+ {
+    "id": 5,
+    "requestType": "EMI Query",
+    "subject": "Incorrect EMI amount",
+    "description": "My EMI is showing higher than expected.",
+    "status": "Resolved",
+    "adminResponse": "We have corrected your EMI schedule. Please check again."
+  }
+]
