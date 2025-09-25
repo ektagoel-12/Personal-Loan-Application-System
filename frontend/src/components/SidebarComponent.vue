@@ -13,7 +13,7 @@
           <button
             @click="onSectionChange(item.key)"
             class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100"
-            :class="activeSection === item.key ? 'bg-gray-200 dark:bg-gray-700' : ''"
+            :class="activeSection === item.key ? 'bg-gray-200' : ''"
           >
             <component :is="item.icon" class="h-4 w-4 mr-2" />
             <span>{{ item.title }}</span>
@@ -67,7 +67,9 @@ const onSectionChange = (section) => {
 const customerItems = [
   { title: 'My Loans', icon: FileText, key: 'loan' },
   { title: 'EMI Calculator', icon: Calculator, key: 'calculator' },
-  { title: 'Support', icon: MessageSquare, key: 'user-ticket-view' }
+  { title: 'Repayment Schedule', icon: Users, key: 'repayment' },
+  { title: 'Raise Ticket', icon: MessageSquare, key: 'raise-ticket' },
+  { title: 'Your Tickets', icon: MessageSquare, key: 'user-ticket-view' }
 ]
 
 const adminItems = [

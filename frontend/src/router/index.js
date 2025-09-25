@@ -10,6 +10,7 @@ import AdminDashboard from '../views/AdminDashboard.vue'
 import LandingPage from '../views/LandingPage.vue'
 import { useStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
+import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -24,6 +25,7 @@ const router = createRouter({
     {path: '/user-ticket-view',meta: { requiresAuth: true },component: UserTicketsView},
     { path: '/calculator', meta: { requiresAuth: true },component: EmiCalculator },
     { path: '/admin',meta: { requiresAdminAuth: true },component: AdminDashboard},
+    { path: '/repayment', component: RepaymentSchedule}
   ]
 })
 
