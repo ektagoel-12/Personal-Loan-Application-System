@@ -50,7 +50,7 @@ const store = createStore({
           income: 60000,
           amount: 150000,
           purpose: "Business Expansion",
-          status: "UNDER_REVIEW",
+          status: "REJECTED",
           appliedDate: "2024-01-10",
           lastUpdated: "2024-01-12",
           emi: 12000,
