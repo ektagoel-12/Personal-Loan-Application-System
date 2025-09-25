@@ -34,7 +34,7 @@ const store = createStore({
           income: 95000,
           amount: 250000,
           purpose: "Home Purchase",
-          status: "APPROVED",
+          status: "PENDING",
           appliedDate: "2024-01-05",
           lastUpdated: "2024-01-08",
           emi: 15000,
@@ -50,7 +50,11 @@ const store = createStore({
           income: 60000,
           amount: 150000,
           purpose: "Business Expansion",
-          status: "UNDER_REVIEW",
+<<<<<<< HEAD
+          status: "REJECTED",
+=======
+          status: "PENDING",
+>>>>>>> main
           appliedDate: "2024-01-10",
           lastUpdated: "2024-01-12",
           emi: 12000,
@@ -66,7 +70,7 @@ const store = createStore({
           amount: 150000,
           purpose: "Business Expansion",
           status: "PENDING",
-          appliedDate: "2024-01-10",
+          appliedDate: "2025-09-24",
           lastUpdated: "2024-01-12",
           emi: 12000,
           interestRate: 9.0,

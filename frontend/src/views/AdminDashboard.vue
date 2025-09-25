@@ -41,12 +41,12 @@
 
     <!-- Pending Applications Table -->
     <div class="card">
-      <h3 class="mb-4">Pending Applications</h3>
-      <input
-        v-model="search"
-        placeholder="Search applications..."
-        class="border rounded px-3 py-2 mb-4 w-full"
-      />
+      <h3 class="mb-4">Loan Applications</h3>
+      <div class="flex items-center gap-4 mb-4">
+      <input v-model="search" placeholder="Search applications..." class="border rounded px-3 py-2 mb-4" />
+      </div>
+
+
       <table class="w-full border">
         <thead>
           <tr class="bg-gray-100 text-left">
@@ -57,6 +57,7 @@
             <th>Credit Score</th>
             <th>Purpose</th>
             <th>Date</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -67,20 +68,24 @@
             <td>₹{{ app.amount }}</td>
             <td>₹{{ app.income }}</td>
             <td>
-              <span
-                :class="[
-                  'px-2 py-1 rounded text-white',
+              <span :class="['px-2 py-1 rounded text-white',
                   app.creditScore >= 700 ? 'bg-green-600' : 'bg-red-500'
-                ]"
-              >
+                ]">
                 {{ app.creditScore }}
               </span>
             </td>
             <td>{{ app.purpose }}</td>
             <td>{{ app.appliedDate }}</td>
             <td>
-              <button @click="updateStatus(app.id,'APPROVED')"  class="bg-green-500 text-white px-2 py-1 rounded">✔</button>
-              <button @click="updateStatus(app.id, 'REJECTED')" class="bg-red-500 text-white px-2 py-1 rounded ml-2">✖</button>
+              <span :class="['status', app.status.toLowerCase()]">
+                {{ app.status }}
+              </span>
+            </td>
+            <td>
+              <button @click="updateStatus(app.id,'APPROVED')"
+                class="bg-green-500 text-white px-2 py-1 rounded">✔</button>
+              <button @click="updateStatus(app.id, 'REJECTED')"
+                class="bg-red-500 text-white px-2 py-1 rounded ml-2">✖</button>
             </td>
           </tr>
         </tbody>
@@ -106,19 +111,35 @@ const stats = computed(() => store.getters.stats);
 const applications = computed(() => store.getters.applications);
 const isLoading = computed(() => store.getters.isLoading);
 
-// derived computed
 const filteredApps = computed(() =>
   applications.value.filter((a) =>
-    a.applicant.toLowerCase().includes(search.value.toLowerCase()) && a.status === 'PENDING' )
+    a.applicant.toLowerCase().includes(search.value.toLowerCase()) && (a.status === 'PENDING' || a.status==='NEW') )
 );
 
 // actions (dispatch)
 const fetchDashboardData = () => store.dispatch("fetchDashboardData");
 
 const updateStatus= (id, status) => {store.dispatch("updateApplicationStatus", { id, status });}
+
+const autoUpdateStatuses = () => {
+  const now = new Date();
+  applications.value.forEach(app => {
+    if (app.status === 'PENDING') {
+      const appDate = new Date(app.appliedDate);
+      console.log(appDate);
+      const hoursPassed = (now - appDate) / (1000 * 60 * 60);
+      console.log(hoursPassed);
+      if (hoursPassed < 48) {
+        updateStatus(app.id, 'NEW');
+      }
+    }
+  });
+};
+
 // lifecycle
 onMounted(() => {
   fetchDashboardData();
+  autoUpdateStatuses();
 });
 </script>
 
