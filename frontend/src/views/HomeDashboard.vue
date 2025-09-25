@@ -174,11 +174,8 @@ import {
   AlertCircle,
 } from "lucide-vue-next";
 import { useStore } from "vuex";
-<<<<<<< HEAD
-import router from "@/router";
-=======
->>>>>>> main
-
+import { useRouter } from "vue-router";
+const router = useRouter()
 const store = useStore()
 // Mock Auth context
 const user = ref(store.getters.currentUser);
