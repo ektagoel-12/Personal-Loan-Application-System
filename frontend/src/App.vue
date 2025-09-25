@@ -17,7 +17,7 @@
 
 <script setup>
 import { RouterView, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onUpdated } from 'vue'
 import SidebarComponent from './components/SidebarComponent.vue'
 import TopbarComponent from './components/TopbarComponent.vue'
 

@@ -123,6 +123,14 @@ const handleSubmit = async () => {
   localStorage.setItem('token',response.data["accessToken"]);
   localStorage.setItem('refreshToken',response.data["refreshToken"]);
 
+   localStorage.setItem('currUser',JSON.stringify({
+      name : response.data["name"],
+      email : response.data["email"],
+      role : response.data["role"],
+      creditScore : response.data["creditScore"],
+      income : response.data["income"],
+  }))
+
   store.dispatch("setCurrentUser",{
       name : response.data["name"],
       email : response.data["email"],

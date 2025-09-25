@@ -1,5 +1,6 @@
 package tech.zetapioneers.loan_application.concreteservice;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.AdminDto;
@@ -28,8 +29,6 @@ public class AdminLoanServiceImpl extends AdminLoanService {
     public AdminLoansList updateStatus(Long id, String status, String remarks) {
         return null;
     }
-//
-//    private final LoanApplicationRepository loanRepo;
 //
 //    @Override
 //    public AdminDto getAdminDashboard() {

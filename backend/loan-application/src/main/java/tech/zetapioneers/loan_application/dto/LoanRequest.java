@@ -1,2 +1,4 @@
-package tech.zetapioneers.loan_application.DTO;public class LoanRequest {
+package tech.zetapioneers.loan_application.dto;
+
+public class LoanRequest {
 }
