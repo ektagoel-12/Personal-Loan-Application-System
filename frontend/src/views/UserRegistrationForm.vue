@@ -212,6 +212,8 @@ const handleSubmit = async() => {
 
   const response = await makeRequestWithoutToken("POST","/auth/register",formData);
 
+  if(!response)return;
+
   localStorage.setItem('token',response.data["accessToken"]);
   localStorage.setItem('refreshToken',response.data["refreshToken"]);
   
