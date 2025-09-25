@@ -45,7 +45,9 @@ public class AuthServiceImpl implements AuthService {
         response.setRefreshToken(refreshToken);
         response.setName(newUser.getName());
         response.setRole(newUser.getRole().name());
-
+        response.setIncome(newUser.getIncome());
+        response.setEmail(newUser.getEmail());
+        response.setCreditScore(newUser.getCreditScore());
         return response;
     }
 
@@ -66,7 +68,9 @@ public class AuthServiceImpl implements AuthService {
         response.setRefreshToken(refreshToken);
         response.setName(user.getName());
         response.setRole(user.getRole().name());
-
+        response.setIncome(user.getIncome());
+        response.setEmail(user.getEmail());
+        response.setCreditScore(user.getCreditScore());
         return response;
     }
 
