@@ -2,9 +2,9 @@ package tech.zetapioneers.loan_application.concreteservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.zetapioneers.loan_application.DTO.UpdateUserRequest;
-import tech.zetapioneers.loan_application.Entities.User;
-import tech.zetapioneers.loan_application.respositories.UserRepository;
+import tech.zetapioneers.loan_application.dto.UpdateUserRequest;
+import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.repositories.UserRepository;
 import tech.zetapioneers.loan_application.services.UserService;
 
 import java.util.List;
