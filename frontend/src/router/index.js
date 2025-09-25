@@ -9,6 +9,7 @@ import EmiCalculator from '@/views/EmiCalculator.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
+import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 
 
 const router = createRouter({
@@ -23,6 +24,7 @@ const router = createRouter({
     {path: '/user-ticket-view', component: UserTicketsView},
     { path: '/calculator',component: EmiCalculator },
     { path: '/admin', component: AdminDashboard},
+    { path: '/repayment', component: RepaymentSchedule}
   ]
 })
 

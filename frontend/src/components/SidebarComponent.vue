@@ -13,7 +13,7 @@
           <button
             @click="onSectionChange(item.key)"
             class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100"
-            :class="activeSection === item.key ? 'bg-gray-200 dark:bg-gray-700' : ''"
+            :class="activeSection === item.key ? 'bg-gray-200' : ''"
           >
             <component :is="item.icon" class="h-4 w-4 mr-2" />
             <span>{{ item.title }}</span>
