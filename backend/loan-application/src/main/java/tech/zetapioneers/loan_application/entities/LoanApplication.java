@@ -1,8 +1,10 @@
-package tech.zetapioneers.loan_application.Entities;
+package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import tech.zetapioneers.loan_application.Enums.Status;
+import lombok.ToString;
+import tech.zetapioneers.loan_application.enums.LoanType;
+import tech.zetapioneers.loan_application.enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "loan_applications")
+@ToString
 public class LoanApplication {
 
     @Id
@@ -28,8 +31,10 @@ public class LoanApplication {
     @Enumerated(EnumType.STRING)
     private Status status; //
 
+    @Enumerated(EnumType.STRING)
+    private LoanType loanType;
+
     private LocalDate applicationDate; //
-    private String purpose;
 
     @ManyToOne
     @JoinColumn(name = "reviewed_by")

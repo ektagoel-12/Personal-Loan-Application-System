@@ -1,4 +1,4 @@
-package tech.zetapioneers.loan_application.Entities;
+package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class RepaymentSchedule {
     private Double principalAmount;
     private Double interestAmount;
     private Double balanceRemaining;
-
+    private Boolean isPaid=false;
     // getters and setters
 }
 

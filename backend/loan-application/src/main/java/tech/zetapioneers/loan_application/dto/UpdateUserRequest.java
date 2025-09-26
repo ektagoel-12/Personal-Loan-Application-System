@@ -1,10 +1,10 @@
-package tech.zetapioneers.loan_application.DTO;
+package tech.zetapioneers.loan_application.dto;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import tech.zetapioneers.loan_application.Entities.User;
-import tech.zetapioneers.loan_application.Enums.Role;
+import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.Role;
 
 import java.sql.Date;
 import java.time.LocalDate;

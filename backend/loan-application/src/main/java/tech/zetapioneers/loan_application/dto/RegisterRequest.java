@@ -1,4 +1,4 @@
-package tech.zetapioneers.loan_application.DTO;
+package tech.zetapioneers.loan_application.dto;
 
 import lombok.Data;
 import lombok.Getter;

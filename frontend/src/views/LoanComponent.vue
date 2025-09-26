@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useStore } from "vuex"
 import  { Eye,SquareArrowDown } from "lucide-vue-next"
 import Model from "@/components/LoanModel.vue"

@@ -34,7 +34,7 @@ const store = createStore({
           income: 95000,
           amount: 250000,
           purpose: "Home Purchase",
-          status: "PENDING",
+          status: "APPROVED",
           appliedDate: "2024-01-05",
           lastUpdated: "2024-01-08",
           emi: 15000,
