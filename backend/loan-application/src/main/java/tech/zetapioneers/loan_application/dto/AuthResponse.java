@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class AuthResponse implements Serializable {
+    private Long id;
     private String accessToken;
     private String refreshToken;
     private String name;
@@ -13,4 +14,5 @@ public class AuthResponse implements Serializable {
     private String role;
     private Integer creditScore;
     private Double income;
+    private String aadhar;
 }

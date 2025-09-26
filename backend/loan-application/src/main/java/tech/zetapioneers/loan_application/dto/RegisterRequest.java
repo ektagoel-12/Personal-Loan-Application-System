@@ -15,4 +15,5 @@ public class RegisterRequest implements Serializable {
     Double income;
     Integer creditScore;
     String password;
+    String aadhar;
 }
