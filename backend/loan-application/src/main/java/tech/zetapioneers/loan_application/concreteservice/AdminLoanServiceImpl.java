@@ -1,6 +1,6 @@
 package tech.zetapioneers.loan_application.concreteservice;
 
-import lombok.Data;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.AdminDto;
@@ -11,6 +11,7 @@ import tech.zetapioneers.loan_application.enums.Status;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.services.AdminLoanService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,11 @@ import java.util.stream.Collectors;
 public class AdminLoanServiceImpl extends AdminLoanService {
 
     private final LoanApplicationRepository loanRepo;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public AdminDto getAdminDashboard() {
-                List<LoanApplication> allApps = loanRepo.findAll();
+        List<LoanApplication> allApps = loanRepo.findAll();
 
         long total = allApps.size();
         long approved = allApps.stream().filter(a -> a.getStatus() == Status.APPROVED).count();
@@ -62,25 +64,40 @@ public class AdminLoanServiceImpl extends AdminLoanService {
     }
 
     @Override
-    public AdminLoansList updateStatus(Long id, String status, String remarks) {
+    public AdminLoansList updateStatus(Long id, String status, String reviewRemarks, LocalDateTime reviewedAt, String reviewedBy) {
         LoanApplication app = loanRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Loan not found"));
 
         app.setStatus(Status.valueOf(status));
+        app.setReviewedBy(reviewedBy);
+        app.setReviewedAt(reviewedAt);
+        app.setReviewRemarks(reviewRemarks);
+
+
         loanRepo.save(app);
+        return mapToDTO(app);
+    }
+
+    @Override
+    public AdminLoansList getLoanById(Long id) {
+        LoanApplication app = loanRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
         return mapToDTO(app);
     }
 
     private AdminLoansList mapToDTO(LoanApplication app) {
         return AdminLoansList.builder()
                 .id(app.getId())
-                .name(app.getName())
+                .name(app.getUser().getName())
                 .amount(app.getAmount())
                 .income(app.getIncome())
                 .creditScore(app.getCreditScore())
                 .type(app.getType())
                 .applicationDate(app.getApplicationDate())
                 .status(app.getStatus().name())
+                .reviewedAt(app.getReviewedAt())
+                .reviewedBy(app.getReviewedBy())
+                .reviewRemarks(app.getReviewRemarks())
                 .build();
     }
 }

@@ -23,7 +23,7 @@ public class LoanApplication {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String name;
+
     private Double amount;
     private Integer tenureMonths;
     private Double income;
@@ -36,5 +36,13 @@ public class LoanApplication {
 
     @Enumerated(EnumType.STRING)
     private LoanType type;
+
+    private LocalDateTime reviewedAt;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewedBy;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewRemarks;
 
 }
