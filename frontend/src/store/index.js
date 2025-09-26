@@ -3,16 +3,12 @@ import { createStore } from "vuex";
 const store = createStore({
   state() {
     return {
-      // your counter + user state
       count: 0,
       user: JSON.parse(localStorage.getItem('currUser')),
       
-      //stats
       stats: {
         totalApplications: 1250,
-        growth: 12,
         approvalRate: 78,
-        approvalGrowth: 5,
         pending: 45,
         avgIncome: 125000,
         monthlyTrends: {
@@ -25,7 +21,6 @@ const store = createStore({
           rejected: 7,
         }
       },
-      // loan application state
       applications: [
         {
           id: "LA2024001",
@@ -33,7 +28,7 @@ const store = createStore({
           creditScore: 680,
           income: 95000,
           amount: 250000,
-          purpose: "Home Purchase",
+          purpose: "Home Loan",
           status: "PENDING",
           appliedDate: "2024-01-05",
           lastUpdated: "2024-01-08",
@@ -49,7 +44,7 @@ const store = createStore({
           creditScore: 750,
           income: 60000,
           amount: 150000,
-          purpose: "Business Expansion",
+          purpose: "Business Loan",
           status: "REJECTED",
           appliedDate: "2024-01-10",
           lastUpdated: "2024-01-12",
@@ -64,7 +59,7 @@ const store = createStore({
           creditScore: 750,
           income: 60000,
           amount: 150000,
-          purpose: "Business Expansion",
+          purpose: "Business Loan",
           status: "PENDING",
           appliedDate: "2025-09-24",
           lastUpdated: "2024-01-12",
@@ -78,23 +73,44 @@ const store = createStore({
       searchTerm: "",
       statusFilter: "all",
       dateRange: { from: null, to: null },
+
       selectedApplication: null,
+      loading: false,
     };
   },
   mutations: {
     SET_LOADING(state, val) {
       state.loading = val;
     },
-    UPDATE_APPLICATION_STATUS(state, { id, status }) {
-      const app = state.applications.find(app => app.id === id);
-      if (app) {
-        app.status = status;
-        console.log(`Application ${id} status updated to ${status}`);
-      }
-    },
-    UPDATE_CURR_USER(state,payload){
-      state.user = payload
+    UPDATE_APPLICATION(state, { id, payload }) {
+    const idx = state.applications.findIndex(app => app.id === id);
+    if (idx !== -1) {
+      state.applications[idx] = {
+        ...state.applications[idx],
+        ...payload
+      };
     }
+  },
+    UPDATE_CURR_USER(state, payload) {
+      state.user = payload
+    },
+    SET_SELECTED_APPLICATION(state, app) {
+      state.selectedApplication = app;
+    },
+
+    SET_FILTERS(state, { searchTerm, statusFilter, dateRange }) {
+      if (searchTerm !== undefined) state.searchTerm = searchTerm;
+      if (statusFilter !== undefined) state.statusFilter = statusFilter;
+      if (dateRange !== undefined) state.dateRange = dateRange;
+    },
+
+    ADD_APPLICATION(state, application) {
+      state.applications.push(application);
+    },
+
+    REMOVE_APPLICATION(state, id) {
+      state.applications = state.applications.filter((app) => app.id !== id);
+    },
   },
   actions: {
     async fetchDashboardData({ commit }) {
@@ -102,19 +118,65 @@ const store = createStore({
       await new Promise((resolve) => setTimeout(resolve, 500));
       commit("SET_LOADING", false);
     },
-    updateApplicationStatus({ commit }, payload) {
-      commit("UPDATE_APPLICATION_STATUS", payload);
+    updateApplicationStatus({ commit },{id, payload}) {
+      commit("UPDATE_APPLICATION", {id, payload});
     },
     setCurrentUser({commit},payload){
       commit("UPDATE_CURR_USER",payload);
-    }
+    },
+    setCurrentUser({ commit }, payload) {
+      commit("UPDATE_CURR_USER", payload);
+    },
+
+    selectApplication({ commit }, app) {
+      commit("SET_SELECTED_APPLICATION", app);
+    },
+
+    applyFilters({ commit }, filters) {
+      commit("SET_FILTERS", filters);
+    },
+
+    addApplication({ commit }, application) {
+      commit("ADD_APPLICATION", application);
+    },
+
+    removeApplication({ commit }, id) {
+      commit("REMOVE_APPLICATION", id);
+    },
+    fetchLoanById({ state, commit }, id) {
+      const loan = state.applications.find((app) => app.id === id) || null;
+      commit("SET_SELECTED_APPLICATION", loan);
+      return loan;
+    },
   },
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
+
+    filteredApplications: (state) => {
+      return state.applications.filter((app) => {
+        const matchesSearch =
+          state.searchTerm === "" ||
+          app.applicant.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+          app.id.toLowerCase().includes(state.searchTerm.toLowerCase());
+
+        const matchesStatus =
+          state.statusFilter === "all" ||
+          app.status.toLowerCase() === state.statusFilter.toLowerCase();
+
+        const matchesDate =
+          (!state.dateRange.from ||
+            new Date(app.appliedDate) >= new Date(state.dateRange.from)) &&
+          (!state.dateRange.to ||
+            new Date(app.appliedDate) <= new Date(state.dateRange.to));
+
+        return matchesSearch && matchesStatus && matchesDate;
+      });
+    },
     isLoading: (state) => state.loading,
     isLoggedIn: (state) => state.user,
-    currentUser: (state) => state.user
+    currentUser: (state) => state.user,
+    selectedApplication: (state) => state.selectedApplication,
   },
 });
 
