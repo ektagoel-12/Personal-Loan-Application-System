@@ -7,6 +7,7 @@ import AdminTicketView from '@/views/AdminTicketView.vue'
 import UserTicketsView from '@/views/UserTicketsView.vue'
 import EmiCalculator from '@/views/EmiCalculator.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
+import LoanDetail from '@/views/LoanDetail.vue'
 import LandingPage from '../views/LandingPage.vue'
 import { useStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -30,7 +31,8 @@ const router = createRouter({
     { path: '/admin',meta: { requiresAdminAuth: true },component: AdminDashboard},
     { path: '/repayment' ,meta: { requiresAuth: true } , component: RepaymentSchedule},
     { path: '/applyLoan' ,meta: { requiresAuth: true }, component: LoanForm},
-    { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement}
+    { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement},
+    { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true }
   ]
 })
 

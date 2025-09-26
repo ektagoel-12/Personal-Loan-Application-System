@@ -1,18 +1,16 @@
+import { makeRequestWithToken } from "@/utils/requests";
 import { createStore } from "vuex";
 
 const store = createStore({
   state() {
     return {
-      // your counter + user state
+
       count: 0,
       user: JSON.parse(localStorage.getItem('currUser')),
       
-      //stats
       stats: {
         totalApplications: 1250,
-        growth: 12,
         approvalRate: 78,
-        approvalGrowth: 5,
         pending: 45,
         avgIncome: 125000,
         monthlyTrends: {
@@ -26,59 +24,13 @@ const store = createStore({
         }
       },
       // loan application state
-      applications: [
-        {
-          id: "LA2024001",
-          applicant: "Sarah Johnson",
-          creditScore: 680,
-          income: 95000,
-          amount: 250000,
-          purpose: "Home Purchase",
-          status: "APPROVED",
-          appliedDate: "2024-01-05",
-          lastUpdated: "2024-01-08",
-          emi: 15000,
-          interestRate: 8.5,
-          tenure: 20,
-          remarks: "Application approved after document verification.",
-          progress: 100,
-        },
-        {
-          id: "LA2024002",
-          applicant: "Mike Davis",
-          creditScore: 750,
-          income: 60000,
-          amount: 150000,
-          purpose: "Business Expansion",
-          status: "REJECTED",
-          appliedDate: "2024-01-10",
-          lastUpdated: "2024-01-12",
-          emi: 12000,
-          interestRate: 9.0,
-          tenure: 15,
-          remarks: "Additional income documents required.",
-          progress: 65,
-        },{
-          id: "LA20240232",
-          applicant: "Mike Davis",
-          creditScore: 750,
-          income: 60000,
-          amount: 150000,
-          purpose: "Business Expansion",
-          status: "PENDING",
-          appliedDate: "2025-09-24",
-          lastUpdated: "2024-01-12",
-          emi: 12000,
-          interestRate: 9.0,
-          tenure: 15,
-          remarks: "Additional income documents required.",
-          progress: 65,
-        }
-      ],
+      applications: [],
       searchTerm: "",
       statusFilter: "all",
       dateRange: { from: null, to: null },
+
       selectedApplication: null,
+      loading: false,
     };
   },
   mutations: {
@@ -89,12 +41,31 @@ const store = createStore({
       const app = state.applications.find(app => app.id === id);
       if (app) {
         app.status = status;
-        console.log(`Application ${id} status updated to ${status}`);
       }
     },
     UPDATE_CURR_USER(state,payload){
       state.user = payload
-    }
+    },
+    GET_LOANS_USER(state,payload){
+      state.applications = payload
+    },
+    SET_SELECTED_APPLICATION(state, app) {
+      state.selectedApplication = app;
+    },
+
+    SET_FILTERS(state, { searchTerm, statusFilter, dateRange }) {
+      if (searchTerm !== undefined) state.searchTerm = searchTerm;
+      if (statusFilter !== undefined) state.statusFilter = statusFilter;
+      if (dateRange !== undefined) state.dateRange = dateRange;
+    },
+
+    ADD_APPLICATION(state, application) {
+      state.applications.push(application);
+    },
+
+    REMOVE_APPLICATION(state, id) {
+      state.applications = state.applications.filter((app) => app.id !== id);
+    },
   },
   actions: {
     async fetchDashboardData({ commit }) {
@@ -102,19 +73,84 @@ const store = createStore({
       await new Promise((resolve) => setTimeout(resolve, 500));
       commit("SET_LOADING", false);
     },
-    updateApplicationStatus({ commit }, payload) {
-      commit("UPDATE_APPLICATION_STATUS", payload);
+    updateApplicationStatus({ commit },{id, payload}) {
+      commit("UPDATE_APPLICATION", {id, payload});
     },
     setCurrentUser({commit},payload){
       commit("UPDATE_CURR_USER",payload);
-    }
+    },
+    async getAllLoans({commit}){
+      const id = this.state.user.role === 'ADMIN' ? '' : '/user/' +this.state.user.id
+      const response = await makeRequestWithToken('GET',`/api/loans${id}`)
+      const loans = response.data.map( (loan)=>{
+        let principal = loan.amount;
+        let monthlyRate = loan.rateOfInterest / 12 / 100;  
+        let tenureMonths = loan.tenure;                    
+
+        loan.emi = Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+                  (Math.pow(1 + monthlyRate, tenureMonths) - 1));
+        loan.interestRate = loan.rateOfInterest
+        loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
+        loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
+        loan.remarkedBy = loan.remarksBy 
+        return loan;
+      })
+      console.log(loans)
+      commit("GET_LOANS_USER",loans)
+    },
+    setCurrentUser({ commit }, payload) {
+      commit("UPDATE_CURR_USER", payload);
+    },
+
+    selectApplication({ commit }, app) {
+      commit("SET_SELECTED_APPLICATION", app);
+    },
+
+    applyFilters({ commit }, filters) {
+      commit("SET_FILTERS", filters);
+    },
+
+    addApplication({ commit }, application) {
+      commit("ADD_APPLICATION", application);
+    },
+
+    removeApplication({ commit }, id) {
+      commit("REMOVE_APPLICATION", id);
+    },
+    fetchLoanById({ state, commit }, id) {
+      const loan = state.applications.find((app) => app.id === id) || null;
+      commit("SET_SELECTED_APPLICATION", loan);
+      return loan;
+    },
   },
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
+
+    filteredApplications: (state) => {
+      return state.applications.filter((app) => {
+        const matchesSearch =
+          state.searchTerm === "" ||
+          app.applicant.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+          app.id.toLowerCase().includes(state.searchTerm.toLowerCase());
+
+        const matchesStatus =
+          state.statusFilter === "all" ||
+          app.status.toLowerCase() === state.statusFilter.toLowerCase();
+
+        const matchesDate =
+          (!state.dateRange.from ||
+            new Date(app.appliedDate) >= new Date(state.dateRange.from)) &&
+          (!state.dateRange.to ||
+            new Date(app.appliedDate) <= new Date(state.dateRange.to));
+
+        return matchesSearch && matchesStatus && matchesDate;
+      });
+    },
     isLoading: (state) => state.loading,
     isLoggedIn: (state) => state.user,
-    currentUser: (state) => state.user
+    currentUser: (state) => state.user,
+    selectedApplication: (state) => state.selectedApplication,
   },
 });
 

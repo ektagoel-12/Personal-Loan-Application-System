@@ -1,5 +1,6 @@
 package tech.zetapioneers.loan_application.entities;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -28,12 +29,13 @@ public class LoanApplication {
     @Enumerated(EnumType.STRING)
     private LoanType loanType;
 
-    @ManyToOne
-    @JoinColumn(name = "reviewed_by")
-    private User reviewedBy; //
+    private LocalDateTime reviewedAt;
 
-    private LocalDateTime reviewedAt; //
-    private String reviewRemarks; //
+    @Column(columnDefinition = "TEXT")
+    private String reviewedBy;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewRemarks;
 
     private Double amount;
     private Integer tenureMonths;
