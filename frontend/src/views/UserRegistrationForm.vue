@@ -116,7 +116,7 @@
               id="aadhar"
               type="text"
               v-model="formData.aadhar"
-              placeholder="Enter your Aadhar numbet"
+              placeholder="Enter your Aadhar number"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
             <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>

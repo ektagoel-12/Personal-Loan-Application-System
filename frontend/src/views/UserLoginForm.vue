@@ -126,6 +126,7 @@ const handleSubmit = async () => {
   localStorage.setItem('refreshToken',response.data["refreshToken"]);
 
    localStorage.setItem('currUser',JSON.stringify({
+      id : response.data["id"],
       name : response.data["name"],
       email : response.data["email"],
       role : response.data["role"],
