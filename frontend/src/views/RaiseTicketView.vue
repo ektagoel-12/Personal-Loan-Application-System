@@ -1,29 +1,36 @@
 <script setup>
 import { ref } from "vue"
+import { useStore } from "vuex"
+import { makeRequestWithToken } from "@/utils/requests";
+
+const store=useStore();
 
 const requestTypes = [
-  "Application Status",
-  "Document Upload Issue",
-  "EMI Query",
-  "Loan Closure",
+  "Application_Status",
+  "Document_Upload_Issue",
+  "EMI_Query",
+  "Loan_Closure",
   "Others"
 ]
 
 const formData = ref({
-  requestType: "",
+  type: "",
   subject: "",
-  description: ""
+  description: "",
+  userEmail:store.getters.currentUser.email,
+  LoanId:null
 })
 
-const handleSubmit = () => {
-  if (!formData.value.requestType || !formData.value.subject || !formData.value.description) {
+const handleSubmit = async() => {
+  if (!formData.value.type || !formData.value.subject || !formData.value.description) {
     alert("⚠️ Please fill out all fields before submitting.")
     return
   }
+  const response= await makeRequestWithToken("POST","/ticket/user",formData.value)
 
-  console.log("✅ Ticket submitted:", formData.value)
+  console.log("✅ Ticket submitted:", response.data)
 
-  formData.value = { requestType: "", subject: "", description: "" }
+  formData.value = { type: "", subject: "", description: "" }
 }
 </script>
 
@@ -38,7 +45,7 @@ const handleSubmit = () => {
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Request Type</label>
         <select
-          v-model="formData.requestType"
+          v-model="formData.type"
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option disabled value="">-- Select Request Type --</option>

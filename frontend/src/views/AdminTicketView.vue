@@ -1,15 +1,31 @@
 <script setup>
 import { ref, onMounted } from "vue"
-
+import { makeRequestWithToken } from "@/utils/requests"
+import {useStore} from 'vuex'
 // Mock tickets data (replace with API call)
 const tickets = ref([])
-import ticketList from '../store/ticket.json' //dummy data
-onMounted(() => {
-  tickets.value = ticketList
+const store=useStore()
+
+// import ticketList from '../store/ticket.json' //dummy data
+
+
+onMounted( async() => {
+  try {
+    const endpoint='/ticket/admin';
+    const response = await makeRequestWithToken("GET",endpoint);
+    console.log("Raw response:", response.data);
+
+    tickets.value = response.data ? response.data : [];
+
+    console.log("Tickets loaded:", tickets.value);
+    tickets.value.forEach(ticket=>console.log(ticket))
+  } catch (err) {
+    console.error("Error fetching tickets:", err);
+  }
 })
 
 // Status options
-const statusOptions = ["Open", "In Progress", "Resolved", "Closed"]
+const statusOptions = ["OPEN", "RESOLVED", "CLOSED"]
 
 // Function to update ticket status
 const updateStatus = (ticket, newStatus) => {
@@ -18,10 +34,20 @@ const updateStatus = (ticket, newStatus) => {
 }
 
 // Function to update admin response
-const updateResponse = (ticket) => {
+const updateResponse = async(ticket) => {
   if (!ticket.adminResponse) {
-    alert("Please enter a response before updating")
-    return
+    try {
+    // const endpoint='/'+store.+'/response';
+    const response = await makeRequestWithToken("GET",endpoint);
+    console.log("Raw response:", response.data);
+
+    tickets.value = response.data ? response.data : [];
+
+    console.log("Tickets loaded:", tickets.value);
+    tickets.value.forEach(ticket=>console.log(ticket))
+  } catch (err) {
+    console.error("Error fetching tickets:", err);
+  }
   }
   alert(`Response updated for ticket #${ticket.id}`)
 }
@@ -36,6 +62,8 @@ const updateResponse = (ticket) => {
         <!-- Ticket Header -->
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-lg font-semibold text-gray-800">{{ ticket.subject }}</h3>
+           <p class="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
+              Type: {{ ticket.type }}  </p>
           <select v-model="ticket.status" @change="updateStatus(ticket, ticket.status)" class="border rounded px-2 py-1 text-sm">
             <option v-for="status in statusOptions" :key="status" :value="status">{{ status }}</option>
           </select>

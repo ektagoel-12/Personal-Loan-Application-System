@@ -1,13 +1,28 @@
 <script setup>
 import { ref, onMounted } from "vue"
-import ticketList from '../store/ticket.json' //dummy data
+// import ticketList from '../store/ticket.json' //dummy data
+import { makeRequestWithToken } from "@/utils/requests"
+import {useStore} from 'vuex'
 
 // Tickets data (in real app, fetch from backend API)
 const tickets = ref([])
+const store=useStore()
 
-onMounted(() => {
-  // Mock data, replace with API call later
-  tickets.value = ticketList
+
+onMounted( async() => {
+  try {
+    const endpoint='/ticket/user/'+store.getters.currentUser.email;
+    const response = await makeRequestWithToken("GET",endpoint);
+    console.log("Raw response:", response.data);
+
+    // make sure it's an array
+    tickets.value = response.data ? response.data : [];
+
+    console.log("Tickets loaded:", tickets.value);
+    tickets.value.forEach(ticket=>console.log(ticket))
+  } catch (err) {
+    console.error("Error fetching tickets:", err);
+  }
 })
 
 // Function to style status
@@ -39,6 +54,8 @@ const statusClass = (status) => {
       >
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-lg font-semibold text-gray-800">{{ ticket.subject }}</h3>
+           <p class="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
+            Type: {{ ticket.type }}</p>
           <span
             class="px-3 py-1 text-sm font-medium rounded-full"
             :class="statusClass(ticket.status)"
