@@ -131,14 +131,18 @@ const handleSubmit = async () => {
       role : response.data["role"],
       creditScore : response.data["creditScore"],
       income : response.data["income"],
-  }))
-
-  store.dispatch("setCurrentUser",{
+      aadhar:response.data["aadhar"],
+      id: response.data["id"]
+    }))
+    
+    store.dispatch("setCurrentUser",{
       name : response.data["name"],
       email : response.data["email"],
       role : response.data["role"],
       creditScore : response.data["creditScore"],
+      aadhar:response.data["aadhar"],
       income : response.data["income"],
+      id: response.data["id"]
   })
   
   if(response.data["role"] == "ADMIN"){

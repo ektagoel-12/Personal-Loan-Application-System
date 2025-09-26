@@ -38,6 +38,7 @@ public class AuthController {
         user.setIncome(body.getIncome());
         user.setCreditScore(body.getCreditScore());
         user.setPassword(body.getPassword());
+        user.setAadhar(body.getAadhar());
         return new ResponseEntity<>(authService.register(user), HttpStatus.CREATED);
     }
 

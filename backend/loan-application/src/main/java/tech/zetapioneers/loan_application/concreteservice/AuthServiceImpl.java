@@ -52,6 +52,8 @@ public class AuthServiceImpl implements AuthService {
             response.setIncome(newUser.getIncome());
             response.setEmail(newUser.getEmail());
             response.setCreditScore(newUser.getCreditScore());
+            response.setAadhar(newUser.getAadhar());
+            response.setId(newUser.getId());
             return response;
         }
         catch (Exception e){
@@ -79,6 +81,8 @@ public class AuthServiceImpl implements AuthService {
         response.setIncome(user.getIncome());
         response.setEmail(user.getEmail());
         response.setCreditScore(user.getCreditScore());
+        response.setAadhar(user.getAadhar());
+        response.setId(user.getId());
         return response;
     }
 

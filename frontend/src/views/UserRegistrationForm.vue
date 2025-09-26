@@ -108,6 +108,19 @@
             />
             <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.creditScore }}</p>
           </div>
+          
+          <!-- Aadhar -->
+          <div>
+            <label for="creditScore" class="block text-sm font-medium">Aadhar Number</label>
+            <input
+              id="aadhar"
+              type="text"
+              v-model="formData.aadhar"
+              placeholder="Enter your Aadhar numbet"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+            />
+            <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>
+          </div>
 
           <!-- Error alert -->
           <div v-if="error" class="p-3 rounded bg-red-100 text-red-600 text-sm">
@@ -152,7 +165,8 @@ const formData = reactive({
   password: '',
   confirmPassword: '',
   income: null,
-  creditScore: null
+  creditScore: null,
+  aadhar:''
 })
 
 const formErrors = reactive({
@@ -160,7 +174,8 @@ const formErrors = reactive({
   email: null,
   password: null,
   income: null,
-  creditScore: null
+  creditScore: null,
+  aadhar:''
 })
 
 const error = ref('')
@@ -178,6 +193,10 @@ const validPassword = (password) => {
          /[a-z]/.test(password) &&
          /\d/.test(password) &&
          /[!@#$%^&*(),.?":{}|<>]/.test(password)
+}
+
+const validAadhar = (aadhar) => {
+    return aadhar.length == 12 &&  (/^\d+$/.test(aadhar));
 }
 
 
@@ -209,6 +228,10 @@ const handleSubmit = async() => {
     formErrors.creditScore = 'Please enter valid credit score'
     return
   }
+  if(!validAadhar(formData.aadhar)){
+    formErrors.aadhar = "Please enter a valid aadhar"
+    return;
+  }
 
   const response = await makeRequestWithoutToken("POST","/auth/register",formData);
 
@@ -223,6 +246,8 @@ const handleSubmit = async() => {
       role : response.data["role"],
       creditScore : response.data["creditScore"],
       income : response.data["income"],
+      aadhar : response.data["aadhar"],
+      id: response.data["id"]
   }))
 
   store.dispatch("setCurrentUser",{
@@ -231,6 +256,8 @@ const handleSubmit = async() => {
       role : response.data["role"],
       creditScore : response.data["creditScore"],
       income : response.data["income"],
+      aadhar : response.data["aadhar"],
+      id: response.data["id"]
   })
 
   if(response.data["role"] == "ADMIN"){
