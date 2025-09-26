@@ -18,6 +18,11 @@ public class LoanApplicationController {
         this.loanApplicationService = loanApplicationService;
     }
 
+    @GetMapping
+    public List<LoanApplicationResponse> getAllLoans(){
+        return loanApplicationService.getAllLoans();
+    }
+
 
     // Get loan by id
     @GetMapping("/{id}")

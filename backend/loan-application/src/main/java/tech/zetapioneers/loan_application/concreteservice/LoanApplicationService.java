@@ -34,6 +34,32 @@ public class LoanApplicationService {
         return loanApplicationRepository.save(loanApplication).getId();
     }
 
+    public List<LoanApplicationResponse> getAllLoans(){
+        List<LoanApplicationResponse> loanList = new ArrayList<>();
+        List<LoanApplication> loans = loanApplicationRepository.findAll();
+        LoanApplicationResponse loanApplicationResponse;
+        for(LoanApplication loan : loans){
+            loanApplicationResponse = new LoanApplicationResponse();
+            loanApplicationResponse.setId(loan.getId());
+            loanApplicationResponse.setUserId(loan.getUser().getId());
+            loanApplicationResponse.setName(loan.getUser().getName());
+            loanApplicationResponse.setCreditScore(loan.getCreditScore());
+            loanApplicationResponse.setIncome( loan.getIncome());
+            loanApplicationResponse.setAmount(loan.getAmount());
+            loanApplicationResponse.setPurpose(loan.getType());
+            loanApplicationResponse.setStatus(loan.getStatus());
+            loanApplicationResponse.setApplicationDate(loan.getApplicationDate());
+            loanApplicationResponse.setLastUpdated(loan.getReviewedAt());
+            loanApplicationResponse.setRateOfInterest(loan.getType().getInterestRate());
+            loanApplicationResponse.setTenure(loan.getTenureMonths());
+            loanApplicationResponse.setRemarks(loan.getReviewRemarks());
+            loanApplicationResponse.setRemarksBy(loan.getReviewedBy());
+
+            loanList.add(loanApplicationResponse);
+        }
+        return loanList;
+    }
+
     public List<LoanApplicationResponse> getLoanByUser(Long userId){
         User user = userRepository.findById(userId).get();
         List<LoanApplicationResponse> loanList = new ArrayList<>();
@@ -55,7 +81,7 @@ public class LoanApplicationService {
             loanApplicationResponse.setTenure(loan.getTenureMonths());
             loanApplicationResponse.setRemarks(loan.getReviewRemarks());
             loanApplicationResponse.setRemarksBy(loan.getReviewedBy());
-            
+
             loanList.add(loanApplicationResponse);
         }
         return loanList;

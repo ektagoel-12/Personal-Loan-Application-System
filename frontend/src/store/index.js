@@ -129,8 +129,8 @@ const store = createStore({
       commit("UPDATE_CURR_USER",payload);
     },
     async getAllLoans({commit}){
-      const id = this.state.user.role === 'ADMIN' ? '' : this.state.user.id
-      const response = await makeRequestWithToken('GET',`/api/loans/user/${id}`)
+      const id = this.state.user.role === 'ADMIN' ? '' : '/user/' +this.state.user.id
+      const response = await makeRequestWithToken('GET',`/api/loans${id}`)
       const loans = response.data.map( (loan)=>{
         let principal = loan.amount;
         let monthlyRate = loan.rateOfInterest / 12 / 100;  
