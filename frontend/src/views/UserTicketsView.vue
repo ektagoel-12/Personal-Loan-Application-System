@@ -43,19 +43,33 @@ const statusClass = (status) => {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-2xl">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">My Tickets</h2>
+  <div class="max-w-5xl mx-auto p-6 bg-gray-50">
+    <h2 class="text-3xl font-bold mb-8 text-gray-900 text-center">
+      🎟️ My Tickets
+    </h2>
 
-    <div v-if="tickets.length > 0" class="space-y-4">
+    <div v-if="tickets.length" class="space-y-6">
       <div
         v-for="ticket in tickets"
         :key="ticket.id"
-        class="border rounded-lg p-4 shadow-sm"
+        class="bg-white border rounded-xl p-6 shadow-md hover:shadow-lg transition duration-200"
       >
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="text-lg font-semibold text-gray-800">{{ ticket.subject }}</h3>
-           <p class="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-            Type: {{ ticket.type }}</p>
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800">
+              {{ ticket.subject }}
+            </h3>
+            <p class="text-sm text-gray-500">
+              Ticket #{{ ticket.id }} • Request: {{ ticket.requestType }}
+            </p>
+            <p
+              class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded inline-block mt-1"
+            >
+              {{ ticket.type }}
+            </p>
+          </div>
+
           <span
             class="px-3 py-1 text-sm font-medium rounded-full"
             :class="statusClass(ticket.status)"
@@ -64,27 +78,42 @@ const statusClass = (status) => {
           </span>
         </div>
 
-        <p class="text-sm text-gray-600">
-          <span class="font-medium">Request Type:</span> {{ ticket.requestType }}
-        </p>
+        <!-- Description -->
+        <p class="text-gray-700 mb-4">{{ ticket.description }}</p>
 
-        <p class="mt-2 text-gray-700">{{ ticket.description }}</p>
+        <!-- Timestamps -->
+        <div class="flex items-center text-xs text-gray-500 space-x-6 mb-4">
+          <p class="flex items-center space-x-1">
+            <span class="material-icons text-gray-400 text-sm">schedule</span>
+            <span>Created: {{ ticket.createAt }}</span>
+          </p>
+          <p class="flex items-center space-x-1">
+            <span class="material-icons text-gray-400 text-sm">update</span>
+            <span>Updated: {{ ticket.updatedAt }}</span>
+          </p>
+        </div>
 
-        <div v-if="ticket.adminResponse" class="mt-3 p-3 bg-gray-50 border-l-4 border-indigo-500 rounded">
+        <!-- Admin Response -->
+        <div
+          v-if="ticket.response"
+          class="mt-3 p-3 bg-gray-50 border-l-4 border-black rounded"
+        >
           <p class="text-sm text-gray-700">
-            <span class="font-medium">Admin Update:</span> {{ ticket.adminResponse }}
+            <span class="font-medium">Admin Response:</span> {{ ticket.response }}
           </p>
         </div>
 
         <!-- Black Button -->
-        <button class="mt-3 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
-          View Details
+        <button
+          class="mt-4 bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+        >
+          🔍 View Details
         </button>
       </div>
     </div>
 
-    <div v-else class="text-center text-gray-600">
-      No tickets created yet.
+    <div v-else class="text-gray-600 text-center py-12">
+      <p class="text-lg">No tickets created yet 🚫</p>
     </div>
   </div>
 </template>

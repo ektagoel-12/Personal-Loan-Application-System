@@ -28,7 +28,7 @@ public class SupportTicketAdminController {
     }
 
     // Add or update response for a ticket
-    @PutMapping("/{ticketId}/response")
+    @PatchMapping("/{ticketId}/response")
     public ResponseEntity<SupportTicketResponseDto> addOrUpdateResponse(
             @PathVariable Long ticketId,
             @RequestBody SupportTicketResponseBodyDto responseBody) {
@@ -36,7 +36,7 @@ public class SupportTicketAdminController {
     }
 
     // Update ticket status (OPEN, CLOSED, PENDING)
-    @PutMapping("/{ticketId}/{status}")
+    @PatchMapping("/{ticketId}/{status}")
     public ResponseEntity<SupportTicketResponseDto> updateTicketStatus(
             @PathVariable Long ticketId,
             @PathVariable TicketStatus status) {

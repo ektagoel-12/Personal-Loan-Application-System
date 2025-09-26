@@ -29,12 +29,10 @@ const handleSubmit = async() => {
   try{
     console.log(formData.value)
 const response= await makeRequestWithToken("POST","/ticket/user",formData.value)
+console.log("Ticket submitted:", response.data)
   }catch(err){
     console.log(err)
   }
-  
-
-  console.log("✅ Ticket submitted:", response.data)
 
   formData.value = { type: "", subject: "", description: "" }
 }

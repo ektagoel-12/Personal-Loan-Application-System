@@ -32,11 +32,11 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
         dto.setLoanId(ticket.getLoan() != null ? ticket.getLoan().getId() : null);
         dto.setSubject(ticket.getSubject());
         dto.setDescription(ticket.getDescription());
+        dto.setType(ticket.getType());
         dto.setStatus(ticket.getStatus());
         dto.setCreateAt(ticket.getCreateAt());
         dto.setUpdatedAt(ticket.getUpdatedAt());
         dto.setResponse(ticket.getResponse());
-        dto.setType(ticket.getType());
         return dto;
     }
 
