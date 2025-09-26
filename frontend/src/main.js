@@ -11,8 +11,6 @@ const app = createApp(App)
 
 app.use(router)
 app.use(store)
-
 app.use(VueApexCharts); 
-app.component("apexchart", VueApexCharts); 
 
 app.mount('#app')

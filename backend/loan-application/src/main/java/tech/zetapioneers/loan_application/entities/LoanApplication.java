@@ -1,5 +1,6 @@
 package tech.zetapioneers.loan_application.entities;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -45,7 +46,5 @@ public class LoanApplication {
     private Status status;
 
     private LocalDate applicationDate;
-
-
 
 }
