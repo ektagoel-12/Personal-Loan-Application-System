@@ -43,6 +43,9 @@ public class User {
     @Column(nullable = true , name = "income")
     private Double income;
 
+    @Column(nullable = false,name = "aadhar")
+    private String aadhar;
+
     @Column(name = "created_at")
     private Date createdAt;
 
