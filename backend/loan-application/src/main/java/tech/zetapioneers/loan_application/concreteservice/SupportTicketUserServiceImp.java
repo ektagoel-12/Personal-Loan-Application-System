@@ -28,7 +28,7 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
     private SupportTicketResponseDto mapToDto(SupportTicket ticket) {
         SupportTicketResponseDto dto = new SupportTicketResponseDto();
         dto.setId(ticket.getId());
-        dto.setUserEmail(ticket.getUser().getEmail());
+        dto.setUserId(ticket.getUser().getId());
         dto.setLoanId(ticket.getLoan() != null ? ticket.getLoan().getId() : null);
         dto.setSubject(ticket.getSubject());
         dto.setDescription(ticket.getDescription());
@@ -42,7 +42,7 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
 
         @Override
         public ResponseEntity<SupportTicketResponseDto> createTicket(SupportTicketRequestDto dto) {
-            User user = userRepository.findByEmail(dto.getUserEmail())
+            User user = userRepository.findById(dto.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             LoanApplication loan = null;

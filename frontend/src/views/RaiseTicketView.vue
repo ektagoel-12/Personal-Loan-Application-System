@@ -17,7 +17,7 @@ const formData = ref({
   type: "",
   subject: "",
   description: "",
-  userEmail:store.getters.currentUser.email,
+  userId:store.getters.currentUser.id,
   LoanId:null
 })
 
@@ -26,7 +26,13 @@ const handleSubmit = async() => {
     alert("⚠️ Please fill out all fields before submitting.")
     return
   }
-  const response= await makeRequestWithToken("POST","/ticket/user",formData.value)
+  try{
+    console.log(formData.value)
+const response= await makeRequestWithToken("POST","/ticket/user",formData.value)
+  }catch(err){
+    console.log(err)
+  }
+  
 
   console.log("✅ Ticket submitted:", response.data)
 

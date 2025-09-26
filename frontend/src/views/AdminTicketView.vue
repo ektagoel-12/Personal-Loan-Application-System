@@ -37,16 +37,12 @@ const updateStatus = (ticket, newStatus) => {
 const updateResponse = async(ticket) => {
   if (!ticket.adminResponse) {
     try {
-    // const endpoint='/'+store.+'/response';
-    const response = await makeRequestWithToken("GET",endpoint);
+    const endpoint='/'+ticket.id+'/response';
+    const response = await makeRequestWithToken("POST",endpoint);
     console.log("Raw response:", response.data);
-
-    tickets.value = response.data ? response.data : [];
-
-    console.log("Tickets loaded:", tickets.value);
-    tickets.value.forEach(ticket=>console.log(ticket))
+    ticket=response.data
   } catch (err) {
-    console.error("Error fetching tickets:", err);
+    console.error("Error during response update:", err);
   }
   }
   alert(`Response updated for ticket #${ticket.id}`)

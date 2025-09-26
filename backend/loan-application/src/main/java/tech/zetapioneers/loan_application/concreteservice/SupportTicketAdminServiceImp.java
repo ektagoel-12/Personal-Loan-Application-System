@@ -23,7 +23,7 @@ public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
     private SupportTicketResponseDto mapToDto(SupportTicket ticket) {
         SupportTicketResponseDto dto = new SupportTicketResponseDto();
         dto.setId(ticket.getId());
-        dto.setUserEmail(ticket.getUser().getEmail());
+        dto.setUserId(ticket.getUser().getId());
         dto.setLoanId(ticket.getLoan() != null ? ticket.getLoan().getId() : null);
         dto.setSubject(ticket.getSubject());
         dto.setDescription(ticket.getDescription());

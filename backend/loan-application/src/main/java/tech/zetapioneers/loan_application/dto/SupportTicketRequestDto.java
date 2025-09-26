@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 public class SupportTicketRequestDto {
-    private String userEmail;
+    private Long userId;
     private Long loanId;
     private String subject;
     private String description;

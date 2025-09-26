@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data @AllArgsConstructor @NoArgsConstructor
 public class SupportTicketResponseDto {
     private Long id;
-    private String userEmail;
+    private Long userId;
     private Long loanId;
     private String subject;
     private String description;
