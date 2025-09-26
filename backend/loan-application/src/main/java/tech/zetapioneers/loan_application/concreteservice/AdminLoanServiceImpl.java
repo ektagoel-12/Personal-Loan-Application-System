@@ -10,7 +10,6 @@ import tech.zetapioneers.loan_application.enums.Status;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.services.AdminLoanService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,9 +66,6 @@ public class AdminLoanServiceImpl extends AdminLoanService {
                 .orElseThrow(() -> new RuntimeException("Loan not found"));
 
         app.setStatus(Status.valueOf(status));
-        app.setReviewedAt(LocalDateTime.now());
-        app.setReviewRemarks(remarks);
-
         loanRepo.save(app);
         return mapToDTO(app);
     }
