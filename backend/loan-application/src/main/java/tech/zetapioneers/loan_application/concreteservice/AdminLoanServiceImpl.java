@@ -92,7 +92,7 @@ public class AdminLoanServiceImpl extends AdminLoanService {
                 .amount(app.getAmount())
                 .income(app.getIncome())
                 .creditScore(app.getCreditScore())
-                .type(app.getType())
+                .loanType(app.getLoanType())
                 .applicationDate(app.getApplicationDate())
                 .status(app.getStatus().name())
                 .reviewedAt(app.getReviewedAt())

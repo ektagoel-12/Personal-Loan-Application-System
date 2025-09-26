@@ -20,7 +20,7 @@ public class AdminLoansList {
     private Double amount;
     private Double income;
     private Integer creditScore;
-    private LoanType type;
+    private LoanType loanType;
     private LocalDate applicationDate;
     private String status;
 
