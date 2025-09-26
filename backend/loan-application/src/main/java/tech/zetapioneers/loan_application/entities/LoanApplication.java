@@ -28,12 +28,13 @@ public class LoanApplication {
     @Enumerated(EnumType.STRING)
     private LoanType loanType;
 
-    @ManyToOne
-    @JoinColumn(name = "reviewed_by")
-    private User reviewedBy; //
+    private LocalDateTime reviewedAt;
 
-    private LocalDateTime reviewedAt; //
-    private String reviewRemarks; //
+    @Column(columnDefinition = "TEXT")
+    private String reviewedBy;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewRemarks;
 
     private Double amount;
     private Integer tenureMonths;
@@ -44,5 +45,7 @@ public class LoanApplication {
     private Status status;
 
     private LocalDate applicationDate;
+
+
 
 }
