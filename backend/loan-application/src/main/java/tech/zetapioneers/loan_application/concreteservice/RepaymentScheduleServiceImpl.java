@@ -75,16 +75,30 @@ public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
 
     @Override
     public List<RepaymentScheduleDTO> getSchedule(Long loanId) {
-        return repaymentScheduleRepository.findByLoan_Id(loanId)
-                .stream()
+        List<RepaymentSchedule> schedules = repaymentScheduleRepository.findByLoan_Id(loanId);
+
+        // Fetch loan details (principal, rate, months)
+        LoanApplication loan = schedules.get(0).getLoan();
+        double emi = calculateEMI(
+                loan.getAmount(),
+                loan.getLoanType().getInterestRate(),
+                loan.getTenureMonths()
+        );
+
+        return schedules.stream()
                 .map(s -> {
                     RepaymentScheduleDTO dto = new RepaymentScheduleDTO();
                     dto.setMonth(s.getMonth());
                     dto.setPrincipalAmount(s.getPrincipalAmount());
                     dto.setInterestAmount(s.getInterestAmount());
                     dto.setBalanceRemaining(s.getBalanceRemaining());
+
+                    // Set EMI using formula (same each month)
+                    dto.setEmi(emi);
+
                     return dto;
-                }).toList();
+                })
+                .toList();
     }
 
     @Override

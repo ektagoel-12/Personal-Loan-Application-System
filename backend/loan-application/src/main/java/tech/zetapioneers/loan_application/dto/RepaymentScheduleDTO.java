@@ -8,4 +8,5 @@ public class RepaymentScheduleDTO {
     private Double principalAmount;
     private Double interestAmount;
     private Double balanceRemaining;
+    private double emi;
 }
