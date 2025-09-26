@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const base_url = "http://localhost:8081"
+const base_url = "http://localhost:8080"
 
 export async function makeRequestWithoutToken(type, endpoint, body) {
     const url = base_url + endpoint;
