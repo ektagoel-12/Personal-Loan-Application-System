@@ -1,5 +1,6 @@
 package tech.zetapioneers.loan_application.concreteservice;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.AdminDto;
@@ -23,7 +24,7 @@ public class AdminLoanServiceImpl extends AdminLoanService {
 
     @Override
     public AdminDto getAdminDashboard() {
-        List<LoanApplication> allApps = loanRepo.findAll();
+                List<LoanApplication> allApps = loanRepo.findAll();
 
         long total = allApps.size();
         long approved = allApps.stream().filter(a -> a.getStatus() == Status.APPROVED).count();
