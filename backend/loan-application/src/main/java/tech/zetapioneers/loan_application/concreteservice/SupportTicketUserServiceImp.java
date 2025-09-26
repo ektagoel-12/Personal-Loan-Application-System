@@ -8,6 +8,7 @@ import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.repositories.SupportTicketRepository;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
@@ -35,6 +36,7 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
         dto.setCreateAt(ticket.getCreateAt());
         dto.setUpdatedAt(ticket.getUpdatedAt());
         dto.setResponse(ticket.getResponse());
+        dto.setType(ticket.getType());
         return dto;
     }
 
@@ -51,6 +53,7 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
             SupportTicket ticket = new SupportTicket();
             ticket.setUser(user);
             ticket.setLoan(loan);
+            ticket.setType(dto.getType());
             ticket.setSubject(dto.getSubject());
             ticket.setDescription(dto.getDescription());
             SupportTicket savedTicket = supportTicketRepository.save(ticket);

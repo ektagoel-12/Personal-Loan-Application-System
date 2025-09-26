@@ -3,6 +3,7 @@ package tech.zetapioneers.loan_application.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
 
 import java.sql.Date;
@@ -33,6 +34,9 @@ public class SupportTicket {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private TicketRequestTypes type;
+
+    @Enumerated(EnumType.STRING)
     private TicketStatus status = TicketStatus.OPEN;
 
     private final LocalDateTime createAt=LocalDateTime.now();

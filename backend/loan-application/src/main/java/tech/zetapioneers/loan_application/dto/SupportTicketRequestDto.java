@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
 
 import java.time.LocalDateTime;
@@ -17,4 +18,5 @@ public class SupportTicketRequestDto {
     private Long loanId;
     private String subject;
     private String description;
+    private TicketRequestTypes type;
 }

@@ -31,6 +31,7 @@ public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
         dto.setCreateAt(ticket.getCreateAt());
         dto.setUpdatedAt(ticket.getUpdatedAt());
         dto.setResponse(ticket.getResponse());
+        dto.setType(ticket.getType());
         return dto;
     }
 
