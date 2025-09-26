@@ -60,6 +60,7 @@ const store = createStore({
     },
 
     ADD_APPLICATION(state, application) {
+      application.appliedDate = application.applicationDate
       state.applications.push(application);
     },
 
@@ -113,7 +114,19 @@ const store = createStore({
     async addApplication({ commit }, application) {
       const response = await makeRequestWithToken('POST','/api/loans',application);
       if(response.status == 200){
-        commit("ADD_APPLICATION", response.data);
+        const loan = response.data
+        let principal = loan.amount;
+        let monthlyRate = loan.rateOfInterest / 12 / 100;  
+        let tenureMonths = loan.tenure;                    
+
+        loan.emi = Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+                  (Math.pow(1 + monthlyRate, tenureMonths) - 1));
+        loan.interestRate = loan.rateOfInterest
+        loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
+        loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
+        loan.remarkedBy = loan.remarksBy 
+        console.log(response.data)
+        commit("ADD_APPLICATION", loan);
       }else{
         alert("Failed to add loan")
         console.log(response)
@@ -133,7 +146,11 @@ const store = createStore({
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
-
+    recentApplications: (state) => { 
+      console.log(state.applications)
+      return state.applications.slice() 
+                                    .sort((a, b) => b.appliedDate - a.appliedDate) // latest first
+                                    .slice(0, 3)},
     filteredApplications: (state) => {
       return state.applications.filter((app) => {
         const matchesSearch =

@@ -30,6 +30,9 @@ const adminStatusMap = {
 
 const statusMap = store.state.user.role === 'ADMIN' ? adminStatusMap : usersStatusMap
 
+
+
+
 // Filtering logic 
 const filteredApplications = computed(() => {
   return store.state.applications.filter((app) => {
@@ -57,9 +60,6 @@ const viewLoan = (loan) =>{
   showModel.value = true
 }
 
-onMounted(() =>{
-  store.dispatch('getAllLoans')
-})
 
 </script>
 

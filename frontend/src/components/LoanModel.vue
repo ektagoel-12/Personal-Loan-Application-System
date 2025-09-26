@@ -1,5 +1,4 @@
 <script setup>
-import { Apple } from 'lucide-vue-next'
 
 const { isOpen, application } = defineProps({
 isOpen: Boolean,
@@ -17,10 +16,10 @@ function closeModal() {
   <!-- Modal Backdrop -->
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50"
   >
     <!-- Modal Container -->
-    <div class="bg-white rounded-2xl shadow-xl w-lvw max-w-lg p-6 ">
+    <div class="bg-white rounded-2xl shadow-l w-lvw max-w-lg p-6 ">
       <!-- Header -->
       <div class="flex justify-between items-center mb-4 ">
         <h2 class="text-lg font-semibold">

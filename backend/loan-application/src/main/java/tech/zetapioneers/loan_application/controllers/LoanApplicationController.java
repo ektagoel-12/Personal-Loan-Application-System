@@ -1,9 +1,13 @@
 package tech.zetapioneers.loan_application.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.concreteservice.LoanApplicationServiceImpl;
 import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
+import tech.zetapioneers.loan_application.exceptions.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -18,8 +22,12 @@ public class LoanApplicationController {
     }
 
     @GetMapping
-    public List<LoanApplicationResponse> getAllLoans(){
-        return loanApplicationServiceImpl.getAllLoans();
+    public ResponseEntity<List<LoanApplicationResponse>> getAllLoans(){
+        List<LoanApplicationResponse> loans = loanApplicationServiceImpl.getAllLoans();
+        if(loans.size()==0){
+            throw new ResourceNotFoundException("No Loans Found!!!");
+        }
+        return new ResponseEntity<>(loans, HttpStatus.OK);
     }
 
 
