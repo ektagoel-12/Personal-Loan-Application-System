@@ -28,7 +28,7 @@ export async function makeRequestWithoutToken(type, endpoint, body) {
 
 export async function makeRequestWithToken(type, endpoint, body) {
     const url = base_url + endpoint;
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
     let response = null;
 
     const config = {

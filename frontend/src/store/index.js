@@ -1,3 +1,4 @@
+import { makeRequestWithToken } from "@/utils/requests";
 import { createStore } from "vuex";
 
 const store = createStore({
@@ -41,7 +42,7 @@ const store = createStore({
           interestRate: 8.5,
           tenure: 20,
           remarks: "Application approved after document verification.",
-          progress: 100,
+          remarkedBy : "Admin"
         },
         {
           id: "LA2024002",
@@ -57,7 +58,8 @@ const store = createStore({
           interestRate: 9.0,
           tenure: 15,
           remarks: "Additional income documents required.",
-          progress: 65,
+          remarkedBy : "Admin"
+
         },{
           id: "LA20240232",
           applicant: "Mike Davis",
@@ -65,14 +67,30 @@ const store = createStore({
           income: 60000,
           amount: 150000,
           purpose: "Business Expansion",
-          status: "PENDING",
+          status: "NEW",
           appliedDate: "2025-09-24",
           lastUpdated: "2024-01-12",
           emi: 12000,
           interestRate: 9.0,
           tenure: 15,
           remarks: "Additional income documents required.",
-          progress: 65,
+          remarkedBy : "Admin"
+        },
+        {
+          id: "LA202402432",
+          applicant: "Mike Jackson",
+          creditScore: 750,
+          income: 60000,
+          amount: 150000,
+          purpose: "Home Loan",
+          status: "APPROVED",
+          appliedDate: "2025-09-24",
+          lastUpdated: "2024-01-12",
+          emi: 12000,
+          interestRate: 9.0,
+          tenure: 15,
+          remarks: "Additional income documents required.",
+          remarkedBy : "Admin"
         }
       ],
       searchTerm: "",
@@ -89,11 +107,13 @@ const store = createStore({
       const app = state.applications.find(app => app.id === id);
       if (app) {
         app.status = status;
-        console.log(`Application ${id} status updated to ${status}`);
       }
     },
     UPDATE_CURR_USER(state,payload){
       state.user = payload
+    },
+    GET_LOANS_USER(state,payload){
+      state.applications = payload
     }
   },
   actions: {
@@ -107,6 +127,25 @@ const store = createStore({
     },
     setCurrentUser({commit},payload){
       commit("UPDATE_CURR_USER",payload);
+    },
+    async getAllLoans({commit}){
+      const id = this.state.user.role === 'ADMIN' ? '' : this.state.user.id
+      const response = await makeRequestWithToken('GET',`/api/loans/user/${id}`)
+      const loans = response.data.map( (loan)=>{
+        let principal = loan.amount;
+        let monthlyRate = loan.rateOfInterest / 12 / 100;  
+        let tenureMonths = loan.tenure;                    
+
+        loan.emi = Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+                  (Math.pow(1 + monthlyRate, tenureMonths) - 1));
+        loan.interestRate = loan.rateOfInterest
+        loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
+        loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
+        loan.remarkedBy = loan.remarksBy 
+        return loan;
+      })
+      console.log(loans)
+      commit("GET_LOANS_USER",loans)
     }
   },
   getters: {

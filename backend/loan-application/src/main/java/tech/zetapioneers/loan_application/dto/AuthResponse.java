@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class AuthResponse implements Serializable {
     private String accessToken;
     private String refreshToken;
+    private Long id;
     private String name;
     private String email;
     private String role;

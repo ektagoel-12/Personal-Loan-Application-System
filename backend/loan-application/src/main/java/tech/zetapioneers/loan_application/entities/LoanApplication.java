@@ -1,5 +1,6 @@
 package tech.zetapioneers.loan_application.entities;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "loan_applications")
-@Getter
 public class LoanApplication {
 
     @Id
@@ -23,7 +23,6 @@ public class LoanApplication {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String name;
     private Double amount;
     private Integer tenureMonths;
     private Double income;
@@ -36,5 +35,13 @@ public class LoanApplication {
 
     @Enumerated(EnumType.STRING)
     private LoanType type;
+
+    private LocalDateTime reviewedAt;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewedBy;
+
+    @Column(columnDefinition = "TEXT")
+    private String reviewRemarks;
 
 }

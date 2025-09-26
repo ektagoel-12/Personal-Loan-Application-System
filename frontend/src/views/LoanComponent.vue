@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useStore } from "vuex"
 import  { Eye,SquareArrowDown } from "lucide-vue-next"
 import Model from "@/components/LoanModel.vue"
@@ -14,19 +14,27 @@ const selectLoan = ref(null)
 const showModel = ref(false)
 
 // Map for status display
-const statusMap = {
+const usersStatusMap = {
   APPROVED: { label: "Approved", class: "bg-green-100 text-green-800" },
-  PENDING: { label: "Under Review", class: "bg-yellow-100 text-yellow-800" },
-  NEW: { label: "Under Review", class: "bg-yellow-100 text-yellow-800" },
+  PENDING: { label: "Under Review", class: "bg-blue-100 text-blue-800" },
+  NEW: { label: "Under Review", class: "bg-blue-100 text-blue-800" },
   REJECTED: { label: "Rejected", class: "bg-red-100 text-red-800" },
 }
 
+const adminStatusMap = {
+  APPROVED: { label: "Approved", class: "bg-green-100 text-green-800" },
+  PENDING: { label: "Pending", class: "bg-yellow-100 text-yellow-800" },
+  NEW: { label: "New", class: "bg-blue-100 text-blue-800" },
+  REJECTED: { label: "Rejected", class: "bg-red-100 text-red-800" },
+}
+
+const statusMap = store.state.user.role === 'ADMIN' ? adminStatusMap : usersStatusMap
 
 // Filtering logic 
 const filteredApplications = computed(() => {
   return store.state.applications.filter((app) => {
     const matchesSearch =
-      app.id.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      app.id.toString().toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       app.purpose.toLowerCase().includes(searchTerm.value.toLowerCase())
 
     const matchesStatus =
@@ -49,6 +57,10 @@ const viewLoan = (loan) =>{
   showModel.value = true
 }
 
+onMounted(() =>{
+  store.dispatch('getAllLoans')
+})
+
 </script>
 
 <template>
@@ -68,8 +80,8 @@ const viewLoan = (loan) =>{
       <select v-model="statusFilter" class="px-3 py-2 border rounded-lg">
         <option value="ALL">All Status</option>
         <option value="APPROVED">Approved</option>
-        <option value="UNDER_REVIEW">Under Review</option>
-        <option value="PENDING">Pending</option>
+        <option value="PENDING">Under Review</option>
+        <option value="REJECTED">Rejected</option>
       </select>
       <input
         type="date"
@@ -140,7 +152,7 @@ const viewLoan = (loan) =>{
 
         <!-- Remarks -->
         <p
-          v-if="loan.remarks"
+          v-if="loan.remarks!== null && loan.remarkedBy !== null"
           class="bg-gray-100 px-3 py-2 rounded-md text-sm"
         >
           {{ loan.remarks }}
@@ -156,7 +168,8 @@ const viewLoan = (loan) =>{
         <Model 
          :isOpen="showModel"
          :application = "selectLoan"
-         @close="showModel=false" />
+         @close="showModel=false"
+         :statusMap="statusMap" />
       </div>
     </div>
   </div>
