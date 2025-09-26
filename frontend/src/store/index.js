@@ -23,13 +23,13 @@ const store = createStore({
       },
       applications: [
         {
-          id: "LA2024001",
+          id: "38",
           applicant: "Sarah Johnson",
           creditScore: 680,
           income: 95000,
           amount: 250000,
           purpose: "Home Loan",
-          status: "PENDING",
+          status: "APPROVED",
           appliedDate: "2024-01-05",
           lastUpdated: "2024-01-08",
           emi: 15000,
