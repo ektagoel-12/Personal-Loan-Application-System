@@ -110,8 +110,15 @@ const store = createStore({
       commit("SET_FILTERS", filters);
     },
 
-    addApplication({ commit }, application) {
-      commit("ADD_APPLICATION", application);
+    async addApplication({ commit }, application) {
+      const response = await makeRequestWithToken('POST','/api/loans',application);
+      if(response.status == 200){
+        commit("ADD_APPLICATION", response.data);
+      }else{
+        alert("Failed to add loan")
+        console.log(response)
+      }
+      
     },
 
     removeApplication({ commit }, id) {
@@ -121,7 +128,7 @@ const store = createStore({
       const loan = state.applications.find((app) => app.id === id) || null;
       commit("SET_SELECTED_APPLICATION", loan);
       return loan;
-    },
+    }
   },
   getters: {
     stats: (state) => state.stats,

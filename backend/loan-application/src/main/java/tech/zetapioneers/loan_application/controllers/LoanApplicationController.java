@@ -38,9 +38,10 @@ public class LoanApplicationController {
     // Create new loan
     @PostMapping
     public LoanApplicationResponse createLoan(@RequestBody LoanApplicationResponse loan) {
-        System.out.println("Loan recieved");
+        System.out.println(loan.getAmount());
         Long id = loanApplicationServiceImpl.addLoanApplication(loan);
         loan.setId(id);
+        loan.setRateOfInterest(loan.getPurpose().getInterestRate());
         return loan;
     }
 

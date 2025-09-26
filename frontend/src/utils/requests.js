@@ -58,6 +58,7 @@ export async function makeRequestWithToken(type, endpoint, body) {
         }
     }
     catch(error){
+        
         if(error?.response?.data?.error === "The token is expired"){
             const refreshToken = localStorage.getItem("refreshToken");
             try {
@@ -77,7 +78,7 @@ export async function makeRequestWithToken(type, endpoint, body) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
                 localStorage.removeItem("currUser")
-                window.location.href = "/login";  // Redirect to login page
+                window.location.href = "/login-form";  // Redirect to login page
             }
         }
     }

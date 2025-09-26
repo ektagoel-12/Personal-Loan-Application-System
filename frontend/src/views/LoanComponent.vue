@@ -47,10 +47,10 @@ const filteredApplications = computed(() => {
         appDate >= new Date(dateRange.value.from) &&
         appDate <= new Date(dateRange.value.to)
     }
-
     return matchesSearch && matchesStatus && matchesDate
   })
 })
+
 
 const viewLoan = (loan) =>{
   selectLoan.value = loan
