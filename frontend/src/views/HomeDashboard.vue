@@ -8,7 +8,7 @@
           Here's an overview of your loan portfolio
         </p>
       </div>
-      <button class="flex items-center px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/80">
+      <button  @click="router.push('applyLoan')" class="flex items-center px-4 py-2 rounded-lg bg-black text-white hover:bg-primary/80">
         <FileText class="mr-2 h-4 w-4" />
         Apply for New Loan
       </button>
@@ -174,6 +174,7 @@ import {
   AlertCircle,
 } from "lucide-vue-next";
 import { useStore } from "vuex";
+import router from "@/router";
 
 const store = useStore()
 // Mock Auth context

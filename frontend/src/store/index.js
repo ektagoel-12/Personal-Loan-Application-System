@@ -5,7 +5,7 @@ const store = createStore({
     return {
       // your counter + user state
       count: 0,
-      user: null,
+      user: JSON.parse(localStorage.getItem('currUser')),
       
       //stats
       stats: {
@@ -50,7 +50,7 @@ const store = createStore({
           income: 60000,
           amount: 150000,
           purpose: "Business Expansion",
-          status: "PENDING",
+          status: "REJECTED",
           appliedDate: "2024-01-10",
           lastUpdated: "2024-01-12",
           emi: 12000,
