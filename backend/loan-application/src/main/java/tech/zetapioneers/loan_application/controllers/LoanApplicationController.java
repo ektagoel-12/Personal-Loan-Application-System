@@ -1,6 +1,5 @@
 package tech.zetapioneers.loan_application.controllers;
 
-
 import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 

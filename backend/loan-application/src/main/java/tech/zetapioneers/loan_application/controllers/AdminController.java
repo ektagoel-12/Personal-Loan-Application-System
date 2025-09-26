@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.dto.AdminDto;
 import tech.zetapioneers.loan_application.dto.AdminLoansList;
+import tech.zetapioneers.loan_application.dto.UpdateLoanStatus;
 import tech.zetapioneers.loan_application.services.AdminLoanService;
 
 @RestController
@@ -18,11 +19,13 @@ public class AdminController {
         return loanService.getAdminDashboard();
     }
 
-    @PutMapping("/{id}/status/{status}")
-    public AdminLoansList updateStatus(
-            @PathVariable Long id,
-            @PathVariable String status,
-            @RequestParam(required = false) String remarks) {
-        return loanService.updateStatus(id, status, remarks);
+    @GetMapping("/loans/{id}")
+    public AdminLoansList getLoan(@PathVariable Long id) {
+        return loanService.getLoanById(id);
+    }
+
+    @PutMapping("/loans/{id}/status")
+    public AdminLoansList updateStatus(@PathVariable Long id, @RequestBody UpdateLoanStatus req) {
+        return loanService.updateStatus(id, req.getStatus(), req.getReviewRemarks(), req.getReviewedAt(), req.getReviewedBy());
     }
 }

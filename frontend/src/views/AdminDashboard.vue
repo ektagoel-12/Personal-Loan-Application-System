@@ -3,7 +3,6 @@
     <h1 class="text-2xl font-bold mb-2">Admin Dashboard</h1>
     <p class="mb-6 text-gray-600">Monitor and manage loan applications</p>
 
-    <!-- Top Cards -->
     <div class="grid grid-cols-4 gap-4 mb-8">
       <div class="card">
         <h3>Total Applications</h3>
@@ -27,7 +26,6 @@
       </div>
     </div>
 
-    <!-- Charts -->
     <div class="grid grid-cols-2 gap-6 mb-8">
       <div class="card">
         <h3 class="mb-2">Application Trends</h3>
@@ -39,13 +37,11 @@
       </div>
     </div>
 
-    <!-- Pending Applications Table -->
     <div class="card">
       <h3 class="mb-4">Loan Applications</h3>
       <div class="flex items-center gap-4 mb-4">
       <input v-model="search" placeholder="Search applications..." class="border rounded px-3 py-2 mb-4" />
       </div>
-
 
       <table class="w-full border">
         <thead>
@@ -56,7 +52,7 @@
             <th>Income</th>
             <th>Credit Score</th>
             <th>Purpose</th>
-            <th>Date</th>
+            <th>Applied Date</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -82,10 +78,8 @@
               </span>
             </td>
             <td>
-              <button @click="updateStatus(app.id,'APPROVED')"
-                class="bg-green-500 text-white px-2 py-1 rounded">✔</button>
-              <button @click="updateStatus(app.id, 'REJECTED')"
-                class="bg-red-500 text-white px-2 py-1 rounded ml-2">✖</button>
+              <button @click="goToEdit(app.id)"
+                class="bg-blue-500 text-white px-3 py-1 rounded"> Edit </button>
             </td>
           </tr>
         </tbody>
@@ -97,16 +91,15 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import BarChart from "./BarChart.vue";
 import PieChart from "./PieChart.vue";
 
-// Vuex store instance
 const store = useStore();
+const router = useRouter();
 
-// local state
 const search = ref("");
 
-// getters (from vuex)
 const stats = computed(() => store.getters.stats);
 const applications = computed(() => store.getters.applications);
 const isLoading = computed(() => store.getters.isLoading);
@@ -116,7 +109,6 @@ const filteredApps = computed(() =>
     a.applicant.toLowerCase().includes(search.value.toLowerCase()) && (a.status === 'PENDING' || a.status==='NEW') )
 );
 
-// actions (dispatch)
 const fetchDashboardData = () => store.dispatch("fetchDashboardData");
 
 const updateStatus= (id, status) => {store.dispatch("updateApplicationStatus", { id, status });}
@@ -136,16 +128,17 @@ const autoUpdateStatuses = () => {
   });
 };
 
-// lifecycle
+const goToEdit = (id) => {
+  router.push(`/admin/loans/${id}`);
+};
+
 onMounted(() => {
   fetchDashboardData();
   autoUpdateStatuses();
 });
 </script>
 
-
 <style scoped>
-
 .card {
   @apply bg-white shadow rounded p-4;
 }
