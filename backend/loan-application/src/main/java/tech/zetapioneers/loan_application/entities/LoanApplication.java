@@ -34,7 +34,7 @@ public class LoanApplication {
     private LocalDate applicationDate;
 
     @Enumerated(EnumType.STRING)
-    private LoanType type;
+    private LoanType loanType;
 
     private LocalDateTime reviewedAt;
 

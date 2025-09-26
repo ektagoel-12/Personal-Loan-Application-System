@@ -4,11 +4,10 @@ import { createStore } from "vuex";
 const store = createStore({
   state() {
     return {
-      // your counter + user state
+
       count: 0,
       user: JSON.parse(localStorage.getItem('currUser')),
       
-      //stats
       stats: {
         totalApplications: 1250,
         growth: 12,
@@ -27,72 +26,7 @@ const store = createStore({
         }
       },
       // loan application state
-      applications: [
-        {
-          id: "LA2024001",
-          applicant: "Sarah Johnson",
-          creditScore: 680,
-          income: 95000,
-          amount: 250000,
-          purpose: "Home Purchase",
-          status: "PENDING",
-          appliedDate: "2024-01-05",
-          lastUpdated: "2024-01-08",
-          emi: 15000,
-          interestRate: 8.5,
-          tenure: 20,
-          remarks: "Application approved after document verification.",
-          remarkedBy : "Admin"
-        },
-        {
-          id: "LA2024002",
-          applicant: "Mike Davis",
-          creditScore: 750,
-          income: 60000,
-          amount: 150000,
-          purpose: "Business Expansion",
-          status: "REJECTED",
-          appliedDate: "2024-01-10",
-          lastUpdated: "2024-01-12",
-          emi: 12000,
-          interestRate: 9.0,
-          tenure: 15,
-          remarks: "Additional income documents required.",
-          remarkedBy : "Admin"
-
-        },{
-          id: "LA20240232",
-          applicant: "Mike Davis",
-          creditScore: 750,
-          income: 60000,
-          amount: 150000,
-          purpose: "Business Expansion",
-          status: "NEW",
-          appliedDate: "2025-09-24",
-          lastUpdated: "2024-01-12",
-          emi: 12000,
-          interestRate: 9.0,
-          tenure: 15,
-          remarks: "Additional income documents required.",
-          remarkedBy : "Admin"
-        },
-        {
-          id: "LA202402432",
-          applicant: "Mike Jackson",
-          creditScore: 750,
-          income: 60000,
-          amount: 150000,
-          purpose: "Home Loan",
-          status: "APPROVED",
-          appliedDate: "2025-09-24",
-          lastUpdated: "2024-01-12",
-          emi: 12000,
-          interestRate: 9.0,
-          tenure: 15,
-          remarks: "Additional income documents required.",
-          remarkedBy : "Admin"
-        }
-      ],
+      applications: [],
       searchTerm: "",
       statusFilter: "all",
       dateRange: { from: null, to: null },

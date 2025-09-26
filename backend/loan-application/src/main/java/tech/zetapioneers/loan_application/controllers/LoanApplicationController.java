@@ -2,7 +2,7 @@ package tech.zetapioneers.loan_application.controllers;
 
 
 import org.springframework.web.bind.annotation.*;
-import tech.zetapioneers.loan_application.concreteservice.LoanApplicationService;
+import tech.zetapioneers.loan_application.concreteservice.LoanApplicationServiceImpl;
 import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 
@@ -12,35 +12,35 @@ import java.util.List;
 @RequestMapping("/api/loans")
 public class LoanApplicationController {
 
-    LoanApplicationService loanApplicationService;
+    LoanApplicationServiceImpl loanApplicationServiceImpl;
 
-    public LoanApplicationController(LoanApplicationService loanApplicationService) {
-        this.loanApplicationService = loanApplicationService;
+    public LoanApplicationController(LoanApplicationServiceImpl loanApplicationServiceImpl) {
+        this.loanApplicationServiceImpl = loanApplicationServiceImpl;
     }
 
     @GetMapping
     public List<LoanApplicationResponse> getAllLoans(){
-        return loanApplicationService.getAllLoans();
+        return loanApplicationServiceImpl.getAllLoans();
     }
 
 
     // Get loan by id
     @GetMapping("/{id}")
     public LoanApplicationResponse getLoanById(@PathVariable Long id) {
-        return loanApplicationService.getLoanById(id);
+        return loanApplicationServiceImpl.getLoanById(id);
     }
 
     // Get all loans by user id
     @GetMapping("/user/{userId}")
     public List<LoanApplicationResponse> getLoansByUserId(@PathVariable Long userId) {
-        return loanApplicationService.getLoanByUser(userId);
+        return loanApplicationServiceImpl.getLoanByUser(userId);
     }
 
     // Create new loan
     @PostMapping
     public LoanApplicationResponse createLoan(@RequestBody LoanApplicationResponse loan) {
         System.out.println("Loan recieved");
-        Long id = loanApplicationService.addLoanApplication(loan);
+        Long id = loanApplicationServiceImpl.addLoanApplication(loan);
         loan.setId(id);
         return loan;
     }

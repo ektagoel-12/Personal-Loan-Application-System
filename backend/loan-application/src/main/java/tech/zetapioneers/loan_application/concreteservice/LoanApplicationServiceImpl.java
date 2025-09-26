@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class LoanApplicationService {
+public class LoanApplicationServiceImpl {
     private LoanApplicationRepository loanApplicationRepository;
     private UserRepository userRepository;
 
-    public LoanApplicationService(LoanApplicationRepository loanApplicationRepository,UserRepository userRepository){
+    public LoanApplicationServiceImpl(LoanApplicationRepository loanApplicationRepository, UserRepository userRepository){
         this.loanApplicationRepository = loanApplicationRepository;
         this.userRepository = userRepository;
     }
@@ -28,9 +28,11 @@ public class LoanApplicationService {
         loanApplication.setAmount(loanApplicationResponse.getAmount());
         loanApplication.setTenureMonths(loanApplicationResponse.getTenure());
         loanApplication.setIncome( loanApplicationResponse.getIncome());
+        loanApplication.setCreditScore(loanApplicationResponse.getCreditScore());
         loanApplication.setStatus(loanApplicationResponse.getStatus());
         loanApplication.setApplicationDate(loanApplicationResponse.getApplicationDate());
-        loanApplication.setType(loanApplicationResponse.getPurpose());
+        loanApplication.setLoanType(loanApplicationResponse.getPurpose());
+
         return loanApplicationRepository.save(loanApplication).getId();
     }
 
@@ -39,23 +41,7 @@ public class LoanApplicationService {
         List<LoanApplication> loans = loanApplicationRepository.findAll();
         LoanApplicationResponse loanApplicationResponse;
         for(LoanApplication loan : loans){
-            loanApplicationResponse = new LoanApplicationResponse();
-            loanApplicationResponse.setId(loan.getId());
-            loanApplicationResponse.setUserId(loan.getUser().getId());
-            loanApplicationResponse.setName(loan.getUser().getName());
-            loanApplicationResponse.setCreditScore(loan.getCreditScore());
-            loanApplicationResponse.setIncome( loan.getIncome());
-            loanApplicationResponse.setAmount(loan.getAmount());
-            loanApplicationResponse.setPurpose(loan.getType());
-            loanApplicationResponse.setStatus(loan.getStatus());
-            loanApplicationResponse.setApplicationDate(loan.getApplicationDate());
-            loanApplicationResponse.setLastUpdated(loan.getReviewedAt());
-            loanApplicationResponse.setRateOfInterest(loan.getType().getInterestRate());
-            loanApplicationResponse.setTenure(loan.getTenureMonths());
-            loanApplicationResponse.setRemarks(loan.getReviewRemarks());
-            loanApplicationResponse.setRemarksBy(loan.getReviewedBy());
-
-            loanList.add(loanApplicationResponse);
+            loanList.add(entityToDto(loan));
         }
         return loanList;
     }
@@ -66,41 +52,29 @@ public class LoanApplicationService {
         List<LoanApplication> loans = loanApplicationRepository.findAllByUser(user);
         LoanApplicationResponse loanApplicationResponse;
         for(LoanApplication loan : loans){
-            loanApplicationResponse = new LoanApplicationResponse();
-            loanApplicationResponse.setId(loan.getId());
-            loanApplicationResponse.setUserId(loan.getUser().getId());
-            loanApplicationResponse.setName(loan.getUser().getName());
-            loanApplicationResponse.setCreditScore(loan.getCreditScore());
-            loanApplicationResponse.setIncome( loan.getIncome());
-            loanApplicationResponse.setAmount(loan.getAmount());
-            loanApplicationResponse.setPurpose(loan.getType());
-            loanApplicationResponse.setStatus(loan.getStatus());
-            loanApplicationResponse.setApplicationDate(loan.getApplicationDate());
-            loanApplicationResponse.setLastUpdated(loan.getReviewedAt());
-            loanApplicationResponse.setRateOfInterest(loan.getType().getInterestRate());
-            loanApplicationResponse.setTenure(loan.getTenureMonths());
-            loanApplicationResponse.setRemarks(loan.getReviewRemarks());
-            loanApplicationResponse.setRemarksBy(loan.getReviewedBy());
-
-            loanList.add(loanApplicationResponse);
+            loanList.add(entityToDto(loan));
         }
         return loanList;
     }
 
     public LoanApplicationResponse getLoanById(Long loanId){
         LoanApplication loanApplication = loanApplicationRepository.findById(loanId).get();
-        LoanApplicationResponse loanApplicationResponse = new LoanApplicationResponse();
+        return entityToDto(loanApplication);
+    }
+
+    private static LoanApplicationResponse entityToDto(LoanApplication loanApplication){
+        LoanApplicationResponse loanApplicationResponse = new LoanApplicationResponse() ;
         loanApplicationResponse.setId(loanApplication.getId());
         loanApplicationResponse.setUserId(loanApplication.getUser().getId());
         loanApplicationResponse.setName(loanApplication.getUser().getName());
         loanApplicationResponse.setCreditScore(loanApplication.getCreditScore());
         loanApplicationResponse.setIncome( loanApplication.getIncome());
         loanApplicationResponse.setAmount(loanApplication.getAmount());
-        loanApplicationResponse.setPurpose(loanApplication.getType());
+        loanApplicationResponse.setPurpose(loanApplication.getLoanType());
         loanApplicationResponse.setStatus(loanApplication.getStatus());
         loanApplicationResponse.setApplicationDate(loanApplication.getApplicationDate());
         loanApplicationResponse.setLastUpdated(loanApplication.getReviewedAt());
-        loanApplicationResponse.setRateOfInterest(loanApplication.getType().getInterestRate());
+        loanApplicationResponse.setRateOfInterest(loanApplication.getLoanType().getInterestRate());
         loanApplicationResponse.setTenure(loanApplication.getTenureMonths());
         loanApplicationResponse.setRemarks(loanApplication.getReviewRemarks());
         loanApplicationResponse.setRemarksBy(loanApplication.getReviewedBy());
