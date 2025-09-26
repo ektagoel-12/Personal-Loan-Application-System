@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.exceptions.InvalidTokenException;
+import tech.zetapioneers.loan_application.exceptions.TokenExpiredException;
 import tech.zetapioneers.loan_application.services.JwtService;
 
 import javax.crypto.Mac;
@@ -64,8 +66,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     // Verify JWT and return claims if valid
-    public Optional<Map<String, String>> verifyAndGet(String token) {
-        try {
+    public Optional<Map<String, String>> verifyAndGet(String token) throws Exception {
             String[] parts = token.split("\\.");
             if (parts.length != 3) return Optional.empty();
 
@@ -73,20 +74,45 @@ public class JwtServiceImpl implements JwtService {
             String payload = parts[1];
             String signature = parts[2];
 
-            if (!sign(header + "." + payload).equals(signature)) return Optional.empty();
+            if (!sign(header + "." + payload).equals(signature)) throw new InvalidTokenException("Token is invalid , sign could not be verified");
 
             Map<String, String> claims = fromJson(new String(B64D.decode(payload), StandardCharsets.UTF_8));
 
-            // Optional: check expiration
             String expStr = claims.get("exp");
             if (expStr != null && Instant.now().toEpochMilli() > Long.parseLong(expStr)) {
-                return Optional.empty(); // token expired
+                throw new TokenExpiredException("The token is expired");
             }
 
             return Optional.of(claims);
-        } catch (Exception e) {
-            return Optional.empty();
+    }
+
+    //verify refresh token
+    public Optional<Map<String, String>> verifyRefreshToken(String token) throws Exception {
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) {
+            throw new InvalidTokenException("Invalid refresh token format.");
         }
+
+        String header = parts[0];
+        String payload = parts[1];
+        String signature = parts[2];
+
+        // Verify the signature of the token
+        if (!sign(header + "." + payload).equals(signature)) {
+            throw new InvalidTokenException("Invalid refresh token: Signature does not match.");
+        }
+
+        // Decode and parse the payload
+        Map<String, String> claims = fromJson(new String(B64D.decode(payload), StandardCharsets.UTF_8));
+
+        // Check expiration time of the refresh token
+        String expStr = claims.get("exp");
+        if (expStr != null && Instant.now().toEpochMilli() > Long.parseLong(expStr)) {
+            throw new TokenExpiredException("The refresh token is expired.");
+        }
+
+        // Return the claims (e.g., user ID)
+        return Optional.of(claims);
     }
 
     // Helper methods

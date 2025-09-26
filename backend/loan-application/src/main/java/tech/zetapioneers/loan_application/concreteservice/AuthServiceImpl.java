@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.AuthResponse;
 import tech.zetapioneers.loan_application.entities.User;
 import tech.zetapioneers.loan_application.enums.Role;
+import tech.zetapioneers.loan_application.exceptions.InvalidCredentialsException;
+import tech.zetapioneers.loan_application.exceptions.UserNotFoundException;
+import tech.zetapioneers.loan_application.exceptions.UserRegistrationException;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
 import tech.zetapioneers.loan_application.services.AuthService;
 
@@ -26,38 +29,45 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        try{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        if(user.getRole() == null){
-            user.setRole(Role.USER);
+            if(user.getRole() == null){
+                user.setRole(Role.USER);
+            }
+
+            user.setCreatedAt(Date.valueOf(LocalDate.now()));
+            user.setUpdatedAt(Date.valueOf(LocalDate.now()));
+
+            User newUser = userRepository.save(user);
+
+            String accessToken = jwtService.generateAccessToken(newUser);
+            String refreshToken = jwtService.generateRefreshToken(newUser);
+
+            AuthResponse response = new AuthResponse();
+            response.setAccessToken(accessToken);
+            response.setRefreshToken(refreshToken);
+            response.setName(newUser.getName());
+            response.setRole(newUser.getRole().name());
+            response.setIncome(newUser.getIncome());
+            response.setEmail(newUser.getEmail());
+            response.setCreditScore(newUser.getCreditScore());
+            response.setAadhar(newUser.getAadhar());
+            response.setId(newUser.getId());
+            return response;
         }
-
-        user.setCreatedAt(Date.valueOf(LocalDate.now()));
-        user.setUpdatedAt(Date.valueOf(LocalDate.now()));
-
-        User newUser = userRepository.save(user);
-
-        String accessToken = jwtService.generateAccessToken(newUser);
-        String refreshToken = jwtService.generateRefreshToken(newUser);
-
-        AuthResponse response = new AuthResponse();
-        response.setAccessToken(accessToken);
-        response.setRefreshToken(refreshToken);
-        response.setName(newUser.getName());
-        response.setRole(newUser.getRole().name());
-        response.setIncome(newUser.getIncome());
-        response.setEmail(newUser.getEmail());
-        response.setCreditScore(newUser.getCreditScore());
-        return response;
+        catch (Exception e){
+            throw new UserRegistrationException(e.getMessage());
+        }
     }
 
     @Override
     public AuthResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(() -> new UserNotFoundException("No user with email " + email + " exists"));
 
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCredentialsException("Invalid password");
         }
 
         String accessToken = jwtService.generateAccessToken(user);
@@ -71,6 +81,8 @@ public class AuthServiceImpl implements AuthService {
         response.setIncome(user.getIncome());
         response.setEmail(user.getEmail());
         response.setCreditScore(user.getCreditScore());
+        response.setAadhar(user.getAadhar());
+        response.setId(user.getId());
         return response;
     }
 
