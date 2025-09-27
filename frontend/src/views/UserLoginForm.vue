@@ -146,6 +146,7 @@ const handleSubmit = async () => {
       id: response.data["id"]
   })
   
+  store.dispatch('getAllLoans')
   if(response.data["role"] == "ADMIN"){
     router.push("/admin")
   }

@@ -21,7 +21,7 @@
           <h2 class="text-sm font-medium">Total Borrowed</h2>
           <DollarSign class="h-4 w-4 text-muted-foreground" />
         </div>
-        <div class="text-2xl">₹{{ mockLoanData.quickStats.totalBorrowed.toLocaleString() }}</div>
+        <div class="text-2xl">₹{{ totalAmountBorrowed }}</div>
         <p class="text-xs text-muted-foreground">Across all your loans</p>
       </div>
 
@@ -39,8 +39,11 @@
           <h2 class="text-sm font-medium">Credit Score</h2>
           <TrendingUp class="h-4 w-4 text-muted-foreground" />
         </div>
-        <div class="text-2xl">{{ mockLoanData.quickStats.creditScore }}</div>
-        <p class="text-xs text-muted-foreground">Excellent rating</p>
+        <div class="text-2xl">{{ user.creditScore }}</div>
+        <p v-if="user.creditScore >= 750" class="text-xs text-green-600">Excellent rating</p>
+        <p v-else-if="user.creditScore >= 700" class="text-xs text-blue-600">Good rating</p>
+        <p v-else-if="user.creditScore >= 650" class="text-xs text-yellow-600">Fair rating</p>
+        <p v-else class="text-xs text-red-600">Poor rating</p>
       </div>
 
       <div class="rounded-lg border p-4 shadow-sm">
@@ -141,18 +144,21 @@
 
       <div class="grid gap-4 md:grid-cols-3 mt-4">
         <button
+          @click="router.push('/calculator')"
           class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border hover:bg-gray-200"
         >
           <Calculator class="h-5 w-5" />
           <span>EMI Calculator</span>
         </button>
         <button
+          @click="router.push('/applyLoan')"
           class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border hover:bg-gray-200"
         >
           <FileText class="h-5 w-5" />
           <span>New Application</span>
         </button>
         <button
+          @click="router.push('/raise-ticket')"
           class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border hover:bg-gray-200"
         >
           <AlertCircle class="h-5 w-5" />
@@ -163,7 +169,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { ref, computed, onMounted } from "vue";
 import {
   TrendingUp,
@@ -181,7 +187,8 @@ const store = useStore()
 // Mock Auth context
 const user = ref(store.getters.currentUser);
 
-const recentApplications = ref(store.getters.recentApplications)
+const recentApplications = computed( ()=>store.getters.recentApplications)
+const totalAmountBorrowed = computed(()=>store.getters.totalBorrowed)
 
 // Mock loan data
 const mockLoanData = {
@@ -192,10 +199,6 @@ const mockLoanData = {
     nextDueDate: "2024-01-15",
     status: "ACTIVE",
   },
-  recentApplications: [
-    { id: "1", amount: 100000, status: "UNDER_REVIEW", date: "2024-01-05", purpose: "Home Improvement" },
-    { id: "2", amount: 50000, status: "APPROVED", date: "2024-01-02", purpose: "Personal" },
-  ],
   quickStats: {
     totalBorrowed: 300000,
     totalRepaid: 120000,
@@ -212,7 +215,7 @@ const progressPercentage = computed(() =>
   )
 );
 
-function getStatusColor(status: string) {
+function getStatusColor(status) {
   switch (status) {
     case "APPROVED":
       return "bg-green-100 text-green-800";
@@ -224,5 +227,8 @@ function getStatusColor(status: string) {
       return "bg-gray-100 text-gray-800";
   }
 }
+onMounted(()=>{
+  store.dispatch("getAllLoans")
+})
 
 </script>

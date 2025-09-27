@@ -96,7 +96,7 @@ const store = createStore({
         loan.remarkedBy = loan.remarksBy 
         return loan;
       })
-      console.log(loans)
+
       commit("GET_LOANS_USER",loans)
     },
     setCurrentUser({ commit }, payload) {
@@ -125,7 +125,7 @@ const store = createStore({
         loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
         loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
         loan.remarkedBy = loan.remarksBy 
-        console.log(response.data)
+
         commit("ADD_APPLICATION", loan);
       }else{
         alert("Failed to add loan")
@@ -146,11 +146,10 @@ const store = createStore({
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
-    recentApplications: (state) => { 
-      console.log(state.applications)
-      return state.applications.slice() 
-                                    .sort((a, b) => b.appliedDate - a.appliedDate) // latest first
-                                    .slice(0, 3)},
+    recentApplications: (state) => (state.applications.slice() 
+                                    .sort((a, b) => new Date(b.applicationDate) - (a.applicationDate)) // latest first
+                                    .slice(0, 3)),
+    totalBorrowed: (state) => ( state.applications.filter((app)=>(app.status === 'APPROVED')).reduce((prev,app)=>(prev+app.amount),0)),
     filteredApplications: (state) => {
       return state.applications.filter((app) => {
         const matchesSearch =

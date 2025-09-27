@@ -1,8 +1,9 @@
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Landmark, ScrollText } from "lucide-vue-next";
 import { useStore } from "vuex";
 import router from "@/router";
+import { toast } from "vue3-toastify"
 
 
 const store = useStore()
@@ -85,15 +86,15 @@ const eligibilityScore = computed(() => {
 const validateStep = () => {
   if (step.value === 1) {
     if (!(loan.value.amount > 0)) {
-      alert("Please enter a valid loan amount.");
+      toast.error("Please enter a valid loan amount.");
       return false;
     }
     if (!loan.value.tenure) {
-      alert("Please select a loan tenure.");
+      toast.error("Please select a loan tenure.");
       return false;
     }
     if (!loan.value.purpose) {
-      alert("Please select a loan purpose.");
+      toast.error("Please select a loan purpose.");
       return false;
     }
     return true;
@@ -101,12 +102,12 @@ const validateStep = () => {
 
   else if (step.value === 2) {
     if (!(loan.value.income > 0)) {
-      alert("Please enter a valid monthly income.");
+      toast.error("Please enter a valid monthly income.");
       return false;
     }
 
     if (isNaN(loan.value.creditScore) || loan.value.creditScore < 300 || loan.value.creditScore > 900) {
-      alert("Credit score must be a number between 300 and 900.");
+      toast.error("Credit score must be a number between 300 and 900.");
       return false;
     }
 
@@ -115,24 +116,24 @@ const validateStep = () => {
 
   else if (step.value === 3) {
     if (!userDetails.value.fullName || !userDetails.value.fullName.trim()) {
-      alert("Please enter your full name.");
+      toast.error("Please enter your full name.");
       return false;
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(userDetails.value.email)) {
-      alert("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
       return false;
     }
 
     const phonePattern = /^\d{10}$/;
     if (!phonePattern.test(userDetails.value.phoneNo)) {
-      alert("Phone number must be exactly 10 digits.");
+      toast.error("Phone number must be exactly 10 digits.");
       return false;
     }
 
     if (!userDetails.value.address || !userDetails.value.address.trim()) {
-      alert("Please enter your address.");
+      toast.error("Please enter your address.");
       return false;
     }
 
@@ -154,7 +155,7 @@ function prevStep() {
 
 function applyLoan() {
   store.dispatch("addApplication",loan.value);
-  router.push("/loan")
+  router.push("/loan").then(toast.success("Loan Applied Successfully"))
 }
 </script>
 

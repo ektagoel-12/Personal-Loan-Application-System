@@ -17,7 +17,7 @@
 
 <script setup>
 import { RouterView, useRoute } from 'vue-router'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import SidebarComponent from './components/SidebarComponent.vue'
 import TopbarComponent from './components/TopbarComponent.vue'
 import { useStore } from 'vuex'
@@ -25,11 +25,6 @@ import { useStore } from 'vuex'
 const route = useRoute()
 const store = useStore()
 const isAuthRoute = computed(() => ['/', '/login-form', '/registration-form'].includes(route.path))
-
-onMounted(()=>{
-  console.log("")
-  store.dispatch('getAllLoans')
-})
 
 </script>
 

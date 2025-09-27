@@ -60,6 +60,9 @@ const viewLoan = (loan) =>{
   showModel.value = true
 }
 
+onMounted(()=>{
+  store.dispatch("getAllLoans")
+})
 
 </script>
 
