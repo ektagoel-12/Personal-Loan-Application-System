@@ -13,6 +13,8 @@ import { useStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
 import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 import LoanForm from '@/views/LoanForm.vue'
+import UserManagement from '@/views/UserManagement.vue'
+import TicketDetailsView from '@/views/TicketDetailsView.vue'
 
 
 const router = createRouter({
@@ -28,9 +30,11 @@ const router = createRouter({
     { path: '/user-ticket-view',meta: { requiresAuth: true },component: UserTicketsView},
     { path: '/calculator', meta: { requiresAuth: true },component: EmiCalculator },
     { path: '/admin',meta: { requiresAdminAuth: true },component: AdminDashboard},
+    { path: '/repayment' ,meta: { requiresAuth: true } , component: RepaymentSchedule},
+    { path: '/applyLoan' ,meta: { requiresAuth: true }, component: LoanForm},
+    { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement},
     { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true },
-    { path: '/repayment', component: RepaymentSchedule},
-    { path: '/applyLoan', component: LoanForm},
+    {path:"/ticket/details/:ticketId", name: 'TicketDetails', component:TicketDetailsView, props: true}
   ]
 })
 

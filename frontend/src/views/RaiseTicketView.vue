@@ -1,9 +1,8 @@
 <script setup>
-import { ref } from "vue"
-import { useStore } from "vuex"
-import { makeRequestWithToken } from "@/utils/requests";
+import { ref } from "vue";
+import { useStore } from "vuex";
 
-const store=useStore();
+const store = useStore();
 
 const requestTypes = [
   "Application_Status",
@@ -11,31 +10,37 @@ const requestTypes = [
   "EMI_Query",
   "Loan_Closure",
   "Others"
-]
+];
 
 const formData = ref({
   type: "",
   subject: "",
   description: "",
-  userId:store.getters.currentUser.id,
-  LoanId:null
-})
+  userId: store.getters.currentUser.id,
+  LoanId: null
+});
 
-const handleSubmit = async() => {
+const handleSubmit = async () => {
+  // Basic validation
   if (!formData.value.type || !formData.value.subject || !formData.value.description) {
-    alert("⚠️ Please fill out all fields before submitting.")
-    return
-  }
-  try{
-    console.log(formData.value)
-const response= await makeRequestWithToken("POST","/ticket/user",formData.value)
-console.log("Ticket submitted:", response.data)
-  }catch(err){
-    console.log(err)
+    alert("⚠️ Please fill out all fields before submitting.");
+    return;
   }
 
-  formData.value = { type: "", subject: "", description: "" }
-}
+  try {
+    // Dispatch Vuex action to submit ticket
+    const response = await store.dispatch("submitTicket", formData.value);
+    alert("Ticket submitted successfully! 🎉");
+
+    // Add ticket to user's tickets in Vuex is already handled in submitTicket action
+
+    // Reset form
+    formData.value = { type: "", subject: "", description: "", userId: store.getters.currentUser.id, LoanId: null };
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit ticket. Please try again.");
+  }
+};
 </script>
 
 <template>
@@ -53,9 +58,7 @@ console.log("Ticket submitted:", response.data)
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option disabled value="">-- Select Request Type --</option>
-          <option v-for="type in requestTypes" :key="type" :value="type">
-            {{ type }}
-          </option>
+          <option v-for="type in requestTypes" :key="type" :value="type">{{ type }}</option>
         </select>
       </div>
 
@@ -66,6 +69,17 @@ console.log("Ticket submitted:", response.data)
           v-model="formData.subject"
           type="text"
           placeholder="Enter subject"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      <!-- Loan ID -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Loan ID (Optional)</label>
+        <input
+          v-model="formData.LoanId"
+          type="number"
+          placeholder="Enter Loan ID if applicable"
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
