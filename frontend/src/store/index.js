@@ -1,5 +1,4 @@
 import { makeRequestWithToken } from "@/utils/requests";
-import { makeRequestWithToken } from "@/utils/requests";
 import { createStore } from "vuex";
 
 const store = createStore({
