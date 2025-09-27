@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import tech.zetapioneers.loan_application.dto.SupportTicketRequestDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseBodyDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
+import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface SupportTicketAdminService {
 
         // Update ticket status (OPEN, CLOSED, PENDING)
         ResponseEntity<SupportTicketResponseDto>  updateTicketStatus(Long ticketId, TicketStatus status);
+
+        ResponseEntity<SupportTicket> getTicketByID(Long id);
     }
 
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.concreteservice.SupportTicketAdminServiceImp;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseBodyDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
+import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
 
 import java.util.List;
@@ -20,6 +21,11 @@ public class SupportTicketAdminController {
     @GetMapping
     public ResponseEntity<List<SupportTicketResponseDto>> getAllTickets() {
         return supportTicketAdminServiceImp.getAllTickets();
+    }
+
+    @PostMapping("/id")
+    public ResponseEntity<SupportTicket> getTicketById(@PathVariable Long id){
+        return supportTicketAdminServiceImp.getTicketByID(id);
     }
 
     @GetMapping("/{status}")

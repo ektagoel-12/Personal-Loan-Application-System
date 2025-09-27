@@ -3,6 +3,7 @@ package tech.zetapioneers.loan_application.concreteservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import tech.zetapioneers.loan_application.dto.SupportTicketRequestDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseBodyDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
@@ -78,5 +79,12 @@ public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
         SupportTicket savedTicket = supportTicketRepository.save(supportTicket);
 
         return ResponseEntity.ok(mapToDto(savedTicket));
+    }
+
+    @Override
+    public ResponseEntity<SupportTicket> getTicketByID(Long id) {
+        SupportTicket supportTicket = supportTicketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
+        return ResponseEntity.status(200).body(supportTicket);
     }
 }

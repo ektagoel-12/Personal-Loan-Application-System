@@ -76,4 +76,12 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
 
             return ResponseEntity.ok(response);
         }
+
+    @Override
+    public ResponseEntity<SupportTicket> getTicketByID(Long id) {
+        SupportTicket supportTicket = supportTicketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
+        return ResponseEntity.status(200).body(supportTicket);
     }
+
+}

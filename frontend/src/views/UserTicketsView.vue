@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue"
 // import ticketList from '../store/ticket.json' //dummy data
 import { makeRequestWithToken } from "@/utils/requests"
 import {useStore} from 'vuex'
+import router from "@/router"
 
 // Tickets data (in real app, fetch from backend API)
 const tickets = ref([])
@@ -40,6 +41,11 @@ const statusClass = (status) => {
       return "bg-gray-100 text-gray-800"
   }
 }
+
+// Navigate to ticket details page
+const goToTicket = (id) => {
+  router.push({ name: "TicketDetails", params: { ticketId: id } });
+};
 </script>
 
 <template>
@@ -106,6 +112,7 @@ const statusClass = (status) => {
         <!-- Black Button -->
         <button
           class="mt-4 bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+          @click="goToTicket(ticket.id)"
         >
           🔍 View Details
         </button>

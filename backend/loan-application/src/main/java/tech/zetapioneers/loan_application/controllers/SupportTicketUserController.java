@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.dto.SupportTicketRequestDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.concreteservice.SupportTicketUserServiceImp;
+import tech.zetapioneers.loan_application.entities.SupportTicket;
 
 import java.util.List;
 
@@ -28,5 +29,10 @@ public class SupportTicketUserController {
     public ResponseEntity<List<SupportTicketResponseDto>> getAllTicketsByUserEmail(
             @PathVariable String userEmail) {
         return supportTicketUserServiceImp.getTicketsByUser(userEmail);
+    }
+
+    @PostMapping("/id")
+    public ResponseEntity<SupportTicket> getTicketById(@PathVariable Long id){
+        return supportTicketUserServiceImp.getTicketByID(id);
     }
 }
