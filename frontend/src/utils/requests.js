@@ -62,6 +62,7 @@ export async function makeRequestWithToken(type, endpoint, body) {
         return response;
     }
     catch(error){
+        
         if(error?.response?.data?.error === "The token is expired"){
             const refreshToken = localStorage.getItem("refreshToken");
             try {

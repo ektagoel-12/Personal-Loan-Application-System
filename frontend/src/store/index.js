@@ -64,6 +64,7 @@ const store = createStore({
     },
 
     ADD_APPLICATION(state, application) {
+      application.appliedDate = application.applicationDate
       state.applications.push(application);
     },
 
@@ -172,12 +173,59 @@ const store = createStore({
       })
       console.log(loans)
       commit("GET_LOANS_USER",loans)
+    },
+    setCurrentUser({ commit }, payload) {
+      commit("UPDATE_CURR_USER", payload);
+    },
+
+    selectApplication({ commit }, app) {
+      commit("SET_SELECTED_APPLICATION", app);
+    },
+
+    applyFilters({ commit }, filters) {
+      commit("SET_FILTERS", filters);
+    },
+
+    async addApplication({ commit }, application) {
+      const response = await makeRequestWithToken('POST','/api/loans',application);
+      if(response.status == 200){
+        const loan = response.data
+        let principal = loan.amount;
+        let monthlyRate = loan.rateOfInterest / 12 / 100;  
+        let tenureMonths = loan.tenure;                    
+
+        loan.emi = Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+                  (Math.pow(1 + monthlyRate, tenureMonths) - 1));
+        loan.interestRate = loan.rateOfInterest
+        loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
+        loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
+        loan.remarkedBy = loan.remarksBy 
+        console.log(response.data)
+        commit("ADD_APPLICATION", loan);
+      }else{
+        alert("Failed to add loan")
+        console.log(response)
+      }
+      
+    },
+
+    removeApplication({ commit }, id) {
+      commit("REMOVE_APPLICATION", id);
+    },
+    fetchLoanById({ state, commit }, id) {
+      const loan = state.applications.find((app) => app.id === id) || null;
+      commit("SET_SELECTED_APPLICATION", loan);
+      return loan;
     }
   },
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
-
+    recentApplications: (state) => { 
+      console.log(state.applications)
+      return state.applications.slice() 
+                                    .sort((a, b) => b.appliedDate - a.appliedDate) // latest first
+                                    .slice(0, 3)},
     filteredApplications: (state) => {
       return state.applications.filter((app) => {
         const matchesSearch =

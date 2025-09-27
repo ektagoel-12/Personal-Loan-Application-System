@@ -52,4 +52,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleNotAllowedException(NotAllowedException notAllowedException){
         return new ResponseEntity<>(Map.of("error",notAllowedException.getMessage()),HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException){
+        return new ResponseEntity<>(Map.of("error",resourceNotFoundException.getMessage()),HttpStatus.NOT_FOUND);
+    }
 }
