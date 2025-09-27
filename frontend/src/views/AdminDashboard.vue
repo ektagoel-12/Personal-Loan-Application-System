@@ -61,7 +61,7 @@
         <tbody>
           <tr v-for="app in filteredApps" :key="app.id">
             <td>{{ app.id }}</td>
-            <td>{{ app.applicant }}</td>
+            <td>{{ app.name }}</td>
             <td>₹{{ app.amount }}</td>
             <td>₹{{ app.income }}</td>
             <td>
@@ -71,8 +71,8 @@
                 {{ app.creditScore }}
               </span>
             </td>
-            <td>{{ app.purpose }}</td>
-            <td>{{ app.appliedDate }}</td>
+            <td>{{ app.loanType }}</td>
+            <td>{{ app.applicationDate }}</td>
             <td>
               <span :class="['status', app.status.toLowerCase()]">
                 {{ app.status }}
@@ -109,6 +109,7 @@ const filteredApps = computed(() =>
   applications.value.filter((a) =>
     (a.applicant?.toLowerCase() ?? '').includes(search.value?.toLowerCase() ?? '') && (a.status === 'PENDING' || a.status==='NEW') )
 );
+
 
 const barChartData = computed(() => {
   const trends = stats.value?.monthlyTrends;
@@ -159,7 +160,6 @@ const autoUpdateStatuses = () => {
     if (app.status === 'PENDING') {
       const appDate = new Date(app.appliedDate + "T00:00:00"); // ensures valid Date
       const hoursPassed = (now - appDate) / (1000 * 60 * 60);
-      console.log(hoursPassed);
       if (hoursPassed < 48) {
         updateStatus(app.id, 'NEW');
       }

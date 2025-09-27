@@ -117,7 +117,6 @@ const store = createStore({
     async updateApplicationStatus({ commit }, { id, payload }) {
       try {
     const res = await makeRequestWithToken("PUT", `/admin/loans/${id}/status`, payload);
-    console.log("Updated loan:", res.data);
     commit("UPDATE_APPLICATION", { id, payload: res.data });
   } catch (err) {
     console.error("Failed to update application status", err);
@@ -171,7 +170,6 @@ const store = createStore({
         loan.remarkedBy = loan.remarksBy
         return loan;
       })
-      console.log(loans)
       commit("GET_LOANS_USER",loans)
     },
     setCurrentUser({ commit }, payload) {
@@ -200,11 +198,9 @@ const store = createStore({
         loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
         loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
         loan.remarkedBy = loan.remarksBy 
-        console.log(response.data)
         commit("ADD_APPLICATION", loan);
       }else{
         alert("Failed to add loan")
-        console.log(response)
       }
       
     },
@@ -212,17 +208,16 @@ const store = createStore({
     removeApplication({ commit }, id) {
       commit("REMOVE_APPLICATION", id);
     },
-    fetchLoanById({ state, commit }, id) {
-      const loan = state.applications.find((app) => app.id === id) || null;
-      commit("SET_SELECTED_APPLICATION", loan);
-      return loan;
-    }
+    // fetchLoanById({ state, commit }, id) {
+    //   const loan = state.applications.find((app) => app.id === id) || null;
+    //   commit("SET_SELECTED_APPLICATION", loan);
+    //   return loan;
+    // }
   },
   getters: {
     stats: (state) => state.stats,
     applications: (state) => state.applications,
     recentApplications: (state) => { 
-      console.log(state.applications)
       return state.applications.slice() 
                                     .sort((a, b) => b.appliedDate - a.appliedDate) // latest first
                                     .slice(0, 3)},
