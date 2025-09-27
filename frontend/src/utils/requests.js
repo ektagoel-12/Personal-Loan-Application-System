@@ -62,10 +62,11 @@ export async function makeRequestWithToken(type, endpoint, body) {
         return response;
     }
     catch(error){
+        
         if(error?.response?.data?.error === "The token is expired"){
             const refreshToken = localStorage.getItem("refreshToken");
             try {
-            const refreshResponse = await axios.post("/auth/refresh", { refreshToken });
+            const refreshResponse = await axios.post(`${base_url}/auth/refresh`, { refreshToken });
 
             const { accessToken, refreshToken: newRefreshToken } = refreshResponse.data;
 
@@ -73,13 +74,12 @@ export async function makeRequestWithToken(type, endpoint, body) {
             localStorage.setItem("refreshToken", newRefreshToken);
 
             const response = await makeRequestWithToken(type, endpoint, body);
-
             return response;
             } catch (error) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
                 localStorage.removeItem("currUser")
-                window.location.href = "/login";  
+                window.location.href = "/login-form";  // Redirect to login page
             }
         }
     }

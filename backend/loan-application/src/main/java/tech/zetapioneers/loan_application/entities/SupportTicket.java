@@ -2,18 +2,25 @@ package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
+import tech.zetapioneers.loan_application.enums.TicketStatus;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "support_tickets")
+@NoArgsConstructor
 public class SupportTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="ticket_id", nullable = false)
     private Long id;
 
+    // *****update the frontend accordingly******
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -26,15 +33,19 @@ public class SupportTicket {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column(nullable = false)
+    private TicketRequestTypes type;
 
-    private LocalDateTime createdAt;
-    private String response;
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status = TicketStatus.OPEN;
 
-    public enum Status {
-        OPEN, RESOLVED, CLOSED
-    }
+    private final LocalDateTime createAt=LocalDateTime.now();
 
-    // getters and setters
+    private LocalDateTime updatedAt=LocalDateTime.now();
+
+
+    private String response="";
+
+
 }
 

@@ -1,6 +1,8 @@
 package tech.zetapioneers.loan_application.enums;
 
-public enum LoanType {
+import java.io.Serializable;
+
+public enum LoanType implements Serializable {
     HOME_LOAN(7.5),
     PERSONAL_LOAN(10.0),
     CAR_LOAN(8.0),
