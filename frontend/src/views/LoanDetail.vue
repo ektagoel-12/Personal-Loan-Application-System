@@ -12,7 +12,7 @@
         <p><strong>Amount:</strong> ₹{{ loan?.amount }}</p>
         <p><strong>Income:</strong> ₹{{ loan?.income }}</p>
         <p><strong>Credit Score:</strong> {{ loan?.creditScore }}</p>
-        <p><strong>Purpose:</strong> {{ loan?.purpose }}</p>
+        <p><strong>Loan Type:</strong> {{ loan?.purpose }}</p>
         <p><strong>Applied Date:</strong> {{ loan?.appliedDate }}</p>
         <p><strong>Status:</strong> {{ loan?.status }}</p>
       </div>
@@ -81,19 +81,17 @@ function localIsoWithOffset(date = new Date()) {
 async function submitReview(status) {
   if (!loan.value) return;
 
-  try {
-    await store.dispatch("updateApplicationStatus", {
-      id: loan.value.id,
-      payload: {
-        status,
-        reviewedAt: localIsoWithOffset(),
-        reviewedBy: adminUser.value,
-        reviewRemarks: remarks.value
-      }
-    });
+  const payload = {
+    status,
+    reviewedAt: new Date().toISOString(),
+    reviewedBy: adminUser.value.name,
+    reviewRemarks: remarks.value
+  };
 
+  try {
+    await store.dispatch("updateApplicationStatus", { id: loan.value.id, payload });
     responseMessage.value = `Application ${status.toLowerCase()} successfully.`;
-    router.push({ name: "AdminDashboard" }); 
+    router.push({ name: "AdminDashboard" });
   } catch (err) {
     console.error(err);
     responseMessage.value = "Failed to update application";

@@ -14,9 +14,9 @@ export default {
   name: "PieChart",
   components: { Pie },
   props: ["data"],
-  data() {
-    return {
-      chartData: {
+  computed: {
+    chartData() {
+      return {
         labels: ["Approved", "Pending", "Rejected"],
         datasets: [
           {
@@ -28,24 +28,16 @@ export default {
             backgroundColor: ["#22c55e", "#3b82f6", "#ef4444"],
           },
         ],
-      },
+      };
+    },
+  },
+  data() {
+    return {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
       },
     };
-  },
-  watch: {
-    data: {
-      handler(newVal) {
-        this.chartData.datasets[0].data = [
-          newVal?.approved || 0,
-          newVal?.pending || 0,
-          newVal?.rejected || 0,
-        ];
-      },
-      deep: true,
-    },
   },
 };
 </script>
