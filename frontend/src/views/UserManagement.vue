@@ -194,8 +194,11 @@
 import { useStore } from "vuex";
 import { makeRequestWithToken } from "@/utils/requests";
 import { ref, onMounted, computed } from "vue";
+import { useToast } from "vue-toastification";
 
 const store = useStore();
+const toast = useToast();
+
 let users = ref([]);
 let nameFilter = ref("");
 let emailFilter = ref("");
@@ -234,15 +237,16 @@ const changeToAdmin = async (userId) => {
     role: "ADMIN",
   });
   if (!response) {
-    alert("Updating the user failed");
+    toast.error("Updating the user failed");
     return;
   }
   let response1 = await makeRequestWithToken("GET", "/users", null);
   if (!response1) {
-    alert("Failed loading users");
+    toast.error("Failed loading users");
     return;
   }
   users.value = response1.data;
+  toast.info("Update Successfull")
 };
 
 const changeToUser = async (userId) => {
@@ -250,22 +254,23 @@ const changeToUser = async (userId) => {
     role: "USER",
   });
   if (!response) {
-    alert("Updating the user failed");
+    toast.error("Updating the user failed");
     return;
   }
   let response1 = await makeRequestWithToken("GET", "/users", null);
   if (!response1) {
-    alert("Failed loading users");
+    toast.error("Failed loading users");
     return;
   }
   users.value = response1.data;
+  toast.info("Update Successfull")
 };
 
 // lifecycle
 onMounted(async () => {
   let response = await makeRequestWithToken("GET", "/users", null);
   if (!response) {
-    alert("Failed loading users");
+    toast.error("Failed loading users");
     return;
   }
   users.value = response.data;

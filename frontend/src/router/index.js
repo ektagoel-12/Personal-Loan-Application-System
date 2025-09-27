@@ -15,6 +15,7 @@ import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 import LoanForm from '@/views/LoanForm.vue'
 import UserManagement from '@/views/UserManagement.vue'
 import TicketDetailsView from '@/views/TicketDetailsView.vue'
+import { useToast } from 'vue-toastification'
 
 
 const router = createRouter({
@@ -40,6 +41,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const store = useStore()
+  const toast = useToast()
   const user = store.getters.currentUser
   
   if(to.meta.requiresAdminAuth){
@@ -47,7 +49,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else{
-      alert("Pls login as admin to view this page")
+      toast.warning("Pls login as admin to view this page")
       return
     }
   }
@@ -56,7 +58,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else{
-      alert("You are not authorized to visit this page")
+      toast.warning("You are not authorized to visit this page")
       next("/login-form")
     }
   }

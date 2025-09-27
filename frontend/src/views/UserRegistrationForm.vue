@@ -21,7 +21,6 @@
               placeholder="Enter your full name"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
-            <p v-if="formErrors.name" class="text-red-500 text-sm">{{ formErrors.name }}</p>
           </div>
 
           <!-- Email -->
@@ -34,7 +33,6 @@
               placeholder="Enter your email"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
-            <p v-if="formErrors.email" class="text-red-500 text-sm">{{ formErrors.email }}</p>
           </div>
 
           <!-- Password -->
@@ -57,8 +55,6 @@
                 <span v-else><component :is="Eye" class="h-4 w-4" /></span>
               </button>
             </div>
-
-            <p v-if="formErrors.password" class="text-red-500 text-sm">{{ formErrors.password }}</p>
           </div>
 
           <!-- Confirm Password -->
@@ -93,7 +89,6 @@
               placeholder="Enter your annual income"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
-            <p v-if="formErrors.income" class="text-red-500 text-sm">{{ formErrors.income }}</p>
           </div>
 
           <!-- Credit Score -->
@@ -106,12 +101,11 @@
               placeholder="Enter your credit score"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
-            <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.creditScore }}</p>
           </div>
           
           <!-- Aadhar -->
           <div>
-            <label for="creditScore" class="block text-sm font-medium">Aadhar Number</label>
+            <label for="aadhar" class="block text-sm font-medium">Aadhar Number</label>
             <input
               id="aadhar"
               type="text"
@@ -119,20 +113,16 @@
               placeholder="Enter your Aadhar number"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
-            <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>
-          </div>
-
-          <!-- Error alert -->
-          <div v-if="error" class="p-3 rounded bg-red-100 text-red-600 text-sm">
-            {{ error }}
           </div>
 
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-black hover:bg-indigo-500 text-white py-2 rounded-lg flex items-center justify-center"
+            :disabled="isLoading"
+            class="w-full bg-black hover:bg-indigo-500 text-white py-2 rounded-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Account
+            <span v-if="isLoading">Creating Account...</span>
+            <span v-else>Create Account</span>
           </button>
         </form>
 
@@ -153,11 +143,13 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
+import { useToast } from 'vue-toastification'
 import router from '../router'
 import { makeRequestWithoutToken } from '@/utils/requests'
 import { useStore } from 'vuex'
 
 const store = useStore()
+const toast = useToast()
 
 const formData = reactive({
   name: '',
@@ -166,27 +158,16 @@ const formData = reactive({
   confirmPassword: '',
   income: null,
   creditScore: null,
-  aadhar:''
+  aadhar: ''
 })
 
-const formErrors = reactive({
-  name: null,
-  email: null,
-  password: null,
-  income: null,
-  creditScore: null,
-  aadhar:''
-})
-
-const error = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+const isLoading = ref(false)
 
-// Validation
+// Validation functions
 const validEmail = (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
-
 const validName = (name) => name.length >= 2
-
 const validPassword = (password) => {
   return password.length >= 8 &&
          /[A-Z]/.test(password) &&
@@ -194,77 +175,98 @@ const validPassword = (password) => {
          /\d/.test(password) &&
          /[!@#$%^&*(),.?":{}|<>]/.test(password)
 }
-
 const validAadhar = (aadhar) => {
-    return aadhar.length == 12 &&  (/^\d+$/.test(aadhar));
+    return aadhar.length === 12 && (/^\d+$/.test(aadhar))
 }
 
-
-// Submit
-const handleSubmit = async() => {
-  error.value = ''
-
+// Validation with toast notifications
+const validateForm = () => {
   if (!validName(formData.name)) {
-    formErrors.name = 'Name should be at least 2 letters'
-    return
+    toast.error('Name should be at least 2 characters long')
+    return false
   }
-  if (!validEmail(formData.email)) {
-    formErrors.email = 'Not a valid email'
-    return
-  }
-  if (formData.password !== formData.confirmPassword) {
-    error.value = 'Passwords do not match'
-    return
-  }
-  if (!validPassword(formData.password)) {
-    formErrors.password = 'Password must have 8+ chars, 1 upper, 1 lower, 1 number, 1 special'
-    return
-  }
-  if (!formData.income || formData.income <= 0) {
-    formErrors.income = 'Please enter valid income'
-    return
-  }
-  if (!formData.creditScore || formData.creditScore <= 0) {
-    formErrors.creditScore = 'Please enter valid credit score'
-    return
-  }
-  if(!validAadhar(formData.aadhar)){
-    formErrors.aadhar = "Please enter a valid aadhar"
-    return;
-  }
-
-  const response = await makeRequestWithoutToken("POST","/auth/register",formData);
-
-  if(!response)return;
-
-  localStorage.setItem('token',response.data["accessToken"]);
-  localStorage.setItem('refreshToken',response.data["refreshToken"]);
   
-  localStorage.setItem('currUser',JSON.stringify({
-      name : response.data["name"],
-      email : response.data["email"],
-      role : response.data["role"],
-      creditScore : response.data["creditScore"],
-      income : response.data["income"],
-      aadhar : response.data["aadhar"],
-      id: response.data["id"]
-  }))
-
-  store.dispatch("setCurrentUser",{
-      name : response.data["name"],
-      email : response.data["email"],
-      role : response.data["role"],
-      creditScore : response.data["creditScore"],
-      income : response.data["income"],
-      aadhar : response.data["aadhar"],
-      id: response.data["id"]
-  })
-
-  if(response.data["role"] == "ADMIN"){
-    router.push("/admin")
+  if (!validEmail(formData.email)) {
+    toast.error('Please enter a valid email address')
+    return false
   }
-  else{
-    router.push("/user-dashboard")
+  
+  if (formData.password !== formData.confirmPassword) {
+    toast.error('Passwords do not match')
+    return false
+  }
+  
+  if (!validPassword(formData.password)) {
+    toast.error('Password must have 8+ characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character')
+    return false
+  }
+  
+  if (!formData.income || formData.income <= 0) {
+    toast.error('Please enter a valid income amount')
+    return false
+  }
+  
+  if (!formData.creditScore || formData.creditScore <= 0) {
+    toast.error('Please enter a valid credit score')
+    return false
+  }
+  
+  if (!validAadhar(formData.aadhar)) {
+    toast.error('Please enter a valid 12-digit Aadhar number')
+    return false
+  }
+  
+  return true
+}
+
+// Submit handler
+const handleSubmit = async () => {
+  if (!validateForm()) {
+    return
+  }
+
+  isLoading.value = true
+
+  try {
+    const response = await makeRequestWithoutToken("POST", "/auth/register", formData)
+
+    if (!response) {
+      toast.error('Registration failed. Please try again.')
+      return
+    }
+
+    // Store tokens and user data
+    localStorage.setItem('token', response.data["accessToken"])
+    localStorage.setItem('refreshToken', response.data["refreshToken"])
+    
+    const userData = {
+      name: response.data["name"],
+      email: response.data["email"],
+      role: response.data["role"],
+      creditScore: response.data["creditScore"],
+      income: response.data["income"],
+      aadhar: response.data["aadhar"],
+      id: response.data["id"]
+    }
+
+    localStorage.setItem('currUser', JSON.stringify(userData))
+    store.dispatch("setCurrentUser", userData)
+
+    // Show success toast
+    toast.success(`Welcome ${userData.name}! Account created successfully.`)
+
+    // Navigate based on role
+    if (response.data["role"] === "ADMIN") {
+      router.push("/admin")
+    } else {
+      router.push("/user-dashboard")
+    }
+
+  } catch (error) {
+    console.error('Registration error:', error)
+    toast.error('Registration failed. Please check your details and try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 </script>

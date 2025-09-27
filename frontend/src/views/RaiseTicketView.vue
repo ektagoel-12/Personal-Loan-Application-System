@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from "vue";
 import { useStore } from "vuex";
+import { useToast } from "vue-toastification";
+import router from "@/router";
 
 const store = useStore();
+const toast = useToast();
 
 const requestTypes = [
   "Application_Status",
@@ -23,22 +26,18 @@ const formData = ref({
 const handleSubmit = async () => {
   // Basic validation
   if (!formData.value.type || !formData.value.subject || !formData.value.description) {
-    alert("⚠️ Please fill out all fields before submitting.");
+    toast.error(" Please fill out all fields before submitting.");
     return;
   }
 
   try {
     // Dispatch Vuex action to submit ticket
-    const response = await store.dispatch("submitTicket", formData.value);
-    alert("Ticket submitted successfully! 🎉");
+    await store.dispatch("submitTicket", formData.value);
+    router.push('/user-ticket-view').then(toast.success("Ticket submitted successfully!"))
 
-    // Add ticket to user's tickets in Vuex is already handled in submitTicket action
-
-    // Reset form
-    formData.value = { type: "", subject: "", description: "", userId: store.getters.currentUser.id, LoanId: null };
   } catch (err) {
     console.error(err);
-    alert("Failed to submit ticket. Please try again.");
+    toast.success("Failed to submit ticket. Please try again.");
   }
 };
 </script>
@@ -75,7 +74,7 @@ const handleSubmit = async () => {
 
       <!-- Loan ID -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Loan ID (Optional)</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Loan ID </label>
         <input
           v-model="formData.LoanId"
           type="number"

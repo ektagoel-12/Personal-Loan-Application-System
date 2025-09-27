@@ -3,10 +3,11 @@ import { computed, ref } from "vue";
 import { Landmark, ScrollText } from "lucide-vue-next";
 import { useStore } from "vuex";
 import router from "@/router";
-import { toast } from "vue3-toastify"
+import { useToast } from "vue-toastification";
 
 
 const store = useStore()
+const toast = useToast()
 
 // Define a single loan object to hold all the loan application data
 const loan = ref({
@@ -33,18 +34,7 @@ const userDetails = ref({
 const step = ref(1);
 
 // Interest rates for loan purposes
-const interestPerLoan = {
-  "HOME_LOAN": { label: "Home Loan", rate: 7.5 },
-  "PERSONAL_LOAN": { label: "Personal Loan", rate: 10.0 },
-  "CAR_LOAN": { label: "Car Loan", rate: 8.0 },
-  "EDUCATION_LOAN": { label: "Education Loan", rate: 6.5 },
-  "BUSINESS_LOAN": { label: "Business Loan", rate: 12.5 },
-  "GOLD_LOAN": { label: "Gold Loan", rate: 9.0 },
-  "CREDIT_CARD_LOAN": { label: "Credit Card Loan", rate: 18.0 },
-  "PAYDAY_LOAN": { label: "Payday Loan", rate: 30.0 },
-  "HOME_EQUITY_LOAN": { label: "Home Equity Loan", rate: 8.5 },
-  "STUDENT_LOAN": { label: "Student Loan", rate: 5.0 }
-};
+const interestPerLoan = store.state.interestRate
 
 
 // Watchers and computed properties

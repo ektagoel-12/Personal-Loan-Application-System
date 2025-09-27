@@ -37,55 +37,83 @@
           :data="pieChartData" />
       </div>
     </div>
+    <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
+  <!-- Title -->
+  <h3 class="text-xl flex gap-2 align-middle font-bold text-gray-800 mb-6">
+    <ClipboardList /> List of Pending Applications
+  </h3>
 
-    <div class="card">
-      <h3 class="mb-4">List of Pending Applications</h3>
-      <div class="flex items-center gap-4 mb-4">
-      <input v-model="search" placeholder="Search applications..." class="border rounded px-3 py-2 mb-4" />
-      </div>
+  <!-- Search -->
+    <div class="flex items-center mb-6">
+      <input 
+        v-model="search" 
+        placeholder="Search applications..." 
+        class="w-72 border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      />
+    </div>
 
-      <table class="w-full border">
-        <thead>
-          <tr class="bg-gray-100 text-left">
-            <th>Application ID</th>
-            <th>Applicant</th>
-            <th>Amount</th>
-            <th>Income</th>
-            <th>Credit Score</th>
-            <th>Loan Type</th>
-            <th>Applied Date</th>
-            <th>Status</th>
-            <th>Actions</th>
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-lg border border-gray-200">
+      <table class="w-full text-sm text-left text-gray-700">
+        <thead class="bg-gray-50 text-gray-900 text-sm uppercase font-semibold">
+          <tr>
+            <th class="px-4 py-3">Application ID</th>
+            <th class="px-4 py-3">Applicant</th>
+            <th class="px-4 py-3">Amount</th>
+            <th class="px-4 py-3">Income</th>
+            <th class="px-4 py-3">Credit Score</th>
+            <th class="px-4 py-3">Loan Type</th>
+            <th class="px-4 py-3">Applied Date</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="app in filteredApps" :key="app.id">
-            <td>{{ app.id }}</td>
-            <td>{{ app.name }}</td>
-            <td>₹{{ app.amount }}</td>
-            <td>₹{{ app.income }}</td>
-            <td>
-              <span :class="['px-2 py-1 rounded text-white',
-                  app.creditScore >= 700 ? 'bg-green-600' : 'bg-red-500'
-                ]">
+          <tr 
+            v-for="app in filteredApps" 
+            :key="app.id"
+            class="hover:bg-gray-50 transition"
+          >
+            <td class="px-4 py-3 font-medium text-gray-900">#{{ app.id }}</td>
+            <td class="px-4 py-3">{{ app.name }}</td>
+            <td class="px-4 py-3">₹{{ app.amount.toLocaleString() }}</td>
+            <td class="px-4 py-3">₹{{ app.income.toLocaleString() }}</td>
+            <td class="px-4 py-3">
+              <span 
+                :class="[
+                  'px-2 py-1 rounded-md text-xs font-semibold',
+                  app.creditScore >= 700 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                ]"
+              >
                 {{ app.creditScore }}
               </span>
             </td>
-            <td>{{ app.loanType }}</td>
-            <td>{{ app.applicationDate }}</td>
-            <td>
-              <span :class="['status', app.status.toLowerCase()]">
+            <td class="px-4 py-3">{{ loanTypeLabel[app.loanType].label }}</td>
+            <td class="px-4 py-3">{{ app.applicationDate }}</td>
+            <td class="px-4 py-3">
+              <span 
+                :class="[
+                  'px-3 py-1 rounded-full text-xs font-semibold shadow-sm',
+                  app.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                  'bg-blue-100 text-blue-700 border border-blue-200'
+                ]"
+              >
                 {{ app.status }}
               </span>
             </td>
-            <td>
-              <button @click="goToEdit(app.id)"
-                class="bg-blue-500 text-white px-3 py-1 rounded"> Edit </button>
+            <td class="px-4 py-3 text-center">
+              <button 
+                @click="goToEdit(app.id)"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm text-sm font-medium transition"
+              >
+                Edit
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+  </div>
   </div>
 </template>
 
@@ -93,6 +121,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { ClipboardList } from "lucide-vue-next";
 import BarChart from "./BarChart.vue";
 import PieChart from "./PieChart.vue";
 
@@ -103,12 +132,19 @@ const search = ref("");
 
 const stats = computed(() => store.getters.stats);
 const applications = computed(() => store.getters.applications);
-const isLoading = computed(() => store.getters.isLoading);
+const loanTypeLabel = store.state.interestRate
 
 const filteredApps = computed(() =>
-  applications.value.filter((a) =>
-    (a.applicant?.toLowerCase() ?? '').includes(search.value?.toLowerCase() ?? '') && (a.status === 'PENDING' || a.status==='NEW') )
+  applications.value.filter((a) => {
+    const term = search.value?.toLowerCase() ?? "";
+
+    return (
+      (a.name?.toLowerCase() ?? "").includes(term) || String(a.id).includes(term) ||           
+      (loanTypeLabel[a.loanType]?.label?.toLowerCase() ?? "").includes(term) // loan type
+    ) && (a.status === "PENDING" || a.status === "NEW");
+  })
 );
+
 
 
 const barChartData = computed(() => {

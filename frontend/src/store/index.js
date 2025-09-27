@@ -1,26 +1,15 @@
 import { makeRequestWithToken } from "@/utils/requests";
 import { createStore } from "vuex";
+import { useToast } from "vue-toastification";
 
+
+const toast = useToast()
 const store = createStore({
   state() {
     return {
       count: 0,
       user: JSON.parse(localStorage.getItem('currUser')) || null,
-      stats: {
-        totalApplications: 1250,
-        approvalRate: 78,
-        pending: 45,
-        avgIncome: 125000,
-        monthlyTrends: {
-          months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-          values: [70, 90, 100, 110, 120, 130],
-        },
-        statusDistribution: {
-          approved: 78,
-          pending: 15,
-          rejected: 7,
-        }
-      },
+      stats: {},
       applications: [],
       tickets: [], // added tickets state
       allTickets: [],
@@ -29,6 +18,17 @@ const store = createStore({
       dateRange: { from: null, to: null },
       selectedApplication: null,
       loading: false,
+      interestRate : {  "HOME_LOAN": { label: "Home Loan", rate: 7.5 },
+                      "PERSONAL_LOAN": { label: "Personal Loan", rate: 10.0 },
+                      "CAR_LOAN": { label: "Car Loan", rate: 8.0 },
+                      "EDUCATION_LOAN": { label: "Education Loan", rate: 6.5 },
+                      "BUSINESS_LOAN": { label: "Business Loan", rate: 12.5 },
+                      "GOLD_LOAN": { label: "Gold Loan", rate: 9.0 },
+                      "CREDIT_CARD_LOAN": { label: "Credit Card Loan", rate: 18.0 },
+                      "PAYDAY_LOAN": { label: "Payday Loan", rate: 30.0 },
+                      "HOME_EQUITY_LOAN": { label: "Home Equity Loan", rate: 8.5 },
+                      "STUDENT_LOAN": { label: "Student Loan", rate: 5.0 }
+                    }
     };
   },
 
@@ -55,10 +55,6 @@ const store = createStore({
     },
     GET_LOANS_USER(state, payload) {
       state.applications = payload;
-    },
-
-    SET_SELECTED_APPLICATION(state, app) {
-      state.selectedApplication = app;
     },
 
     SET_FILTERS(state, { searchTerm, statusFilter, dateRange }) {
@@ -102,6 +98,10 @@ const store = createStore({
   try {
     const res = await makeRequestWithToken("GET", "/admin");
     const stats = res.data.stats;
+
+    // Rounding off to 2 decimals
+    stats.approvalRate = Math.round(stats.approvalRate*100)/100
+    stats.avgIncome = Math.round(stats.avgIncome*100)/100
 
     // Transform monthlyTrends
     let months = [];
@@ -190,18 +190,6 @@ const store = createStore({
       commit("REMOVE_APPLICATION", id);
     },
 
-    async fetchLoanById({ state, commit }, id) {
-      try {
-        const res = await makeRequestWithToken("GET", `/admin/loans/${id}`);
-        console.log(res);
-        commit("SET_SELECTED_APPLICATION", res.data);
-        return res.data;
-      } catch (err) {
-        console.error("Failed to fetch loan by ID", err);
-        return null;
-      }
-    },
-
     async getAllLoans({commit}){
       const id = this.state.user.role === 'ADMIN' ? '' : '/user/' +this.state.user.id
       const response = await makeRequestWithToken('GET',`/api/loans${id}`)
@@ -250,7 +238,7 @@ const store = createStore({
 
         commit("ADD_APPLICATION", loan);
       }else{
-        alert("Failed to add loan")
+        toast.error("Failed to add loan")
       }
       
     },
@@ -344,8 +332,8 @@ const store = createStore({
     isLoading: (state) => state.loading,
     isLoggedIn: (state) => state.user,
     currentUser: (state) => state.user,
-    selectedApplication: (state) => state.selectedApplication,
-  },
+    selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null)
+  }
 });
 
 export default store;

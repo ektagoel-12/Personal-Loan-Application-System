@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
+import { useToast } from "vue-toastification";
 import TicketPopup from "./TicketDetailsView.vue";
 
 const store = useStore();
+const toast = useToast();
 
 // Popup state
 const showTicketPopup = ref(false);
@@ -46,24 +48,24 @@ const openPopup = (id) => {
 const updateStatus = async (ticket, newStatus) => {
   try {
     await store.dispatch("updateTicketStatus", { id: ticket.id, status: newStatus });
-    alert(`Status updated to ${newStatus} for ticket #${ticket.id}`);
+    toast.info(`Status updated to ${newStatus} for ticket #${ticket.id}`);
   } catch (err) {
     console.error(err);
-    alert(`Failed to update status for ticket #${ticket.id}`);
+    toast.error(`Failed to update status for ticket #${ticket.id}`);
   }
 };
 
 // Update admin response
 const updateResponse = async (ticket) => {
   if (!ticket.response || ticket.response.trim() === "") {
-    return alert("Response cannot be empty");
+    return toast.error("Response cannot be empty");
   }
   try {
     await store.dispatch("updateTicketResponse", { id: ticket.id, response: ticket.response });
-    alert(`Response updated for ticket #${ticket.id}`);
+    toast.info(`Response updated for ticket #${ticket.id}`);
   } catch (err) {
     console.error(err);
-    alert("Failed to update response");
+    toast.error("Failed to update response");
   }
 };
 

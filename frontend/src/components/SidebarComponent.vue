@@ -68,7 +68,6 @@ const customerItems = [
   { title: 'My Loans', icon: FileText, key: 'loan' },
   { title: 'EMI Calculator', icon: Calculator, key: 'calculator' },
   { title: 'Repayment Schedule', icon: Users, key: 'repayment' },
-  { title: 'Raise Ticket', icon: MessageSquare, key: 'raise-ticket' },
   { title: 'Your Tickets', icon: MessageSquare, key: 'user-ticket-view' }
 ]
 
