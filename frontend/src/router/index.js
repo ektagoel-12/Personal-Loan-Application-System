@@ -13,7 +13,6 @@ import { useStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
 import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 import LoanForm from '@/views/LoanForm.vue'
-import TicketDetailsView from '@/views/TicketDetailsView.vue'
 
 
 const router = createRouter({
@@ -32,7 +31,6 @@ const router = createRouter({
     { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true },
     { path: '/repayment', component: RepaymentSchedule},
     { path: '/applyLoan', component: LoanForm},
-    {path:'/test', component: TicketDetailsView}
   ]
 })
 
