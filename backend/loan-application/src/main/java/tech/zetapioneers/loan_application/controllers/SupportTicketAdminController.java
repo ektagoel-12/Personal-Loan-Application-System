@@ -23,12 +23,12 @@ public class SupportTicketAdminController {
         return supportTicketAdminServiceImp.getAllTickets();
     }
 
-    @PostMapping("/id")
+    @GetMapping("ticketId/{id}")
     public ResponseEntity<SupportTicket> getTicketById(@PathVariable Long id){
         return supportTicketAdminServiceImp.getTicketByID(id);
     }
 
-    @GetMapping("/{status}")
+    @GetMapping("status/{status}")
     public ResponseEntity<List<SupportTicketResponseDto>> findTicketsByStatus(@PathVariable TicketStatus status) {
         return supportTicketAdminServiceImp.findTicketsByStatus(status);
     }

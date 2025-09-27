@@ -25,13 +25,13 @@ public class SupportTicketUserController {
     }
 
 
-    @GetMapping("/{userEmail}")
+    @GetMapping("email/{userEmail}")
     public ResponseEntity<List<SupportTicketResponseDto>> getAllTicketsByUserEmail(
             @PathVariable String userEmail) {
         return supportTicketUserServiceImp.getTicketsByUser(userEmail);
     }
 
-    @PostMapping("/id")
+    @GetMapping("ticketId/{id}")
     public ResponseEntity<SupportTicket> getTicketById(@PathVariable Long id){
         return supportTicketUserServiceImp.getTicketByID(id);
     }
