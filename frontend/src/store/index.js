@@ -138,8 +138,18 @@ const store = createStore({
   }
     },
 
-    updateApplicationStatus({ commit }, { id, status }) {
-      commit("UPDATE_APPLICATION_STATUS", { id, status });
+    // updateApplicationStatus({ commit }, { id, status }) {
+    //   commit("UPDATE_APPLICATION_STATUS", { id, status });
+    // },
+
+    async updateApplicationStatus({ commit }, { id, payload }) {
+      try {
+        const res = await makeRequestWithToken("PUT", `/admin/loans/${id}/status`, payload);
+        console.log("Updated loan:", res.data);
+        commit("UPDATE_APPLICATION", { id, payload: res.data });
+      } catch (err) {
+        console.error("Failed to update application status", err);
+      }
     },
 
     setCurrentUser({ commit }, payload) {
@@ -183,6 +193,7 @@ const store = createStore({
     async fetchLoanById({ state, commit }, id) {
       try {
         const res = await makeRequestWithToken("GET", `/admin/loans/${id}`);
+        console.log(res);
         commit("SET_SELECTED_APPLICATION", res.data);
         return res.data;
       } catch (err) {
@@ -250,11 +261,11 @@ const store = createStore({
     //   commit("SET_SELECTED_APPLICATION", loan);
     //   return loan;
     // }
-    fetchLoanById({ state, commit }, id) {
-      const loan = state.applications.find((app) => app.id === id) || null;
-      commit("SET_SELECTED_APPLICATION", loan);
-      return loan;
-    },
+    // fetchLoanById({ state, commit }, id) {
+    //   const loan = state.applications.find((app) => app.id === id) || null;
+    //   commit("SET_SELECTED_APPLICATION", loan);
+    //   return loan;
+    // },
 
     // Tickets actions
     async fetchTickets({ commit }, userEmail) {
