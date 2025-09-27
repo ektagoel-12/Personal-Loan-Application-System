@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         else if(body.getRole() != null){
             throw new NotAllowedException("You are not authorized to update the role");
         }
-        else if(requestInitiator.get().getId().equals(currId)) {
+        else if(requestInitiator.get().getId().equals(id)) {
             Optional<User> existingUser = getUserById(id);
             User updatedUser = existingUser.get();
             body.applyUpdates(updatedUser);
