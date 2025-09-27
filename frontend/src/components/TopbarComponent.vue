@@ -3,27 +3,23 @@
     <div class="flex items-center justify-between">
       <!-- Left side -->
       <div class="flex items-center space-x-4">
-        <h1 class="text-xl cursor-pointer" @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')" >LoanFlow</h1>
+        <h1
+          class="text-xl cursor-pointer"
+          @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')"
+        >
+          LoanFlow
+        </h1>
         <span
           v-if="user"
           class="px-2 py-1 rounded text-xs font-medium"
           :class="user.role === 'admin' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700'"
         >
-          {{user.name}}
+          {{ user.name }}
         </span>
       </div>
 
       <!-- Right side -->
       <div class="flex items-center space-x-4">
-        <!-- Theme Toggle -->
-        <button
-          class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-gray-100"
-          @click="toggleTheme"
-        >
-          <Moon v-if="theme === 'light'" class="h-4 w-4" />
-          <Sun v-else class="h-4 w-4" />
-        </button>
-
         <!-- Notifications -->
         <button
           class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-gray-100 relative"
@@ -57,7 +53,10 @@
             <div class="border-t border-gray-200 dark:border-gray-700"></div>
             <ul class="py-1">
               <li>
-                <button class="flex items-center px-4 py-2 w-full text-sm hover:bg-gray-100 ">
+                <button
+                  class="flex items-center px-4 py-2 w-full text-sm hover:bg-gray-100"
+                  @click="openProfile"
+                >
                   <User class="mr-2 h-4 w-4" /> Profile
                 </button>
               </li>
@@ -79,39 +78,83 @@
         </div>
       </div>
     </div>
+
+    <!-- Top-right Profile Card -->
+    <transition name="fade">
+      <div
+        v-if="showProfile"
+        class="fixed top-16 right-6 bg-white border border-gray-200 rounded-xl shadow-xl w-80 z-50 p-6"
+      >
+        <button
+          class="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+          @click="showProfile = false"
+        >
+          ✕
+        </button>
+
+        <!-- Big Initial Circle -->
+        <div class="flex justify-center mb-4">
+          <div class="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center text-3xl font-bold">
+            {{ getInitials(user.name) }}
+          </div>
+        </div>
+
+        <h2 class="text-center text-lg font-semibold mb-4">Profile Details</h2>
+
+        <div class="space-y-2 text-sm">
+          <p><span class="font-medium">Name:</span> {{ user.name }}</p>
+          <p><span class="font-medium">Email:</span> {{ user.email }}</p>
+          <p><span class="font-medium">Role:</span> {{ user.role }}</p>
+          <p><span class="font-medium">Credit Score:</span> {{ user.creditScore }}</p>
+          <p><span class="font-medium">Income:</span> ₹{{ user.income.toLocaleString() }}</p>
+          <p><span class="font-medium">Aadhar:</span> {{ user.aadhar ?? 'Not Provided' }}</p>
+        </div>
+      </div>
+    </transition>
   </header>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { Bell, Moon, Sun, LogOut, Settings, User } from 'lucide-vue-next'
+import { Bell, LogOut, Settings, User } from 'lucide-vue-next'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+
 const store = useStore()
 const router = useRouter()
 const user = ref(store.getters.currentUser)
 
-const theme = ref('light')
 const isMenuOpen = ref(false)
-
-const toggleTheme = () => {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-  document.documentElement.classList.toggle('dark', theme.value === 'dark')
-}
+const showProfile = ref(false)
 
 const logout = () => {
-  console.log('Logging out...')
-  localStorage.removeItem('token');
+  localStorage.removeItem('token')
   localStorage.removeItem('refreshToken')
   localStorage.removeItem('currUser')
-  router.push("/login-form")
+  router.push('/login-form')
 }
 
 const getInitials = (name) => {
   return name
     .split(' ')
-    .map(n => n[0])
+    .map((n) => n[0])
     .join('')
     .toUpperCase()
 }
+
+const openProfile = () => {
+  isMenuOpen.value = false
+  showProfile.value = true
+}
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
