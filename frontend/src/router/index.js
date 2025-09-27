@@ -14,6 +14,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 import LoanForm from '@/views/LoanForm.vue'
 import UserManagement from '@/views/UserManagement.vue'
+import TicketDetailsView from '@/views/TicketDetailsView.vue'
 
 
 const router = createRouter({
@@ -32,7 +33,8 @@ const router = createRouter({
     { path: '/repayment' ,meta: { requiresAuth: true } , component: RepaymentSchedule},
     { path: '/applyLoan' ,meta: { requiresAuth: true }, component: LoanForm},
     { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement},
-    { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true }
+    { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true },
+    {path:"/ticket/details/:ticketId", name: 'TicketDetails', component:TicketDetailsView, props: true}
   ]
 })
 

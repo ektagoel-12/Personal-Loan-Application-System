@@ -29,16 +29,17 @@
     <div class="grid grid-cols-2 gap-6 mb-8">
       <div class="card">
         <h3 class="mb-2">Application Trends</h3>
-        <BarChart :data="stats?.monthlyTrends" />
+        <BarChart v-if="barChartData.months.length" :data="barChartData" />
       </div>
       <div class="card">
         <h3 class="mb-2">Application Status</h3>
-        <PieChart :data="stats?.statusDistribution" />
+        <PieChart v-if="pieChartData.approved + pieChartData.pending + pieChartData.rejected > 0" 
+          :data="pieChartData" />
       </div>
     </div>
 
     <div class="card">
-      <h3 class="mb-4">Loan Applications</h3>
+      <h3 class="mb-4">List of Pending Applications</h3>
       <div class="flex items-center gap-4 mb-4">
       <input v-model="search" placeholder="Search applications..." class="border rounded px-3 py-2 mb-4" />
       </div>
@@ -51,7 +52,7 @@
             <th>Amount</th>
             <th>Income</th>
             <th>Credit Score</th>
-            <th>Purpose</th>
+            <th>Loan Type</th>
             <th>Applied Date</th>
             <th>Status</th>
             <th>Actions</th>
@@ -60,7 +61,7 @@
         <tbody>
           <tr v-for="app in filteredApps" :key="app.id">
             <td>{{ app.id }}</td>
-            <td>{{ app.applicant }}</td>
+            <td>{{ app.name }}</td>
             <td>₹{{ app.amount }}</td>
             <td>₹{{ app.income }}</td>
             <td>
@@ -70,8 +71,8 @@
                 {{ app.creditScore }}
               </span>
             </td>
-            <td>{{ app.purpose }}</td>
-            <td>{{ app.appliedDate }}</td>
+            <td>{{ app.loanType }}</td>
+            <td>{{ app.applicationDate }}</td>
             <td>
               <span :class="['status', app.status.toLowerCase()]">
                 {{ app.status }}
@@ -106,21 +107,59 @@ const isLoading = computed(() => store.getters.isLoading);
 
 const filteredApps = computed(() =>
   applications.value.filter((a) =>
-    a.applicant.toLowerCase().includes(search.value.toLowerCase()) && (a.status === 'PENDING' || a.status==='NEW') )
+    (a.applicant?.toLowerCase() ?? '').includes(search.value?.toLowerCase() ?? '') && (a.status === 'PENDING' || a.status==='NEW') )
 );
+
+
+const barChartData = computed(() => {
+  const trends = stats.value?.monthlyTrends;
+
+  if (Array.isArray(trends)) {
+    // Case: API response (array of objects)
+    const months = [];
+    const values = [];
+    trends.forEach((trend) => {
+      const month = Object.keys(trend)[0];
+      months.push(month);
+      values.push(trend[month]);
+    });
+    return { months, values };
+  } else if (trends && trends.months && trends.values) {
+    // Case: initial state (object with months and values)
+    return { months: trends.months, values: trends.values };
+  } else {
+    return { months: [], values: [] };
+  }
+});
+
+// Computed for PieChart (status distribution)
+const pieChartData = computed(() => {
+  const dist = stats.value?.statusDistribution || {};
+  return {
+    approved: dist.APPROVED ?? dist.approved ?? 0,
+    pending: dist.PENDING ?? dist.pending ?? 0,
+    rejected: dist.REJECTED ?? dist.rejected ?? 0,
+  };
+});
 
 const fetchDashboardData = () => store.dispatch("fetchDashboardData");
 
-const updateStatus= (id, status) => {store.dispatch("updateApplicationStatus", { id, status });}
+const updateStatus= (id, status) => {
+  const payload = {
+    status,
+    reviewedBy: "Admin User",
+    reviewedAt: new Date().toISOString(),
+    reviewRemarks: "Auto status update"
+  };
+  store.dispatch("updateApplicationStatus", { id, payload });
+}
 
 const autoUpdateStatuses = () => {
   const now = new Date();
   applications.value.forEach(app => {
     if (app.status === 'PENDING') {
-      const appDate = new Date(app.appliedDate);
-      console.log(appDate);
+      const appDate = new Date(app.appliedDate + "T00:00:00"); // ensures valid Date
       const hoursPassed = (now - appDate) / (1000 * 60 * 60);
-      console.log(hoursPassed);
       if (hoursPassed < 48) {
         updateStatus(app.id, 'NEW');
       }
