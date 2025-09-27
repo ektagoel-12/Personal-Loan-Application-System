@@ -21,9 +21,9 @@ export default {
   name: "BarChart",
   components: { Bar },
   props: ["data"],
-  data() {
-    return {
-      chartData: {
+  computed: {
+    chartData() {
+      return {
         labels: this.data?.months || [],
         datasets: [
           {
@@ -32,21 +32,16 @@ export default {
             backgroundColor: "black",
           },
         ],
-      },
+      };
+    },
+  },
+  data() {
+    return {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
       },
     };
-  },
-  watch: {
-    data: {
-      handler(newVal) {
-        this.chartData.labels = newVal?.months || [];
-        this.chartData.datasets[0].data = newVal?.values || [];
-      },
-      deep: true,
-    },
   },
 };
 </script>
