@@ -119,7 +119,7 @@
               placeholder="Enter your Aadhar number"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
             />
-            <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>
+            <p v-if="formErrors.aadhar" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>
           </div>
 
           <!-- Error alert -->
