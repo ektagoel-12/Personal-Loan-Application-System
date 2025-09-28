@@ -25,11 +25,13 @@ import { useStore } from 'vuex'
 const route = useRoute()
 const store = useStore()
 const isAuthRoute = computed(() => ['/', '/login-form', '/registration-form'].includes(route.path))
+const isLoggedIn = computed(()=>store.getters.isLoggedIn)
 
 onMounted(()=>{
+  if(isLoggedIn){
   store.dispatch("getAllLoans")
-  console.log("loan fetched:",store.state.loans)
   store.dispatch("fetchTickets",store.state.user.email)
+  }
 })
 
 </script>

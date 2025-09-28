@@ -35,6 +35,7 @@ public class RepaymentScheduleController {
     }
 
     // POST /loans/{loanId}/generate-schedule (only for APPROVED loans)
+    // It may be redundant right now.
     @PostMapping("/loans/{loanId}/generate-schedule")
     public ResponseEntity<List<RepaymentSchedule>> generateSchedule(@PathVariable Long loanId) {
         LoanApplication loan = loanApplicationRepository.findById(loanId)
@@ -45,7 +46,7 @@ public class RepaymentScheduleController {
         }
 
         // just pass the loan (rate comes from LoanType enum)
-        List<RepaymentSchedule> schedule = repaymentScheduleService.generateSchedule(loan);
+        List<RepaymentSchedule> schedule = repaymentScheduleService.generateSchedule(loan.getId());
 
         return ResponseEntity.ok(schedule);
     }

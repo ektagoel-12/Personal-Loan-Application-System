@@ -12,7 +12,7 @@ public interface RepaymentScheduleService {
 
     double calculateEMI(double principal, double annualRate, int months);
 
-    List<RepaymentSchedule> generateSchedule(LoanApplication loan);
+    List<RepaymentSchedule> generateSchedule(Long loanId);
 
     EmiPreviewResponse previewEmi(EmiPreviewRequest request);
 

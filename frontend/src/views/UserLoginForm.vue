@@ -19,7 +19,6 @@
             placeholder="Enter your email"
             class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <p v-if="errors.email" class="text-red-600 text-xs">{{ errors.email }}</p>
         </div>
 
         <!-- Password -->
@@ -39,7 +38,6 @@
           >
             <component :is="showPassword ? EyeOff : Eye" class="h-4 w-4" />
           </button>
-          <p v-if="errors.password" class="text-red-600 text-xs">{{ errors.password }}</p>
         </div>
 
         <!-- Submit -->
@@ -51,14 +49,7 @@
         </button>
       </form>
 
-      <!-- Demo credentials -->
-      <div class="px-6 py-4 text-center text-xs text-gray-500 space-y-1">
-        <p class="text-textdark">Demo credentials:</p>
-        <div>User: user@example.com</div>
-        <div>Admin: admin@example.com</div>
-        <div>Password: password123</div>
-      </div>
-
+    
       <!-- Switch to Register -->
       <div class="px-6 py-4 text-center">
         <button
@@ -80,8 +71,10 @@ import { Eye, EyeOff } from 'lucide-vue-next'
 import router from '../router'
 import { makeRequestWithoutToken } from '@/utils/requests'
 import { useStore } from 'vuex'
+import { useToast } from 'vue-toastification'
 
 const store = useStore()
+const toast = useToast()
 
 // Reactive form data
 let formData = reactive({
@@ -89,11 +82,6 @@ let formData = reactive({
   password: ''
 })
 
-// Reactive error messages
-let errors = reactive({
-  email: null,
-  password: null
-})
 
 // Password toggle
 const showPassword = ref(false)
@@ -108,23 +96,20 @@ const validPassword = (password) => password.length >= 2
 // Handle form submission
 const handleSubmit = async () => {
   if (!validEmail(formData.email)) {
-    errors.email = 'Invalid email'
+    toast.error('Invalid email')
     return
-  } else {
-    errors.email = null
-  }
-
+  } 
   if (!validPassword(formData.password)) {
-    errors.password = 'Password should be at least 2 characters'
+    toast.error('Password should be at least 2 characters')
     return
-  } else {
-    errors.password = null
-  }
+  } 
 
   const response = await makeRequestWithoutToken("POST","/auth/login",formData);
 
-  if(!response)return;
-
+  if(!response){
+    toast.error('Inavlid username/password')
+    return;
+  }
   localStorage.setItem('token',response.data["accessToken"]);
   localStorage.setItem('refreshToken',response.data["refreshToken"]);
 
