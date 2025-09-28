@@ -47,6 +47,9 @@ export async function makeRequestWithToken(type, endpoint, body) {
             case "POST":
                 response = await axios.post(url, body, config);
                 break;
+            case "PUT":
+                response = await axios.put(url, body, config);
+                break;
             case "PATCH":
                 response = await axios.patch(url, body, config);
                 break;
@@ -56,28 +59,27 @@ export async function makeRequestWithToken(type, endpoint, body) {
             default:
                 throw new Error(`Unsupported request type: ${type}`);
         }
+        return response;
     }
     catch(error){
+        
         if(error?.response?.data?.error === "The token is expired"){
             const refreshToken = localStorage.getItem("refreshToken");
             try {
-            const refreshResponse = await axios.post("/auth/refresh", { refreshToken });
+            const refreshResponse = await axios.post(`${base_url}/auth/refresh`, { refreshToken });
 
             const { accessToken, refreshToken: newRefreshToken } = refreshResponse.data;
 
-            // Save the new tokens to localStorage
             localStorage.setItem("token", accessToken);
             localStorage.setItem("refreshToken", newRefreshToken);
 
-            // Retry the failed request with the new access token
             const response = await makeRequestWithToken(type, endpoint, body);
-
             return response;
             } catch (error) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
                 localStorage.removeItem("currUser")
-                window.location.href = "/login";  // Redirect to login page
+                window.location.href = "/login-form";  // Redirect to login page
             }
         }
     }
