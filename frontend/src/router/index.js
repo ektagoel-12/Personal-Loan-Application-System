@@ -33,8 +33,8 @@ const router = createRouter({
     { path: '/repayment' ,meta: { requiresAuth: true } , component: RepaymentSchedule},
     { path: '/applyLoan' ,meta: { requiresAuth: true }, component: LoanForm},
     { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement},
-    { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true },
-    {path:"/ticket/details/:ticketId", name: 'TicketDetails', component:TicketDetailsView, props: true}
+    { path: "/admin/loans/:id",meta:{requiresAdminAuth:true} ,name: 'AdminDashboard', component: LoanDetail, props: true },
+    {path:"/ticket/details/:ticketId", meta:{requiresAuth:true},name: 'TicketDetails', component:TicketDetailsView, props: true}
   ]
 })
 
@@ -48,6 +48,7 @@ router.beforeEach((to, from, next) => {
     }
     else{
       alert("Pls login as admin to view this page")
+      next("/login-form")
       return
     }
   }

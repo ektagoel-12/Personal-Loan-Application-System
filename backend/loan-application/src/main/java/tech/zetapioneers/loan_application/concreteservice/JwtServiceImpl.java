@@ -2,6 +2,8 @@ package tech.zetapioneers.loan_application.concreteservice;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.entities.User;
 import tech.zetapioneers.loan_application.exceptions.InvalidTokenException;
@@ -20,16 +22,32 @@ import java.util.Optional;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-
     private static final ObjectMapper M = new ObjectMapper();
     private static final Base64.Encoder B64 = Base64.getUrlEncoder().withoutPadding();
     private static final Base64.Decoder B64D = Base64.getUrlDecoder();
 
-    private static final String HMAC_ALG = "HmacSHA256";
-    private static final String SECRET_KEY = "AOMWANKHEDEISTHEGRETESTPERSONINTHISWORLD";
+    @Value("${jwt.HMAC_ALG}")
+    private String hmacAlg;
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000L * 60 * 60; // 1 hour
-    private static final long REFRESH_TOKEN_EXPIRATION = 1000L * 60 * 60 * 24; // 1 day
+    @Value("${jwt.SECRET_KEY}")
+    private String secretKey;
+
+    @Value("${jwt.ACCESS_TOKEN_EXPIRATION}")
+    private Long accessTokenExpiration;
+
+    @Value("${jwt.REFRESH_TOKEN_EXPIRATION}")
+    private Long refreshTokenExpiration;
+
+    private  static String  HMAC_ALG , SECRET_KEY;
+    private static  Long ACCESS_TOKEN_EXPIRATION , REFRESH_TOKEN_EXPIRATION;
+
+    @PostConstruct
+    public void init() {
+        HMAC_ALG = hmacAlg;
+        SECRET_KEY = secretKey;
+        ACCESS_TOKEN_EXPIRATION = accessTokenExpiration;
+        REFRESH_TOKEN_EXPIRATION = refreshTokenExpiration;
+    }
 
     // Generate access token for a user
     @Override
