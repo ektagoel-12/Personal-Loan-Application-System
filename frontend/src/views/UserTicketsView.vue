@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import { makeRequestWithToken } from "@/utils/requests";
 import { useStore } from "vuex";
-import { ArrowDownUp,BookOpenCheck } from "lucide-vue-next"
+import { ArrowDownUp,BookOpenCheck,FilePlus2 } from "lucide-vue-next"
 import TicketPopup from "./TicketDetailsView.vue";
 import router from "@/router";
 
@@ -63,46 +63,50 @@ const raiseTicket = () => {
   router.push('/raise-ticket')
 };
 </script>
-
 <template>
-  <div class="max-w-6xl mx-auto p-6 bg-gray-50 relative">
+  <div class="max-w-6xl mx-auto p-6 bg-white relative font-inter text-gray-800">
+    <!-- Header -->
     <div class="flex justify-between items-center mb-8">
-      <h2 class="text-3xl flex gap-2 items-center font-bold text-gray-900"> <BookOpenCheck /> My Tickets</h2>
+      <h2 class="text-3xl flex gap-2 items-center font-bold text-[#1f2937]">
+        <BookOpenCheck class="text-[#7e22ce]" /> My Tickets
+      </h2>
       <button
         @click="raiseTicket"
-        class="bg-black hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition transform hover:-translate-y-0.5 hover:shadow-lg"
+        class="bg-[#7e22ce] hover:bg-[#6b21a8] flex align-middle gap-2 text-white px-5 py-2 rounded-lg shadow-md transition transform hover:-translate-y-0.5 hover:shadow-lg"
       >
-        + Raise Ticket
+        <FilePlus2 /> Raise Ticket
       </button>
     </div>
 
     <!-- Filters & Sort -->
     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
-      <select v-model="filterStatus" class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+      <select
+        v-model="filterStatus"
+        class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
+      >
         <option>All</option>
         <option>OPEN</option>
         <option>RESOLVED</option>
         <option>CLOSED</option>
       </select>
-      
-          
+
+      <!-- Sort Toggle -->
       <div class="flex items-center gap-3">
         <ArrowDownUp class="w-4 h-4 text-gray-400" />
-        
-        <div 
+
+        <div
           @click="sortByLatest = sortByLatest === 'desc' ? 'asc' : 'desc'"
           class="relative inline-flex items-center cursor-pointer select-none"
         >
           <!-- Track -->
-          <div 
+          <div
             class="w-32 h-8 rounded-full transition-colors duration-300"
-            :class="sortByLatest === 'desc' ? 'bg-blue-100' : 'bg-gray-100'"
-          >
-          </div>
-          
+            :class="sortByLatest === 'desc' ? 'bg-[#f3e8ff]' : 'bg-gray-100'"
+          ></div>
+
           <!-- Handle -->
           <div
-            class="absolute left-0.5 top-0.5 w-14 h-7 bg-white rounded-full shadow-sm transition-transform duration-300 flex items-center justify-center"
+            class="absolute left-0.5 top-0.5 w-14 h-7 bg-white rounded-full shadow-sm transition-transform duration-300 flex items-center justify-center border border-gray-200"
             :class="sortByLatest === 'desc' ? 'translate-x-16' : 'translate-x-0'"
           >
             <span class="text-xs font-medium text-gray-600">
@@ -111,7 +115,6 @@ const raiseTicket = () => {
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Tickets List -->
@@ -119,30 +122,52 @@ const raiseTicket = () => {
       <div
         v-for="ticket in filteredTickets"
         :key="ticket.id"
-        class="bg-white border rounded-2xl p-6 shadow-md hover:shadow-xl transition duration-300"
+        class="bg-white border border-gray-200 rounded-2xl p-6 shadow hover:shadow-xl transition duration-300"
       >
+        <!-- Ticket Header -->
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h3 class="text-xl font-semibold text-gray-800">{{ ticket.subject }}</h3>
+            <h3 class="text-xl font-semibold text-gray-900">
+              {{ ticket.subject }}
+            </h3>
             <p class="text-sm text-gray-500">Ticket #{{ ticket.id }}</p>
-            <p class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded inline-block mt-1">
+            <p
+              class="text-xs font-medium text-[#7e22ce] bg-[#f3e8ff] px-2 py-1 rounded inline-block mt-1"
+            >
               • Request: {{ ticket.type }}
             </p>
           </div>
-          <span class="px-3 py-1 text-sm font-medium rounded-full" :class="statusClass(ticket.status)">
+          <span
+            class="px-3 py-1 text-sm font-medium rounded-full"
+            :class="statusClass(ticket.status)"
+          >
             {{ ticket.status }}
           </span>
         </div>
+
+        <!-- Description -->
         <p class="text-gray-700 mb-4">{{ ticket.description }}</p>
+
+        <!-- Meta Info -->
         <div class="flex flex-wrap text-xs text-gray-500 space-x-6 mb-4">
           <p>Created: {{ ticket.createAt }}</p>
           <p>Updated: {{ ticket.updatedAt }}</p>
         </div>
-        <div v-if="ticket.response" class="mt-3 p-3 bg-gray-50 border-l-4 border-black rounded">
-          <p class="text-sm text-gray-700"><span class="font-medium">Admin Response:</span> {{ ticket.response }}</p>
+
+        <!-- Admin Response -->
+        <div
+          v-if="ticket.response"
+          class="mt-3 p-3 bg-[#f3e8ff] border-l-4 border-[#7e22ce] rounded"
+        >
+          <p class="text-sm text-gray-800">
+            <span class="font-medium text-[#7e22ce]">Admin Response:</span>
+            {{ ticket.response }}
+          </p>
         </div>
+
+        <!-- View Button -->
         <button
-          class="mt-4 bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-sm"
+          class="mt-4 bg-[#eab308] text-[#1f2937] px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200 shadow-sm"
           @click="openPopup(ticket.id)"
         >
           View Details
@@ -150,8 +175,9 @@ const raiseTicket = () => {
       </div>
     </div>
 
+    <!-- Empty State -->
     <div v-else class="text-gray-600 text-center py-12">
-      <p class="text-lg">No tickets created yet </p>
+      <p class="text-lg">No tickets created yet 🚫</p>
     </div>
 
     <!-- Ticket Popup -->
@@ -162,3 +188,12 @@ const raiseTicket = () => {
     />
   </div>
 </template>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.font-inter {
+  font-family: "Inter", sans-serif;
+}
+</style>
+

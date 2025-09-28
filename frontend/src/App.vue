@@ -8,7 +8,7 @@
       <SidebarComponent v-if="!isAuthRoute" />
 
       <!-- Routed views go here -->
-      <main :class="['flex-1', 'overflow-y-auto', 'bg-gray-50', !isAuthRoute ? 'p-6' : '']">
+      <main :class="['flex-1','p-0','overflow-y-auto', 'bg-gray-50', !isAuthRoute ? 'p-0' : '']">
         <RouterView />
       </main>
     </div>

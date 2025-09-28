@@ -1,117 +1,116 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-md">
-
-      <div class="p-6 border-b">
-        <h2 class="text-2xl font-semibold text-center">Create Account</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
-          Join our loan management platform
-        </p>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary to-white p-6 font-sans">
+    <div class="w-full max-w-md bg-neutral rounded-2xl shadow-lg border border-secondary/50">
+      
+      <!-- Header -->
+      <div class="p-6 border-b border-secondary/30 text-center">
+        <h2 class="text-2xl font-bold text-primary">Create Account</h2>
+        <p class="text-sm text-gray-600">Join our loan management platform</p>
       </div>
 
+      <!-- Form -->
       <div class="p-6">
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form @submit.prevent="handleSubmit" class="space-y-5">
+          
           <!-- Name -->
           <div>
-            <label for="name" class="block text-sm font-medium">Full Name</label>
+            <label for="name" class="block text-sm font-medium text-textdark">Full Name</label>
             <input
               id="name"
               type="text"
               v-model="formData.name"
               placeholder="Enter your full name"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-medium">Email</label>
+            <label for="email" class="block text-sm font-medium text-textdark">Email</label>
             <input
               id="email"
               type="email"
               v-model="formData.email"
               placeholder="Enter your email"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <!-- Password -->
           <div>
-            <label for="password" class="block text-sm font-medium">Password</label>
+            <label for="password" class="block text-sm font-medium text-textdark">Password</label>
             <div class="relative">
               <input
                 id="password"
                 :type="showPassword ? 'text' : 'password'"
                 v-model="formData.password"
                 placeholder="Enter your password"
-                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring focus:ring-indigo-300"
+                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="button"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-accent"
                 @click="showPassword = !showPassword"
               >
-                <span v-if="showPassword"><component :is="EyeOff" class="h-4 w-4" /></span>
-                <span v-else><component :is="Eye" class="h-4 w-4" /></span>
+                <component :is="showPassword ? EyeOff : Eye" class="h-4 w-4" />
               </button>
             </div>
           </div>
 
           <!-- Confirm Password -->
           <div>
-            <label for="confirmPassword" class="block text-sm font-medium">Confirm Password</label>
+            <label for="confirmPassword" class="block text-sm font-medium text-textdark">Confirm Password</label>
             <div class="relative">
               <input
                 id="confirmPassword"
                 :type="showConfirmPassword ? 'text' : 'password'"
                 v-model="formData.confirmPassword"
                 placeholder="Confirm your password"
-                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring focus:ring-indigo-300"
+                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="button"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-accent"
                 @click="showConfirmPassword = !showConfirmPassword"
               >
-                <span v-if="showConfirmPassword"><component :is="EyeOff" class="h-4 w-4" /></span>
-                <span v-else><component :is="Eye" class="h-4 w-4" /></span>
+                <component :is="showConfirmPassword ? EyeOff : Eye" class="h-4 w-4" />
               </button>
             </div>
           </div>
 
           <!-- Income -->
           <div>
-            <label for="income" class="block text-sm font-medium">Income</label>
+            <label for="income" class="block text-sm font-medium text-textdark">Income</label>
             <input
               id="income"
               type="number"
               v-model="formData.income"
               placeholder="Enter your annual income"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <!-- Credit Score -->
           <div>
-            <label for="creditScore" class="block text-sm font-medium">Credit Score</label>
+            <label for="creditScore" class="block text-sm font-medium text-textdark">Credit Score</label>
             <input
               id="creditScore"
               type="number"
               v-model="formData.creditScore"
               placeholder="Enter your credit score"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           
           <!-- Aadhar -->
           <div>
-            <label for="aadhar" class="block text-sm font-medium">Aadhar Number</label>
+            <label for="aadhar" class="block text-sm font-medium text-textdark">Aadhar Number</label>
             <input
               id="aadhar"
               type="text"
               v-model="formData.aadhar"
               placeholder="Enter your Aadhar number"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -119,17 +118,18 @@
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full bg-black hover:bg-indigo-500 text-white py-2 rounded-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full bg-primary hover:bg-accent text-white py-2.5 rounded-lg font-medium shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="isLoading">Creating Account...</span>
             <span v-else>Create Account</span>
           </button>
         </form>
 
+        <!-- Switch to Login -->
         <div class="mt-6 text-center">
           <button
             type="button"
-            class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400"
+            class="text-sm text-primary hover:text-accent"
             @click="router.push('/login-form')"
           >
             Already have an account? Sign in

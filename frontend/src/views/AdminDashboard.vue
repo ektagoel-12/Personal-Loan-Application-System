@@ -1,61 +1,62 @@
 <template>
-  <div class="dashboard p-6">
-    <h1 class="text-2xl font-bold mb-2">Admin Dashboard</h1>
-    <p class="mb-6 text-gray-600">Monitor and manage loan applications</p>
+  <div class="dashboard p-6 font-sans bg-[#ffffff] text-[#1f2937]">
+    <h1 class="text-2xl font-bold text-[#1f2937] mb-2">Admin Dashboard</h1>
+    <p class="mb-6 text-[#6b7280]">Monitor and manage loan applications</p>
 
     <div class="grid grid-cols-4 gap-4 mb-8">
-      <div class="card">
-        <h3>Total Applications</h3>
-        <p class="text-2xl">{{ stats?.totalApplications }}</p>
-        <small>+{{ stats?.growth }}% from last month</small>
+      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+        <h3 class="text-sm font-medium text-[#7e22ce] mb-1">Total Applications</h3>
+        <p class="text-2xl font-bold text-[#1f2937]">{{ stats?.totalApplications }}</p>
+        <small class="text-sm ">+{{ stats?.growth }}% from last month</small>
       </div>
-      <div class="card">
-        <h3>Approval Rate</h3>
-        <p class="text-2xl">{{ stats?.approvalRate }}%</p>
-        <small>+{{ stats?.approvalGrowth }}% from last month</small>
+      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+        <h3 class="text-sm font-medium text-[#7e22ce] mb-1">Approval Rate</h3>
+        <p class="text-2xl font-bold text-[#1f2937]">{{ stats?.approvalRate }}%</p>
+        <small class="text-sm ">+{{ stats?.approvalGrowth }}% from last month</small>
       </div>
-      <div class="card">
-        <h3>Pending Review</h3>
-        <p class="text-2xl">{{ stats?.pending }}</p>
-        <small>Requires attention</small>
+      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+        <h3 class="text-sm font-medium text-[#7e22ce] mb-1">Pending Review</h3>
+        <p class="text-2xl font-bold text-[#1f2937]">{{ stats?.pending }}</p>
+        <small class="text-sm ">Requires attention</small>
       </div>
-      <div class="card">
-        <h3>Avg. Income</h3>
-        <p class="text-2xl">₹{{ stats?.avgIncome }}</p>
-        <small>Monthly average</small>
+      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+        <h3 class="text-sm font-medium text-[#7e22ce] mb-1">Avg. Income</h3>
+        <p class="text-2xl font-bold text-[#1f2937]">₹{{ stats?.avgIncome }}</p>
+        <small class="text-sm ">Monthly average</small>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-6 mb-8">
-      <div class="card">
-        <h3 class="mb-2">Application Trends</h3>
+    <div class="card bg-[#ffffff] border border-[#e5e7eb] rounded-xl p-6 shadow-sm grid grid-cols-2 gap-6 mb-8">
+      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+        <h3 class=" text-sm font-medium text-[#7e22ce] mb-2">Application Trends</h3>
         <BarChart v-if="barChartData.months.length" :data="barChartData" />
       </div>
-      <div class="card">
-        <h3 class="mb-2">Application Status</h3>
+      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+        <h3 class="text-sm font-medium text-[#7e22ce] mb-2">Application Status</h3>
         <PieChart v-if="pieChartData.approved + pieChartData.pending + pieChartData.rejected > 0" 
           :data="pieChartData" />
       </div>
     </div>
     <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
   <!-- Title -->
-  <h3 class="text-xl flex gap-2 align-middle font-bold text-gray-800 mb-6">
-    <ClipboardList /> List of Pending Applications
-  </h3>
+  <h3 class="text-xl flex gap-2 items-center font-bold text-[#1f2937] mb-6">
+  <ClipboardList class="text-[#7e22ce]" />
+  List of Pending Applications
+</h3>
 
   <!-- Search -->
     <div class="flex items-center mb-6">
       <input 
         v-model="search" 
         placeholder="Search applications..." 
-        class="w-72 border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+        class="w-72 border border-[#d1d5db] rounded-lg px-4 py-2 shadow-sm focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] outline-none transition"
       />
     </div>
 
     <!-- Table -->
     <div class="overflow-x-auto rounded-lg border border-gray-200">
       <table class="w-full text-sm text-left text-gray-700">
-        <thead class="bg-gray-50 text-gray-900 text-sm uppercase font-semibold">
+       <thead class="bg-[#f3e8ff] text-[#7e22ce] text-sm uppercase font-semibold">
           <tr>
             <th class="px-4 py-3">Application ID</th>
             <th class="px-4 py-3">Applicant</th>
@@ -88,7 +89,7 @@
                 {{ app.creditScore }}
               </span>
             </td>
-            <td class="px-4 py-3">{{ loanTypeLabel[app.loanType].label }}</td>
+            <td v-if="loanTypeLabel[app.loanType]" class="px-4 py-3">{{ loanTypeLabel[app.loanType].label }}</td>
             <td class="px-4 py-3">{{ app.applicationDate }}</td>
             <td class="px-4 py-3">
               <span 
@@ -104,8 +105,7 @@
             <td class="px-4 py-3 text-center">
               <button 
                 @click="goToEdit(app.id)"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm text-sm font-medium transition"
-              >
+                class="bg-[#7e22ce] hover:bg-[#6b21a8] text-white px-4 py-2 rounded-lg shadow-sm text-sm font-medium transition"              >
                 Edit
               </button>
             </td>
@@ -131,8 +131,9 @@ const router = useRouter();
 const search = ref("");
 
 const stats = computed(() => store.getters.stats);
-const applications = computed(() => store.getters.applications);
-const loanTypeLabel = store.state.interestRate
+const applications = computed(() => store.getters.applications)
+const loanTypeLabel = computed(()=>(store.state.interestRate))
+
 
 const filteredApps = computed(() =>
   applications.value.filter((a) => {
@@ -210,6 +211,10 @@ const goToEdit = (id) => {
 onMounted(() => {
   fetchDashboardData();
   autoUpdateStatuses();
+  console.log("Mounting")
+  for(let loans of applications.value){
+  console.log(loanTypeLabel[loans.status])
+}
 });
 </script>
 

@@ -1,38 +1,40 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
-      <div class="px-6 py-4 space-y-2 text-center">
-        <h2 class="text-2xl font-bold">Welcome Back</h2>
+  <div class="min-h-screen flex items-center justify-center bg-secondary p-4 font-sans">
+    <div class="w-full max-w-md bg-neutral rounded-xl shadow-lg overflow-hidden">
+      <!-- Header -->
+      <div class="px-6 py-4 text-center space-y-2">
+        <h2 class="text-2xl font-bold text-primary">Welcome Back</h2>
         <p class="text-sm text-gray-500">Sign in to your account</p>
       </div>
 
+      <!-- Form -->
       <form @submit.prevent="handleSubmit" class="px-6 py-4 space-y-4">
-        <!-- Email Field -->
+        <!-- Email -->
         <div class="space-y-1">
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <label for="email" class="block text-sm font-medium text-textdark">Email</label>
           <input
             id="email"
             type="email"
             v-model="formData.email"
             placeholder="Enter your email"
-            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <p v-if="errors.email" class="text-red-600 text-xs">{{ errors.email }}</p>
         </div>
 
-        <!-- Password Field -->
+        <!-- Password -->
         <div class="space-y-1 relative">
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <label for="password" class="block text-sm font-medium text-textdark">Password</label>
           <input
             :type="showPassword ? 'text' : 'password'"
             id="password"
             v-model="formData.password"
             placeholder="Enter your password"
-            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 pr-10"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary pr-10"
           />
           <button
             type="button"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-accent"
             @click="showPassword = !showPassword"
           >
             <component :is="showPassword ? EyeOff : Eye" class="h-4 w-4" />
@@ -40,10 +42,10 @@
           <p v-if="errors.password" class="text-red-600 text-xs">{{ errors.password }}</p>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit -->
         <button
           type="submit"
-          class="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition disabled:opacity-50"
+          class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-accent transition disabled:opacity-50"
         >
           Sign In
         </button>
@@ -51,7 +53,7 @@
 
       <!-- Demo credentials -->
       <div class="px-6 py-4 text-center text-xs text-gray-500 space-y-1">
-        <p>Demo credentials:</p>
+        <p class="text-textdark">Demo credentials:</p>
         <div>User: user@example.com</div>
         <div>Admin: admin@example.com</div>
         <div>Password: password123</div>
@@ -62,7 +64,7 @@
         <button
           type="button"
           @click="router.push('/registration-form')"
-          class="text-sm text-blue-600 hover:text-blue-500"
+          class="text-sm text-primary hover:text-accent"
         >
           Don't have an account? Sign up
         </button>
@@ -70,6 +72,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { reactive, ref } from 'vue'

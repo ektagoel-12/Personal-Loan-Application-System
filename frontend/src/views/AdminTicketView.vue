@@ -89,45 +89,78 @@ const filteredTickets = computed(() => {
 });
 </script>
 
-
 <template>
-  <div class="max-w-6xl mx-auto p-6 bg-gray-50 relative">
-    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">🎟️ Admin Ticket Dashboard</h2>
+  <div class="max-w-6xl mx-auto p-6 bg-white font-inter text-gray-800 relative">
+    <!-- Topbar -->
+    <h2 class="text-3xl font-bold mb-6 text-[#1f2937] text-center">
+      🎟️ Admin Ticket Dashboard
+    </h2>
 
     <!-- Filter & Sort -->
     <div class="flex justify-between items-center mb-6">
-      <select v-model="filterStatus" class="border rounded px-3 py-1">
+      <select
+        v-model="filterStatus"
+        class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]"
+      >
         <option>All</option>
         <option>OPEN</option>
         <option>RESOLVED</option>
         <option>CLOSED</option>
       </select>
 
-      <button @click="sortByLatest = sortByLatest === 'desc' ? 'asc' : 'desc'"
-              class="bg-gray-100 px-3 py-1 rounded hover:bg-gray-200">
-        Sort by Latest Update: {{ sortByLatest === 'desc' ? 'Newest First' : 'Oldest First' }}
+      <button
+        @click="sortByLatest = sortByLatest === 'desc' ? 'asc' : 'desc'"
+        class="bg-[#f3e8ff] text-[#7e22ce] px-4 py-2 rounded-lg font-medium hover:bg-[#e9d5ff] transition"
+      >
+        Sort by Latest Update:
+        {{ sortByLatest === 'desc' ? 'Newest First' : 'Oldest First' }}
       </button>
     </div>
 
     <!-- Tickets List -->
     <div v-if="filteredTickets.length" class="space-y-6">
-      <div v-for="ticket in filteredTickets" :key="ticket.id" class="bg-white border rounded-xl p-6 shadow-md hover:shadow-lg transition duration-200">
+      <div
+        v-for="ticket in filteredTickets"
+        :key="ticket.id"
+        class="bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-lg transition duration-200"
+      >
+        <!-- Header -->
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h3 class="text-xl font-semibold text-gray-800">{{ ticket.subject }}</h3>
-            <p class="text-sm text-gray-500">Ticket #{{ ticket.id }} • User ID: {{ ticket.userId }}</p>
+            <h3 class="text-xl font-semibold text-gray-900">
+              {{ ticket.subject }}
+            </h3>
+            <p class="text-sm text-gray-500">
+              Ticket #{{ ticket.id }} • User ID: {{ ticket.userId }}
+            </p>
           </div>
+
           <div class="flex items-center space-x-2">
-            <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-700">{{ ticket.type }}</span>
-            <select v-model="ticket.status" @change="updateStatus(ticket, ticket.status)"
-                    class="border rounded px-3 py-1 text-sm focus:ring-2 focus:ring-indigo-500">
-              <option v-for="status in statusOptions" :key="status" :value="status">{{ status }}</option>
+            <span
+              class="text-xs font-medium px-2 py-1 rounded-full bg-[#f3e8ff] text-[#7e22ce]"
+            >
+              {{ ticket.type }}
+            </span>
+            <select
+              v-model="ticket.status"
+              @change="updateStatus(ticket, ticket.status)"
+              class="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:ring-2 focus:ring-[#7e22ce]"
+            >
+              <option
+                v-for="status in statusOptions"
+                :key="status"
+                :value="status"
+              >
+                {{ status }}
+              </option>
             </select>
           </div>
         </div>
 
+        <!-- Description -->
         <p class="text-gray-700 mb-4">{{ ticket.description }}</p>
 
+        <!-- Meta Info -->
         <div class="flex items-center text-xs text-gray-500 space-x-6 mb-4">
           <p>Created: {{ new Date(ticket.createAt).toLocaleString() }}</p>
           <p>Updated: {{ new Date(ticket.updatedAt).toLocaleString() }}</p>
@@ -135,28 +168,33 @@ const filteredTickets = computed(() => {
 
         <!-- Admin Response -->
         <div class="mt-3">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Admin Response</label>
-          <textarea v-model="ticket.response" rows="2" placeholder="Write your response..."
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-        
-                    <div class="mt-3 flex justify-between items-center">
-              <!-- Left: Update Response -->
-              <button
-                @click="updateResponse(ticket)"
-                class="bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-sm"
-              >
-                Update Response
-              </button>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Admin Response</label
+          >
+          <textarea
+            v-model="ticket.response"
+            rows="2"
+            placeholder="Write your response..."
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#7e22ce]"
+          ></textarea>
 
-              <!-- Right: View Details -->
-              <button
-                @click="openPopup(ticket.id)"
-                class="mt-4 bg-black text-white px-5 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 shadow-sm"
-              >
-                View Details
-              </button>
-            </div>
+          <div class="mt-3 flex justify-between items-center">
+            <!-- Left: Update Response -->
+            <button
+              @click="updateResponse(ticket)"
+              class="bg-[#7e22ce] text-white px-5 py-2 rounded-lg hover:bg-[#6b21a8] transition-colors duration-200 shadow-sm"
+            >
+              Update Response
+            </button>
 
+            <!-- Right: View Details -->
+            <button
+              @click="openPopup(ticket.id)"
+              class="bg-[#eab308] text-[#1f2937] px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200 shadow-sm"
+            >
+              View Details
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -166,6 +204,19 @@ const filteredTickets = computed(() => {
     </div>
 
     <!-- Ticket Popup -->
-    <TicketPopup v-if="showTicketPopup" :ticket-id="selectedTicketId" @close="showTicketPopup = false"/>
+    <TicketPopup
+      v-if="showTicketPopup"
+      :ticket-id="selectedTicketId"
+      @close="showTicketPopup = false"
+    />
   </div>
 </template>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.font-inter {
+  font-family: "Inter", sans-serif;
+}
+</style>
+
