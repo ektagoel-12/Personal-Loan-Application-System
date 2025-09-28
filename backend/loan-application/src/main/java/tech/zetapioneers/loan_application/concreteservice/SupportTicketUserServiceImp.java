@@ -9,6 +9,9 @@ import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.entities.User;
 import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
+import tech.zetapioneers.loan_application.exceptions.LoanNotFoundException;
+import tech.zetapioneers.loan_application.exceptions.TicketNotFoundException;
+import tech.zetapioneers.loan_application.exceptions.UserNotFoundException;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.repositories.SupportTicketRepository;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
@@ -43,11 +46,12 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
         @Override
         public ResponseEntity<SupportTicketResponseDto> createTicket(SupportTicketRequestDto dto) {
             User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found id: "+ dto.getUserId()));
 
             LoanApplication loan = null;
             if (dto.getLoanId() != null) {
-                loan = loanApplicationRepository.findById(dto.getLoanId()).orElse(null);
+                loan = loanApplicationRepository.findById(dto.getLoanId())
+                        .orElseThrow(()->new LoanNotFoundException("Loan is not found with id: "+dto.getLoanId()));
             }
 
             SupportTicket ticket = new SupportTicket();
@@ -67,7 +71,7 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
         @Override
         public ResponseEntity<List<SupportTicketResponseDto>> getTicketsByUser(String email) {
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found with email: "+ email));
 
             List<SupportTicket> tickets = supportTicketRepository.findByUser(user);
 
@@ -80,7 +84,7 @@ public class SupportTicketUserServiceImp implements SupportTicketUserService {
     @Override
     public ResponseEntity<SupportTicket> getTicketByID(Long id) {
         SupportTicket supportTicket = supportTicketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found with id: " + id));
         return ResponseEntity.status(200).body(supportTicket);
     }
 

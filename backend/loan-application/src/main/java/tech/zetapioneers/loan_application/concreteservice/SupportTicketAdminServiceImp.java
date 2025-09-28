@@ -8,6 +8,7 @@ import tech.zetapioneers.loan_application.dto.SupportTicketResponseBodyDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
+import tech.zetapioneers.loan_application.exceptions.TicketNotFoundException;
 import tech.zetapioneers.loan_application.repositories.SupportTicketRepository;
 import tech.zetapioneers.loan_application.services.SupportTicketAdminService;
 
@@ -59,7 +60,7 @@ public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
     @Override
     public ResponseEntity<SupportTicketResponseDto> addOrUpdateResponse(Long ticketId, SupportTicketResponseBodyDto responseBody) {
         SupportTicket supportTicket = supportTicketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticketId));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found with id: " + ticketId));
         supportTicket.setResponse(responseBody.getResponse());
         supportTicket.setUpdatedAt(LocalDateTime.now());
 
@@ -71,7 +72,7 @@ public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
     @Override
     public ResponseEntity<SupportTicketResponseDto> updateTicketStatus(Long ticketId, TicketStatus status) {
         SupportTicket supportTicket = supportTicketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticketId));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found with id: " + ticketId));
 
         supportTicket.setStatus(status);
         supportTicket.setUpdatedAt(LocalDateTime.now());
@@ -84,7 +85,7 @@ public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
     @Override
     public ResponseEntity<SupportTicket> getTicketByID(Long id) {
         SupportTicket supportTicket = supportTicketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found with id: " + id));
         return ResponseEntity.status(200).body(supportTicket);
     }
 }
