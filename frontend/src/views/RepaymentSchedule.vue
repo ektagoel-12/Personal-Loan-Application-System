@@ -1,21 +1,21 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 p-6 font-sans text-textdark">
     <!-- Back button and header -->
     <div v-if="selectedLoan" class="flex items-center gap-4">
       <!-- Back button -->
       <button
-        class="border rounded px-3 py-2 flex items-center gap-2 hover:bg-gray-50"
+        class="border border-primary/30 rounded px-3 py-2 flex items-center gap-2 hover:bg-secondary transition"
         @click="clearSelection"
       >
-        <ArrowLeft class="w-5 h-5" />
+        <ArrowLeft class="w-5 h-5 text-primary" />
         Back to Loans
       </button>
       <div>
-        <h1 class="text-3xl font-semibold">
+        <h1 class="text-3xl font-semibold text-primary">
           Repayment Schedule - {{ selectedLoan.id }}
         </h1>
         <p class="text-gray-500">
-          {{ selectedLoan.purpose }} | ₹{{
+          {{ selectedLoan.loanType }} | ₹{{
             selectedLoan.amount.toLocaleString()
           }}
           | {{ selectedLoan.interestRate }}% | {{ selectedLoan.tenure }} years
@@ -27,16 +27,16 @@
     <div v-else>
       <!-- Page header -->
       <div>
-        <h1 class="text-3xl font-bold">Repayment Schedule</h1>
+        <h1 class="text-3xl font-bold ">Repayment Schedule</h1>
         <p class="text-gray-500">
           View detailed repayment schedules for your approved loans
         </p>
       </div>
 
       <!-- Card-like section -->
-      <div class="border rounded-2xl p-6 mt-4 bg-white shadow-sm">
+      <div class="border border-secondary rounded-2xl p-6 mt-4 bg-white shadow-sm">
         <div class="mb-4">
-          <h2 class="flex items-center gap-2 text-lg font-semibold">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-primary">
             <ArrowLeft class="w-5 h-5" />
             Select Approved Loan
           </h2>
@@ -47,30 +47,24 @@
 
         <!-- Filters -->
         <div class="mb-6 relative w-64">
-          <!-- Left icon -->
           <Filter
-            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary"
           />
-
-          <!-- Dropdown -->
           <select
             v-model="filterPurpose"
-            class="w-full border rounded-lg pl-10 pr-8 py-2 bg-gray-50 appearance-none"
+            class="w-full border border-primary/30 rounded-lg pl-10 pr-8 py-2 bg-secondary text-textdark appearance-none focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="all">All Purposes</option>
-            <option value="Personal Use">Personal Use</option>
-            <option value="Home Purchase">Home Purchase</option>
-            <option value="Car Purchase">Car Purchase</option>
-            <option value="Education">Education</option>
-            <option value="Business">Business</option>
-            <option value="Medical Emergency">Medical Emergency</option>
-            <option value="Debt Consolidation">Debt Consolidation</option>
-            <option value="Home Improvement">Home Improvement</option>
+            <option
+              v-for="(purpose, key) in loanPurposes"
+              :key="key"
+              :value="purpose.label"
+            >
+              {{ purpose.label }}
+            </option>
           </select>
-
-          <!-- Right arrow -->
           <ChevronDown
-            class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+            class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary pointer-events-none"
           />
         </div>
 
@@ -79,12 +73,11 @@
           <div
             v-for="loan in filteredLoans"
             :key="loan.id"
-            class="border rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer bg-white flex justify-between items-center"
+            class="border border-secondary rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-primary transition cursor-pointer bg-white flex justify-between items-center"
           >
-            <!-- Left side (loan details) -->
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-4">
-                <h3 class="text-lg font-semibold">{{ loan.id }}</h3>
+                <h3 class="text-lg font-semibold text-primary">{{ loan.id }}</h3>
                 <span
                   class="bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full text-xs font-medium"
                 >
@@ -92,37 +85,33 @@
                 </span>
               </div>
 
-              <!-- Grid for Loan Details -->
+              <!-- Loan Details Grid -->
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
                 <div>
-                  <p class="text-gray-500 text-base">Amount</p>
-                  <p class="text-lg font-medium">
-                    ₹{{ loan.amount.toLocaleString() }}
-                  </p>
+                  <p class="text-gray-500">Amount</p>
+                  <p class="text-lg font-medium">₹{{ loan.amount.toLocaleString() }}</p>
                 </div>
                 <div>
-                  <p class="text-gray-500 text-base">Purpose</p>
-                  <p class="text-lg font-medium">{{ loan.purpose }}</p>
+                  <p class="text-gray-500">Purpose</p>
+                  <p class="text-lg font-medium">{{ loanPurposes[loan.purpose].label }}</p>
                 </div>
                 <div>
-                  <p class="text-gray-500 text-base">Interest Rate</p>
-                  <p class="text-lg font-medium">
-                    {{ loan.interestRate }}% p.a.
-                  </p>
+                  <p class="text-gray-500">Interest Rate</p>
+                  <p class="text-lg font-medium">{{ loan.interestRate }}% p.a.</p>
                 </div>
                 <div>
-                  <p class="text-gray-500 text-base">Tenure</p>
+                  <p class="text-gray-500">Tenure</p>
                   <p class="text-lg font-medium">{{ loan.tenure }} years</p>
                 </div>
               </div>
 
-              <!-- Bottom row (EMI + Applied date) -->
+              <!-- EMI + Applied Date -->
               <div class="flex gap-6 text-sm">
                 <p>
                   <span class="text-gray-500">Monthly EMI: </span>
-                  <span class="font-medium"
-                    >₹{{ getEmiForLoan(loan).toLocaleString() }}</span
-                  >
+                  <span class="font-medium text-primary">
+                    ₹{{ getEmiForLoan(loan).toLocaleString() }}
+                  </span>
                 </p>
                 <p>
                   <span class="text-gray-500">Applied: </span>
@@ -131,10 +120,10 @@
               </div>
             </div>
 
-            <!-- Right side button (centered vertically) -->
+            <!-- View button -->
             <div class="flex items-center ml-6">
               <button
-                class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-800"
+                class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition"
                 @click="selectLoan(loan)"
               >
                 View Schedule
@@ -143,16 +132,14 @@
           </div>
         </div>
 
-        <!-- Empty state if no loans -->
+        <!-- Empty state -->
         <div v-if="filteredLoans.length === 0" class="text-center py-8">
-          <ArrowLeft class="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 class="text-lg font-semibold">No Approved Loans Found</h3>
+          <ArrowLeft class="h-12 w-12 text-primary mx-auto mb-4" />
+          <h3 class="text-lg font-semibold text-primary">No Approved Loans Found</h3>
           <p class="text-gray-500">
-            {{
-              filterPurpose !== "all"
-                ? "Try adjusting your filter criteria"
-                : "You don't have any approved loans yet."
-            }}
+            {{ filterPurpose !== "all"
+              ? "Try adjusting your filter criteria"
+              : "You don't have any approved loans yet." }}
           </p>
         </div>
       </div>
@@ -160,8 +147,8 @@
 
     <!-- Summary stats -->
     <div v-if="summaryStats" class="grid gap-6 md:grid-cols-3">
-      <div class="border rounded-lg p-6 shadow-sm">
-        <h3 class="flex items-center gap-2 text-black-600 text-lg font-normal">
+      <div class="border border-secondary rounded-lg p-6 shadow-sm bg-white">
+        <h3 class="flex items-center gap-2 text-lg font-medium text-primary">
           <DollarSign class="w-5 h-5 text-green-600" />
           Monthly EMI
         </h3>
@@ -169,41 +156,40 @@
           ₹{{ summaryStats.monthlyEmi.toLocaleString() }}
         </p>
       </div>
-      <div class="border rounded-lg p-6 shadow-sm">
-        <h3 class="flex items-center gap-2 text-black-600 text-lg font-normal">
+      <div class="border border-secondary rounded-lg p-6 shadow-sm bg-white">
+        <h3 class="flex items-center gap-2 text-lg font-medium text-primary">
           <TrendingDown class="w-5 h-5 text-red-600" />
           Total Interest
         </h3>
-        <p class="text-xl font-semibold mt-2 text-black-600">
+        <p class="text-xl font-semibold mt-2">
           ₹{{ summaryStats.totalInterest.toLocaleString() }}
         </p>
       </div>
-      <div class="border rounded-lg p-6 shadow-sm">
-        <h3 class="flex items-center gap-2 text-black-600 text-lg font-normal">
+      <div class="border border-secondary rounded-lg p-6 shadow-sm bg-white">
+        <h3 class="flex items-center gap-2 text-lg font-medium text-primary">
           <Calculator class="w-5 h-5 text-blue-600" />
           Total Amount
         </h3>
-        <p class="text-xl font-semibold mt-2 text-black-600">
+        <p class="text-xl font-semibold mt-2">
           ₹{{ summaryStats.totalAmount.toLocaleString() }}
         </p>
       </div>
     </div>
 
     <!-- Schedule -->
-    <div v-if="selectedLoan" class="border rounded-lg shadow-sm">
+    <div v-if="selectedLoan" class="border border-secondary rounded-lg shadow-sm bg-white">
       <div class="flex items-center justify-between p-4">
         <div>
-          <h3 class="text-lg font-semibold">Repayment Schedule</h3>
+          <h3 class="text-lg font-semibold text-primary">Repayment Schedule</h3>
           <p class="text-gray-500 text-sm">
             Detailed breakdown of each monthly payment for {{ selectedLoan.id }}
           </p>
         </div>
-        <!-- Export CSV Button -->
         <button
-          class="border px-3 py-2 rounded flex items-center gap-2 hover:bg-gray-50"
+          class="border border-primary/40 px-3 py-2 rounded flex items-center gap-2 hover:bg-secondary transition"
           @click="exportToCSV"
         >
-          <Download class="w-5 h-5" />
+          <Download class="w-5 h-5 text-primary" />
           Export CSV
         </button>
       </div>
@@ -211,148 +197,149 @@
       <!-- Filters -->
       <div class="flex gap-4 items-center px-4 pb-4">
         <div class="relative w-40">
-  <select
-    v-model="filterYear"
-    class="w-full border rounded-lg pl-3 pr-10 py-2 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="all">All Years</option>
-    <option v-for="year in selectedLoan.tenure" :key="year" :value="year">
-      Year {{ year }}
-    </option>
-  </select>
+          <select
+            v-model="filterYear"
+            class="w-full border border-primary/30 rounded-lg pl-3 pr-10 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="all">All Years</option>
+            <option v-for="year in selectedLoan.tenure" :key="year" :value="year">
+              Year {{ year }}
+            </option>
+          </select>
+          <ChevronDown
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary pointer-events-none"
+          />
+        </div>
 
-  <!-- Right arrow -->
-  <ChevronDown
-    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
-  />
-</div>
-
-
-        <span class="border rounded px-3 py-2 text-sm text-gray-600">
+        <span class="border border-secondary rounded px-3 py-2 text-sm text-gray-600">
           {{ sortedSchedule.length }} payments
         </span>
       </div>
 
       <!-- Table -->
-      <table class="w-full border-t">
+      <table class="w-full border-t border-secondary text-sm">
         <thead>
-          <tr class="bg-gray-100">
+          <tr class="bg-secondary text-textdark">
             <th
-              class="px-4 py-2  cursor-pointer hover:bg-gray-50"
+              class="px-4 py-2 cursor-pointer hover:bg-secondary/70"
               @click="handleSort('month')"
             >
               <div class="flex items-center justify-center gap-1">
                 Month
-                <ArrowUpDown class="w-4 h-4" />
+                <ArrowUpDown class="w-4 h-4 text-primary" />
               </div>
             </th>
-
             <th
-              class="px-4 py-2 cursor-pointer hover:bg-gray-50"
+              class="px-4 py-2 cursor-pointer hover:bg-secondary/70"
               @click="handleSort('emi')"
             >
               <div class="flex items-center justify-center gap-1">
                 EMI
-                <ArrowUpDown class="w-4 h-4" />
+                <ArrowUpDown class="w-4 h-4 text-primary" />
               </div>
             </th>
-
             <th
-              class="px-4 py-2 cursor-pointer hover:bg-gray-50"
+              class="px-4 py-2 cursor-pointer hover:bg-secondary/70"
               @click="handleSort('principalAmount')"
             >
               <div class="flex items-center justify-center gap-1">
                 Principal
-                <ArrowUpDown class="w-4 h-4" />
+                <ArrowUpDown class="w-4 h-4 text-primary" />
               </div>
             </th>
-
             <th
-              class="px-4 py-2 cursor-pointer hover:bg-gray-50"
+              class="px-4 py-2 cursor-pointer hover:bg-secondary/70"
               @click="handleSort('interestAmount')"
             >
               <div class="flex items-center justify-center gap-1">
                 Interest
-                <ArrowUpDown class="w-4 h-4" />
+                <ArrowUpDown class="w-4 h-4 text-primary" />
               </div>
             </th>
-
             <th
-              class="px-4 py-2 cursor-pointer hover:bg-gray-50"
+              class="px-4 py-2 cursor-pointer hover:bg-secondary/70"
               @click="handleSort('balanceRemaining')"
             >
               <div class="flex items-center justify-center gap-1">
                 Balance
-                <ArrowUpDown class="w-4 h-4" />
+                <ArrowUpDown class="w-4 h-4 text-primary" />
               </div>
+            </th>
+            <th class="px-4 py-2 cursor-pointer hover:bg-gray-50">
+              <div class="flex items-center justify-center gap-1">Paid</div>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="row in paginatedSchedule"
-            :key="row.month"
+            v-for="(row, index) in paginatedSchedule"
+            :key="row.id"
             class="border-t"
           >
-            <!-- <td class="px-4 py-2">
-              {{ row.month }}
-              <span class="ml-2 text-xs border rounded px-1">
-                Year {{ Math.ceil(row.month / 12) }}
-              </span>
-            </td> -->
             <td class="px-4 py-2">
-  {{ getMonthName(row.month, selectedLoan.appliedDate) }}
-</td>
-
-            <td class="px-4 py-2 ">
-              ₹{{ row.emi.toLocaleString() }}
+              {{ getMonthName(row.month, selectedLoan.applicationDate) }}
             </td>
+
+            <td class="px-4 py-2">₹{{ row.emi.toLocaleString() }}</td>
             <td class="px-4 py-2 text-green-600">
               ₹{{ row.principalAmount.toLocaleString() }}
             </td>
             <td class="px-4 py-2 text-red-600">
               ₹{{ row.interestAmount.toLocaleString() }}
             </td>
-            <td class="px-4 py-2 ">
+            <td class="px-4 py-2">
               ₹{{ row.balanceRemaining.toLocaleString() }}
+            </td>
+            <td class="px-4 py-2">
+              <button
+                v-if="!row.isPaid"
+                @click="markAsPaid(selectedLoan.id, row.id)"
+                class="bg-primary text-white px-4 py-1.5 rounded-md text-sm font-medium shadow-sm hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="!canPay(row)"
+              >
+                Pay Now
+              </button>
+              <span
+                v-else
+                class="bg-green-100 text-green-700 px-3 py-1.5 rounded-md text-sm font-medium"
+              >
+                Paid
+              </span>
             </td>
           </tr>
         </tbody>
       </table>
 
       <!-- Pagination -->
-      <div
-        v-if="totalPages > 1"
-        class="flex justify-between items-center p-4 text-sm"
-      >
+      <div v-if="totalPages > 1" class="flex justify-between items-center p-4 text-sm">
         <span>
           Showing {{ (currentPage - 1) * rowsPerPage + 1 }} to
           {{ Math.min(currentPage * rowsPerPage, sortedSchedule.length) }} of
           {{ sortedSchedule.length }} payments
         </span>
-        <div class="flex gap-2">
+
+        <div class="flex items-center gap-3">
+          <!-- Prev Button -->
           <button
-            class="border px-2 py-1 rounded"
+            class="border border-primary/30 px-2 py-1 rounded hover:bg-secondary transition"
             :disabled="currentPage === 1"
             @click="currentPage--"
           >
-            Prev
+            ← Prev
           </button>
+
+          <!-- Page Indicator -->
+          <span class="text-gray-700">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+
+          <!-- Next Button -->
           <button
-            v-for="page in totalPages"
-            :key="page"
-            class="border px-2 py-1 rounded"
-            :class="{ 'bg-gray-300': page === currentPage }"
-            @click="currentPage = page"
-          >
-            {{ page }}
-          </button>
-          <button
-            class="border px-2 py-1 rounded"
+            class="border px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
             :disabled="currentPage === totalPages"
             @click="currentPage++"
           >
-            Next
+            Next →
           </button>
         </div>
       </div>
@@ -360,9 +347,10 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
+import { makeRequestWithToken } from "@/utils/requests";
 import {
   Download,
   ArrowLeft,
@@ -374,19 +362,6 @@ import {
   Calculator,
 } from "lucide-vue-next";
 
-export default {
-  name: "RepaymentSchedule",
-  components: {
-    Download,
-    ArrowLeft,
-    ArrowUpDown,
-    Filter,
-    ChevronDown,
-    DollarSign,
-    TrendingDown,
-    Calculator,
-  },
-  setup() {
     const store = useStore();
     const selectedLoan = ref(null);
     const currentPage = ref(1);
@@ -396,6 +371,7 @@ export default {
 
     const sortField = ref("month");
     const sortDirection = ref("asc");
+    const loanPurposes = computed(()=>(store.state.interestRate))
 
     const handleSort = (field) => {
       if (sortField.value === field) {
@@ -410,40 +386,32 @@ export default {
       let loans = store.state.applications.filter(
         (loan) => loan.status === "APPROVED"
       );
+      console.log(filterPurpose.value)
       if (filterPurpose.value !== "all") {
-        loans = loans.filter((loan) => loan.purpose === filterPurpose.value);
+        loans = loans.filter((loan) => loanPurposes.value[loan.purpose].label === filterPurpose.value);
       }
       return loans;
     });
+    const markAsPaid = async (loanId, scheduleId) => {
+      try {
+        await makeRequestWithToken(
+          "POST",
+          `/api/loans/${loanId}/schedule/${scheduleId}/pay`
+        );
 
-    const repaymentSchedule = computed(() => {
-      if (!selectedLoan.value) return [];
-      const loan = selectedLoan.value;
-      const monthlyRate = loan.interestRate / 100 / 12;
-      const totalMonths = loan.tenure * 12;
-      const emi =
-        (loan.amount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
-        (Math.pow(1 + monthlyRate, totalMonths) - 1);
-
-      const schedule = [];
-      let balance = loan.amount;
-
-      for (let m = 1; m <= totalMonths; m++) {
-        const interest = balance * monthlyRate;
-        const principal = emi - interest;
-        balance = Math.max(0, balance - principal);
-
-        schedule.push({
-          month: m,
-          emi: Math.round(emi),
-          principalAmount: Math.round(principal),
-          interestAmount: Math.round(interest),
-          balanceRemaining: Math.round(balance),
-          startDate: loan.appliedDate // keep applied date for month mapping
-        });
+        // Refresh schedule after payment
+        const response = await makeRequestWithToken(
+          "GET",
+          `/api/loans/${loanId}/schedule`
+        );
+        repaymentSchedule.value = response?.data || [];
+      } catch (err) {
+        console.error("Error marking payment:", err);
       }
-      return schedule;
-    });
+    };
+
+    //new reactive state to hold the schedule from API
+    const repaymentSchedule = ref([]);
 
     const filteredSchedule = computed(() => {
       if (filterYear.value === "all") return repaymentSchedule.value;
@@ -467,15 +435,22 @@ export default {
     });
 
     const summaryStats = computed(() => {
-      if (!repaymentSchedule.value.length || !selectedLoan.value) return null;
+      if (!selectedLoan.value || repaymentSchedule.value.length === 0)
+        return null;
+
+      const monthlyEmi = Math.round(repaymentSchedule.value[0].emi);
+
+      const totalInterest = repaymentSchedule.value.reduce(
+        (sum, r) => sum + r.interestAmount,
+        0
+      );
+
+      const totalAmount = Math.round(selectedLoan.value.amount + totalInterest);
+
       return {
-        monthlyEmi: repaymentSchedule.value[0]?.emi || 0,
-        totalInterest: Math.round(
-          repaymentSchedule.value.reduce((sum, r) => sum + r.interestAmount, 0)
-        ),
-        totalAmount:
-          selectedLoan.value.amount +
-          repaymentSchedule.value.reduce((sum, r) => sum + r.interestAmount, 0),
+        monthlyEmi,
+        totalInterest: Math.round(totalInterest),
+        totalAmount,
       };
     });
 
@@ -487,6 +462,23 @@ export default {
         (Math.pow(1 + monthlyRate, totalMonths) - 1);
       return Math.round(emi);
     };
+    // Only allow paying the first unpaid EMI in order
+    const canPay = (row) => {
+      // if already paid → disabled
+      if (row.isPaid) return false;
+
+      // find this row's index in the full schedule
+      const index = sortedSchedule.value.findIndex((r) => r.id === row.id);
+
+      // ensure all previous months are paid
+      for (let i = 0; i < index; i++) {
+        if (!sortedSchedule.value[i].isPaid) {
+          return false; // found a previous unpaid EMI → block
+        }
+      }
+
+      return true; // ✅ allowed only if all before are paid
+    };
 
     const paginatedSchedule = computed(() => {
       const start = (currentPage.value - 1) * rowsPerPage;
@@ -497,79 +489,68 @@ export default {
       Math.ceil(sortedSchedule.value.length / rowsPerPage)
     );
 
-    const selectLoan = (loan) => {
+    const selectLoan = async (loan) => {
       selectedLoan.value = loan;
       currentPage.value = 1;
       filterYear.value = "all";
+
+      try {
+        const response = await makeRequestWithToken(
+          "GET",
+          `/api/loans/${loan.id}/schedule`
+        );
+        repaymentSchedule.value = response?.data || [];
+      } catch (err) {
+        console.error("Error fetching schedule", err);
+        repaymentSchedule.value = [];
+      }
     };
     const getMonthName = (monthIndex, startDate = null) => {
-  // If loan.appliedDate is available, use it as the start point
-  const baseDate = startDate ? new Date(startDate) : new Date();
-  baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
+      // If loan.appliedDate is available, use it as the start point
+      const baseDate = startDate ? new Date(startDate) : new Date();
+      baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
 
-  // Format as "Jan 2024" (you can change to "January" if you prefer full names)
-  return baseDate.toLocaleString("default", { month: "short", year: "numeric" });
-};
-
-
-    const clearSelection = () => {
-      selectedLoan.value = null;
-      currentPage.value = 1;
-      filterYear.value = "all";
+      // Format as "Jan 2024" (you can change to "January" if you prefer full names)
+      return baseDate.toLocaleString("default", {
+        month: "short",
+        year: "numeric",
+      });
     };
 
-    const exportToCSV = () => {
-      if (!selectedLoan.value) return;
-      const headers = [
-        "Month",
-        "EMI",
-        "Principal",
-        "Interest",
-        "Remaining Balance",
-      ];
-      const rows = repaymentSchedule.value.map((r) =>
-        [
-          r.month,
-          r.emi,
-          r.principalAmount,
-          r.interestAmount,
-          r.balanceRemaining,
-        ].join(",")
-      );
-      const csv = [headers.join(","), ...rows].join("\n");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `repayment-schedule-${selectedLoan.value.id}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    };
+  const clearSelection = () => {
+    selectedLoan.value = null;
+    currentPage.value = 1;
+    filterYear.value = "all";
+  };
 
-    return {
-      filteredLoans,
-      selectedLoan,
-      selectLoan,
-      clearSelection,
-      repaymentSchedule,
-      filteredSchedule,
-      sortedSchedule,
-      paginatedSchedule,
-      summaryStats,
-      filterYear,
-      filterPurpose,
-      currentPage,
-      totalPages,
-      rowsPerPage,
-      sortField,
-      sortDirection,
-      handleSort,
-      exportToCSV,
-      getEmiForLoan,
-      getMonthName,
-    };
-  },
-};
+  const exportToCSV = () => {
+    if (!selectedLoan.value) return;
+    const headers = [
+      "Month",
+      "EMI",
+      "Principal",
+      "Interest",
+      "Remaining Balance",
+    ];
+    const rows = repaymentSchedule.value.map((r) =>
+      [
+        r.month,
+        r.emi,
+        r.principalAmount,
+        r.interestAmount,
+        r.balanceRemaining,
+      ].join(",")
+    );
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `repayment-schedule-${selectedLoan.value.id}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 </script>
 
 <style scoped>
@@ -581,6 +562,5 @@ td {
   border: 1px solid #ddd;
   padding: 6px;
   text-align: center;
-
 }
 </style>

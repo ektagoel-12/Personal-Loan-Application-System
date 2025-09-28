@@ -1,17 +1,19 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 p-6 font-inter text-[#1f2937] bg-white">
     <!-- Title -->
     <div>
-      <h1 class="text-3xl">EMI Calculator</h1>
-      <p class="text-gray-500">Calculate your monthly EMI and plan your loan repayment</p>
+      <h1 class="text-3xl font-bold ">EMI Calculator</h1>
+      <p class="text-gray-500">
+        Calculate your monthly EMI and plan your loan repayment
+      </p>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-3">
       <!-- Input Section -->
       <div class="lg:col-span-1">
-        <div class="border rounded-lg shadow-sm p-6 space-y-6 bg-white">
+        <div class="border border-[#f3e8ff] rounded-lg shadow-sm p-6 space-y-6 bg-white">
           <div>
-            <h2 class="text-lg font-semibold flex items-center gap-2">
+            <h2 class="text-lg font-semibold flex items-center gap-2 text-[#7e22ce]">
               Loan Parameters
             </h2>
             <p class="text-gray-500">Adjust the values to calculate your EMI</p>
@@ -23,7 +25,7 @@
             <input
               type="number"
               v-model.number="loanAmount"
-              class="w-full border rounded-md px-3 py-2 text-right"
+              class="w-full border border-[#7e22ce]/30 rounded-md px-3 py-2 text-right focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
             />
             <input
               type="range"
@@ -31,13 +33,15 @@
               min="50000"
               max="10000000"
               step="50000"
-              class="w-full"
+              class="w-full accent-[#7e22ce]"
             />
             <div class="flex justify-between text-xs text-gray-500">
               <span>₹50K</span>
               <span>₹1Cr</span>
             </div>
-            <p class="text-sm text-gray-500">₹{{ loanAmount.toLocaleString() }}</p>
+            <p class="text-sm text-[#7e22ce] font-medium">
+              ₹{{ loanAmount.toLocaleString() }}
+            </p>
           </div>
 
           <!-- Interest Rate -->
@@ -47,7 +51,7 @@
               type="number"
               step="0.1"
               v-model.number="interestRate"
-              class="w-full border rounded-md px-3 py-2 text-right"
+              class="w-full border border-[#7e22ce]/30 rounded-md px-3 py-2 text-right focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
             />
             <input
               type="range"
@@ -55,13 +59,15 @@
               min="6"
               max="20"
               step="0.1"
-              class="w-full"
+              class="w-full accent-[#7e22ce]"
             />
             <div class="flex justify-between text-xs text-gray-500">
               <span>6%</span>
               <span>20%</span>
             </div>
-            <p class="text-sm text-gray-500">{{ interestRate }}% per annum</p>
+            <p class="text-sm text-[#7e22ce] font-medium">
+              {{ interestRate }}% per annum
+            </p>
           </div>
 
           <!-- Tenure -->
@@ -70,7 +76,7 @@
             <input
               type="number"
               v-model.number="tenure"
-              class="w-full border rounded-md px-3 py-2 text-right"
+              class="w-full border border-[#7e22ce]/30 rounded-md px-3 py-2 text-right focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
             />
             <input
               type="range"
@@ -78,20 +84,22 @@
               min="1"
               max="30"
               step="1"
-              class="w-full"
+              class="w-full accent-[#7e22ce]"
             />
             <div class="flex justify-between text-xs text-gray-500">
               <span>1 Year</span>
               <span>30 Years</span>
             </div>
-            <p class="text-sm text-gray-500">{{ tenure }} years ({{ tenure * 12 }} months)</p>
+            <p class="text-sm text-[#7e22ce] font-medium">
+              {{ tenure }} years ({{ tenure * 12 }} months)
+            </p>
           </div>
 
           <button
             @click="calculateEMI"
-            class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+            class="w-full bg-[#7e22ce] text-white py-2 rounded-lg hover:bg-[#6b21a8] transition flex items-center justify-center gap-2"
           >
-            🔢 Recalculate
+            Recalculate
           </button>
         </div>
       </div>
@@ -100,71 +108,89 @@
       <div class="lg:col-span-2 space-y-6">
         <!-- Result Cards -->
         <div class="grid gap-4 md:grid-cols-2">
-          <div class="border rounded-lg p-4 bg-white">
-            <h3 class="text-base font-semibold text-green-600">Monthly EMI</h3>
-            <div class="text-2xl mt-4">₹{{ emiDetails.emi.toLocaleString() }}</div>
+          <div class="border border-[#f3e8ff] rounded-lg p-4 bg-white">
+            <h3 class="text-base font-semibold text-[#7e22ce]">Monthly EMI</h3>
+            <div class="text-2xl mt-4 font-bold text-[#1f2937]">
+              ₹{{ emiDetails.emi.toLocaleString() }}
+            </div>
             <p class="text-xs text-gray-500">Fixed monthly payment</p>
           </div>
 
-          <div class="border rounded-lg p-4 bg-white">
-            <h3 class="text-base font-semibold text-blue-600">Total Interest</h3>
-            <div class="text-2xl mt-4">₹{{ emiDetails.totalInterest.toLocaleString() }}</div>
-            <p class="text-xs text-gray-500">{{ interestPercentage }}% of total amount</p>
+          <div class="border border-[#f3e8ff] rounded-lg p-4 bg-white">
+            <h3 class="text-base font-semibold text-[#eab308]">Total Interest</h3>
+            <div class="text-2xl mt-4 font-bold text-[#1f2937]">
+              ₹{{ emiDetails.totalInterest.toLocaleString() }}
+            </div>
+            <p class="text-xs text-gray-500">
+              {{ interestPercentage }}% of total amount
+            </p>
           </div>
 
-          <div class="border rounded-lg p-4 bg-white">
-            <h3 class="text-base font-semibold text-purple-600">Total Amount</h3>
-            <div class="text-2xl mt-4">₹{{ emiDetails.totalAmount.toLocaleString() }}</div>
+          <div class="border border-[#f3e8ff] rounded-lg p-4 bg-white">
+            <h3 class="text-base font-semibold text-[#7e22ce]">Total Amount</h3>
+            <div class="text-2xl mt-4 font-bold text-[#1f2937]">
+              ₹{{ emiDetails.totalAmount.toLocaleString() }}
+            </div>
             <p class="text-xs text-gray-500">Principal + Interest</p>
           </div>
 
-          <div class="border rounded-lg p-4 bg-white">
-            <h3 class="text-base font-semibold text-orange-600">Total Payments</h3>
-            <div class="text-2xl mt-4">{{ tenure * 12 }}</div>
+          <div class="border border-[#f3e8ff] rounded-lg p-4 bg-white">
+            <h3 class="text-base font-semibold text-[#7e22ce]">Total Payments</h3>
+            <div class="text-2xl mt-4 font-bold text-[#1f2937]">
+              {{ tenure * 12 }}
+            </div>
             <p class="text-xs text-gray-500">Monthly payments</p>
           </div>
         </div>
 
         <!-- Loan Breakdown Pie Chart -->
-        <div class="border rounded-lg p-6 bg-white flex">
-        <!-- Pie Chart -->
-        <div class="w-1/2 flex items-center justify-center">
+        <div class="border border-[#f3e8ff] rounded-lg p-6 bg-white flex">
+          <!-- Pie Chart -->
+          <div class="w-1/2 flex items-center justify-center">
             <v-chart class="h-64 w-full" :option="pieOption" autoresize />
-        </div>
+          </div>
 
-        <!-- Right-side Labels -->
-        <div class="w-1/2 pl-6 flex flex-col justify-center">
+          <!-- Right-side Labels -->
+          <div class="w-1/2 pl-6 flex flex-col justify-center">
             <!-- Principal -->
             <div class="mb-6">
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-[#7e22ce]"></span>
                 <span class="font-normal">Principal Amount</span>
-            </div>
-            <div class="text-lg font-medium mt-1">₹{{ emiDetails.principalAmount.toLocaleString() }}</div>
+              </div>
+              <div class="text-lg font-medium mt-1 text-[#1f2937]">
+                ₹{{ emiDetails.principalAmount.toLocaleString() }}
+              </div>
             </div>
 
             <!-- Interest -->
             <div>
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-[#eab308]"></span>
                 <span class="font-normal">Total Interest</span>
+              </div>
+              <div class="text-lg font-medium mt-1 text-[#1f2937]">
+                ₹{{ emiDetails.totalInterest.toLocaleString() }}
+              </div>
+              <p class="text-xs text-gray-500">
+                {{ interestPercentage }}% of total payment
+              </p>
             </div>
-            <div class="text-lg font-medium mt-1">₹{{ emiDetails.totalInterest.toLocaleString() }}</div>
-            <p class="text-xs text-gray-500">{{ interestPercentage }}% of total payment</p>
-            </div>
+          </div>
         </div>
-        </div>
-
 
         <!-- Loan Balance Line Chart -->
-        <div class="border rounded-lg p-4 bg-white">
-          <h3 class="text-lg font-semibold mb-2">Loan Balance Over Time</h3>
+        <div class="border border-[#f3e8ff] rounded-lg p-4 bg-white">
+          <h3 class="text-lg font-semibold mb-2 text-[#7e22ce]">
+            Loan Balance Over Time
+          </h3>
           <v-chart class="h-80" :option="lineOption" autoresize />
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, reactive, computed, watch } from "vue";

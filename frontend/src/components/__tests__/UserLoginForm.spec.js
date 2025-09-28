@@ -4,10 +4,9 @@ import UserLoginForm from '../../views/UserLoginForm.vue'
 import { useStore } from 'vuex'
 import router from '../../router/index.js'
 import { makeRequestWithoutToken } from '../../utils/requests.js'
+import Toast, { POSITION } from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
 
-// ----------------------
-// Mock router
-// ----------------------
 vi.mock('../../router/index.js', () => ({
   default: {
     push: vi.fn(),
@@ -15,9 +14,6 @@ vi.mock('../../router/index.js', () => ({
   },
 }))
 
-// ----------------------
-// Mock vuex store
-// ----------------------
 vi.mock('vuex', async () => {
   const actual = await vi.importActual('vuex')
   return {
@@ -26,9 +22,6 @@ vi.mock('vuex', async () => {
   }
 })
 
-// ----------------------
-// Mock API request
-// ----------------------
 vi.mock('../../utils/requests.js', () => ({
   makeRequestWithoutToken: vi.fn(),
 }))
@@ -46,41 +39,53 @@ describe('UserLoginForm.vue', () => {
     useStore.mockReturnValue(storeMock)
     vi.clearAllMocks()
     localStorage.clear()
+
+    document.body.innerHTML = ''
   })
 
+  const mountWithToast = () =>
+    mount(UserLoginForm, {
+      global: {
+        plugins: [[Toast, { position: POSITION.TOP_RIGHT }]],
+      },
+    })
+
   it('renders all input fields and button', () => {
-    const wrapper = mount(UserLoginForm)
+    const wrapper = mountWithToast()
     expect(wrapper.find('input#email').exists()).toBe(true)
     expect(wrapper.find('input#password').exists()).toBe(true)
     expect(wrapper.find('button[type="submit"]').exists()).toBe(true)
   })
 
-  it('shows validation errors for invalid email', async () => {
-    const wrapper = mount(UserLoginForm)
+  it('shows validation error toast for invalid email', async () => {
+    const wrapper = mountWithToast()
 
     await wrapper.find('input#email').setValue('invalid-email')
     await wrapper.find('input#password').setValue('validPass')
     await wrapper.find('form').trigger('submit.prevent')
+    await flushPromises()
 
-    expect(wrapper.text()).toContain('Invalid email')
+    // Toasts are rendered to document.body
+    expect(document.body.textContent).toContain('Invalid email')
   })
 
-  it('shows validation errors for invalid password', async () => {
-    const wrapper = mount(UserLoginForm)
+  it('shows validation error toast for invalid password', async () => {
+    const wrapper = mountWithToast()
 
     await wrapper.find('input#email').setValue('valid.email@gmail.com')
     await wrapper.find('input#password').setValue('1')
     await wrapper.find('form').trigger('submit.prevent')
+    await flushPromises()
 
-    expect(wrapper.text()).toContain('Password should be at least 2 characters')
+    expect(document.body.textContent).toContain('Password should be at least 2 characters')
   })
 
   it('toggles password visibility', async () => {
-    const wrapper = mount(UserLoginForm)
+    const wrapper = mountWithToast()
     const input = wrapper.find('input#password')
     const toggleBtn = wrapper.find('button')
 
-    // initially password type
+    // Initially password type
     expect(input.attributes('type')).toBe('password')
 
     await toggleBtn.trigger('click')
@@ -91,7 +96,7 @@ describe('UserLoginForm.vue', () => {
   })
 
   it('submits form correctly and navigates', async () => {
-    const wrapper = mount(UserLoginForm)
+    const wrapper = mountWithToast()
 
     await wrapper.find('input#email').setValue('user@example.com')
     await wrapper.find('input#password').setValue('password123')
@@ -114,9 +119,6 @@ describe('UserLoginForm.vue', () => {
     await wrapper.find('form').trigger('submit.prevent')
     await flushPromises()
 
-    // ----------------------
-    // Check localStorage
-    // ----------------------
     expect(localStorage.getItem('token')).toBe('fakeAccessToken')
     expect(localStorage.getItem('refreshToken')).toBe('fakeRefreshToken')
     expect(JSON.parse(localStorage.getItem('currUser'))).toMatchObject({
@@ -125,9 +127,6 @@ describe('UserLoginForm.vue', () => {
       role: 'USER',
     })
 
-    // ----------------------
-    // Check Vuex dispatch
-    // ----------------------
     expect(storeMock.dispatch).toHaveBeenCalledWith(
       'setCurrentUser',
       expect.objectContaining({
@@ -135,10 +134,6 @@ describe('UserLoginForm.vue', () => {
         email: 'user@example.com',
       })
     )
-
-    // ----------------------
-    // Check router navigation
-    // ----------------------
     expect(router.push).toHaveBeenCalledWith('/user-dashboard')
   })
 })

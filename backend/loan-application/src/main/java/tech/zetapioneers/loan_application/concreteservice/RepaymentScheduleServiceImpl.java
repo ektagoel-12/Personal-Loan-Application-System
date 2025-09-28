@@ -7,6 +7,7 @@ import tech.zetapioneers.loan_application.dto.EmiPreviewResponse;
 import tech.zetapioneers.loan_application.dto.RepaymentScheduleDTO;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.RepaymentSchedule;
+import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.repositories.RepaymentScheduleRepository;
 import tech.zetapioneers.loan_application.services.RepaymentScheduleService;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
 
     private final RepaymentScheduleRepository repaymentScheduleRepository;
+    private final LoanApplicationRepository loanApplicationRepository;
 
     @Override
     public double calculateEMI(double principal, double annualRate, int months) {
@@ -27,9 +29,9 @@ public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
     }
 
     @Override
-    public List<RepaymentSchedule> generateSchedule(LoanApplication loan) {
+    public List<RepaymentSchedule> generateSchedule(Long loanId) {
         // pull the rate from LoanType enum
-        System.out.println(loan);
+        LoanApplication loan = loanApplicationRepository.findById(loanId).get();
         double annualRate = loan.getLoanType().getInterestRate();
 
         double principal = loan.getAmount();
@@ -75,16 +77,37 @@ public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
 
     @Override
     public List<RepaymentScheduleDTO> getSchedule(Long loanId) {
-        return repaymentScheduleRepository.findByLoan_Id(loanId)
-                .stream()
+        List<RepaymentSchedule> schedules = repaymentScheduleRepository.findByLoan_Id(loanId);
+
+        if (schedules.isEmpty()) {
+            // Option 1: Return empty list (frontend can handle gracefully)
+            return List.of();
+        }
+
+            // Fetch loan details (principal, rate, months)
+        LoanApplication loan = schedules.get(0).getLoan();
+        double emi = calculateEMI(
+                loan.getAmount(),
+                loan.getLoanType().getInterestRate(),
+                loan.getTenureMonths()
+        );
+
+        return schedules.stream()
                 .map(s -> {
                     RepaymentScheduleDTO dto = new RepaymentScheduleDTO();
                     dto.setMonth(s.getMonth());
                     dto.setPrincipalAmount(s.getPrincipalAmount());
                     dto.setInterestAmount(s.getInterestAmount());
                     dto.setBalanceRemaining(s.getBalanceRemaining());
+                    dto.setId(s.getId());
+
+                    // Set EMI using formula (same each month)
+                    dto.setEmi(emi);
+                    dto.setIsPaid(s.getIsPaid());
+
                     return dto;
-                }).toList();
+                })
+                .toList();
     }
 
     @Override
