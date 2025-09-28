@@ -77,7 +77,12 @@ public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
     public List<RepaymentScheduleDTO> getSchedule(Long loanId) {
         List<RepaymentSchedule> schedules = repaymentScheduleRepository.findByLoan_Id(loanId);
 
-        // Fetch loan details (principal, rate, months)
+        if (schedules.isEmpty()) {
+            // Option 1: Return empty list (frontend can handle gracefully)
+            return List.of();
+        }
+
+            // Fetch loan details (principal, rate, months)
         LoanApplication loan = schedules.get(0).getLoan();
         double emi = calculateEMI(
                 loan.getAmount(),
