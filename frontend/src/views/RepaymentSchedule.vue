@@ -15,7 +15,7 @@
           Repayment Schedule - {{ selectedLoan.id }}
         </h1>
         <p class="text-gray-500">
-          {{ selectedLoan.purpose }} | ₹{{
+          {{ selectedLoan.loanType }} | ₹{{
             selectedLoan.amount.toLocaleString()
           }}
           | {{ selectedLoan.interestRate }}% | {{ selectedLoan.tenure }} years
@@ -54,18 +54,20 @@
 
           <!-- Dropdown -->
           <select
-            v-model="filterPurpose"
+            v-model="filterLoanType"
             class="w-full border rounded-lg pl-10 pr-8 py-2 bg-gray-50 appearance-none"
           >
-            <option value="all">All Purposes</option>
-            <option value="Personal Use">Personal Use</option>
-            <option value="Home Purchase">Home Purchase</option>
-            <option value="Car Purchase">Car Purchase</option>
-            <option value="Education">Education</option>
-            <option value="Business">Business</option>
-            <option value="Medical Emergency">Medical Emergency</option>
-            <option value="Debt Consolidation">Debt Consolidation</option>
-            <option value="Home Improvement">Home Improvement</option>
+            <option value="all">All Loan Types</option>
+            <option value="HOME_LOAN">Home Loan</option>
+            <option value="PERSONAL_LOAN">Personal Loan</option>
+            <option value="CAR_LOAN">Car Loan</option>
+            <option value="EDUCATION_LOAN">Education Loan</option>
+            <option value="BUSINESS_LOAN">Business Loan</option>
+            <option value="GOLD_LOAN">Gold Loan</option>
+            <option value="CREDIT_CARD_LOAN">Credit Card Loan</option>
+            <option value="PAYDAY_LOAN">Payday Loan</option>
+            <option value="HOME_EQUITY_LOAN">Home Equity Loan</option>
+            <option value="STUDENT_LOAN">Student Loan</option>
           </select>
 
           <!-- Right arrow -->
@@ -102,7 +104,7 @@
                 </div>
                 <div>
                   <p class="text-gray-500 text-base">Purpose</p>
-                  <p class="text-lg font-medium">{{ loan.purpose }}</p>
+                  <p class="text-lg font-medium">{{ loan.loanType }}</p>
                 </div>
                 <div>
                   <p class="text-gray-500 text-base">Interest Rate</p>
@@ -149,7 +151,7 @@
           <h3 class="text-lg font-semibold">No Approved Loans Found</h3>
           <p class="text-gray-500">
             {{
-              filterPurpose !== "all"
+              filterLoanType !== "all"
                 ? "Try adjusting your filter criteria"
                 : "You don't have any approved loans yet."
             }}
@@ -211,22 +213,25 @@
       <!-- Filters -->
       <div class="flex gap-4 items-center px-4 pb-4">
         <div class="relative w-40">
-  <select
-    v-model="filterYear"
-    class="w-full border rounded-lg pl-3 pr-10 py-2 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="all">All Years</option>
-    <option v-for="year in selectedLoan.tenure" :key="year" :value="year">
-      Year {{ year }}
-    </option>
-  </select>
+          <select
+            v-model="filterYear"
+            class="w-full border rounded-lg pl-3 pr-10 py-2 bg-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">All Years</option>
+            <option
+              v-for="year in selectedLoan.tenure"
+              :key="year"
+              :value="year"
+            >
+              Year {{ year }}
+            </option>
+          </select>
 
-  <!-- Right arrow -->
-  <ChevronDown
-    class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
-  />
-</div>
-
+          <!-- Right arrow -->
+          <ChevronDown
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+          />
+        </div>
 
         <span class="border rounded px-3 py-2 text-sm text-gray-600">
           {{ sortedSchedule.length }} payments
@@ -238,7 +243,7 @@
         <thead>
           <tr class="bg-gray-100">
             <th
-              class="px-4 py-2  cursor-pointer hover:bg-gray-50"
+              class="px-4 py-2 cursor-pointer hover:bg-gray-50"
               @click="handleSort('month')"
             >
               <div class="flex items-center justify-center gap-1">
@@ -286,35 +291,46 @@
                 <ArrowUpDown class="w-4 h-4" />
               </div>
             </th>
+            <th class="px-4 py-2 cursor-pointer hover:bg-gray-50">
+              <div class="flex items-center justify-center gap-1">Paid</div>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="row in paginatedSchedule"
-            :key="row.month"
+            v-for="(row, index) in paginatedSchedule"
+            :key="row.id"
             class="border-t"
           >
-            <!-- <td class="px-4 py-2">
-              {{ row.month }}
-              <span class="ml-2 text-xs border rounded px-1">
-                Year {{ Math.ceil(row.month / 12) }}
-              </span>
-            </td> -->
             <td class="px-4 py-2">
-  {{ getMonthName(row.month, selectedLoan.appliedDate) }}
-</td>
-
-            <td class="px-4 py-2 ">
-              ₹{{ row.emi.toLocaleString() }}
+              {{ getMonthName(row.month, selectedLoan.appliedDate) }}
             </td>
+
+            <td class="px-4 py-2">₹{{ row.emi.toLocaleString() }}</td>
             <td class="px-4 py-2 text-green-600">
               ₹{{ row.principalAmount.toLocaleString() }}
             </td>
             <td class="px-4 py-2 text-red-600">
               ₹{{ row.interestAmount.toLocaleString() }}
             </td>
-            <td class="px-4 py-2 ">
+            <td class="px-4 py-2">
               ₹{{ row.balanceRemaining.toLocaleString() }}
+            </td>
+            <td class="px-4 py-2">
+              <button
+                v-if="!row.isPaid"
+                @click="markAsPaid(selectedLoan.id, row.id)"
+                class="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm font-medium shadow-sm hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="!canPay(row)"
+              >
+                Pay Now
+              </button>
+              <span
+                v-else
+                class="bg-green-100 text-green-700 px-3 py-1.5 rounded-md text-sm font-medium"
+              >
+                Paid
+              </span>
             </td>
           </tr>
         </tbody>
@@ -330,29 +346,29 @@
           {{ Math.min(currentPage * rowsPerPage, sortedSchedule.length) }} of
           {{ sortedSchedule.length }} payments
         </span>
-        <div class="flex gap-2">
+
+        <div class="flex items-center gap-3">
+          <!-- Prev Button -->
           <button
-            class="border px-2 py-1 rounded"
+            class="border px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
             :disabled="currentPage === 1"
             @click="currentPage--"
           >
-            Prev
+            ← Prev
           </button>
+
+          <!-- Page Indicator -->
+          <span class="text-gray-700">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+
+          <!-- Next Button -->
           <button
-            v-for="page in totalPages"
-            :key="page"
-            class="border px-2 py-1 rounded"
-            :class="{ 'bg-gray-300': page === currentPage }"
-            @click="currentPage = page"
-          >
-            {{ page }}
-          </button>
-          <button
-            class="border px-2 py-1 rounded"
+            class="border px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
             :disabled="currentPage === totalPages"
             @click="currentPage++"
           >
-            Next
+            Next →
           </button>
         </div>
       </div>
@@ -363,6 +379,7 @@
 <script>
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
+import { makeRequestWithToken } from "@/utils/requests";
 import {
   Download,
   ArrowLeft,
@@ -392,7 +409,7 @@ export default {
     const currentPage = ref(1);
     const rowsPerPage = 12;
     const filterYear = ref("all");
-    const filterPurpose = ref("all"); // NEW filter
+    const filterLoanType = ref("all"); // NEW filter
 
     const sortField = ref("month");
     const sortDirection = ref("asc");
@@ -410,40 +427,31 @@ export default {
       let loans = store.state.applications.filter(
         (loan) => loan.status === "APPROVED"
       );
-      if (filterPurpose.value !== "all") {
-        loans = loans.filter((loan) => loan.purpose === filterPurpose.value);
+      if (filterLoanType.value !== "all") {
+        loans = loans.filter((loan) => loan.loanType === filterLoanType.value);
       }
       return loans;
     });
+    const markAsPaid = async (loanId, scheduleId) => {
+      try {
+        await makeRequestWithToken(
+          "POST",
+          `/api/loans/${loanId}/schedule/${scheduleId}/pay`
+        );
 
-    const repaymentSchedule = computed(() => {
-      if (!selectedLoan.value) return [];
-      const loan = selectedLoan.value;
-      const monthlyRate = loan.interestRate / 100 / 12;
-      const totalMonths = loan.tenure * 12;
-      const emi =
-        (loan.amount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
-        (Math.pow(1 + monthlyRate, totalMonths) - 1);
-
-      const schedule = [];
-      let balance = loan.amount;
-
-      for (let m = 1; m <= totalMonths; m++) {
-        const interest = balance * monthlyRate;
-        const principal = emi - interest;
-        balance = Math.max(0, balance - principal);
-
-        schedule.push({
-          month: m,
-          emi: Math.round(emi),
-          principalAmount: Math.round(principal),
-          interestAmount: Math.round(interest),
-          balanceRemaining: Math.round(balance),
-          startDate: loan.appliedDate // keep applied date for month mapping
-        });
+        // Refresh schedule after payment
+        const response = await makeRequestWithToken(
+          "GET",
+          `/api/loans/${loanId}/schedule`
+        );
+        repaymentSchedule.value = response?.data || [];
+      } catch (err) {
+        console.error("Error marking payment:", err);
       }
-      return schedule;
-    });
+    };
+
+    //new reactive state to hold the schedule from API
+    const repaymentSchedule = ref([]);
 
     const filteredSchedule = computed(() => {
       if (filterYear.value === "all") return repaymentSchedule.value;
@@ -467,15 +475,22 @@ export default {
     });
 
     const summaryStats = computed(() => {
-      if (!repaymentSchedule.value.length || !selectedLoan.value) return null;
+      if (!selectedLoan.value || repaymentSchedule.value.length === 0)
+        return null;
+
+      const monthlyEmi = Math.round(repaymentSchedule.value[0].emi);
+
+      const totalInterest = repaymentSchedule.value.reduce(
+        (sum, r) => sum + r.interestAmount,
+        0
+      );
+
+      const totalAmount = Math.round(selectedLoan.value.amount + totalInterest);
+
       return {
-        monthlyEmi: repaymentSchedule.value[0]?.emi || 0,
-        totalInterest: Math.round(
-          repaymentSchedule.value.reduce((sum, r) => sum + r.interestAmount, 0)
-        ),
-        totalAmount:
-          selectedLoan.value.amount +
-          repaymentSchedule.value.reduce((sum, r) => sum + r.interestAmount, 0),
+        monthlyEmi,
+        totalInterest: Math.round(totalInterest),
+        totalAmount,
       };
     });
 
@@ -487,6 +502,23 @@ export default {
         (Math.pow(1 + monthlyRate, totalMonths) - 1);
       return Math.round(emi);
     };
+    // Only allow paying the first unpaid EMI in order
+    const canPay = (row) => {
+      // if already paid → disabled
+      if (row.isPaid) return false;
+
+      // find this row's index in the full schedule
+      const index = sortedSchedule.value.findIndex((r) => r.id === row.id);
+
+      // ensure all previous months are paid
+      for (let i = 0; i < index; i++) {
+        if (!sortedSchedule.value[i].isPaid) {
+          return false; // found a previous unpaid EMI → block
+        }
+      }
+
+      return true; // ✅ allowed only if all before are paid
+    };
 
     const paginatedSchedule = computed(() => {
       const start = (currentPage.value - 1) * rowsPerPage;
@@ -497,20 +529,33 @@ export default {
       Math.ceil(sortedSchedule.value.length / rowsPerPage)
     );
 
-    const selectLoan = (loan) => {
+    const selectLoan = async (loan) => {
       selectedLoan.value = loan;
       currentPage.value = 1;
       filterYear.value = "all";
+
+      try {
+        const response = await makeRequestWithToken(
+          "GET",
+          `/api/loans/${loan.id}/schedule`
+        );
+        repaymentSchedule.value = response?.data || [];
+      } catch (err) {
+        console.error("Error fetching schedule", err);
+        repaymentSchedule.value = [];
+      }
     };
     const getMonthName = (monthIndex, startDate = null) => {
-  // If loan.appliedDate is available, use it as the start point
-  const baseDate = startDate ? new Date(startDate) : new Date();
-  baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
+      // If loan.appliedDate is available, use it as the start point
+      const baseDate = startDate ? new Date(startDate) : new Date();
+      baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
 
-  // Format as "Jan 2024" (you can change to "January" if you prefer full names)
-  return baseDate.toLocaleString("default", { month: "short", year: "numeric" });
-};
-
+      // Format as "Jan 2024" (you can change to "January" if you prefer full names)
+      return baseDate.toLocaleString("default", {
+        month: "short",
+        year: "numeric",
+      });
+    };
 
     const clearSelection = () => {
       selectedLoan.value = null;
@@ -557,7 +602,7 @@ export default {
       paginatedSchedule,
       summaryStats,
       filterYear,
-      filterPurpose,
+      filterLoanType,
       currentPage,
       totalPages,
       rowsPerPage,
@@ -567,6 +612,8 @@ export default {
       exportToCSV,
       getEmiForLoan,
       getMonthName,
+      markAsPaid,
+      canPay,
     };
   },
 };
@@ -581,6 +628,5 @@ td {
   border: 1px solid #ddd;
   padding: 6px;
   text-align: center;
-
 }
 </style>

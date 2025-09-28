@@ -65,9 +65,7 @@ public class AuthController {
 
             User user = userOpt.get();
             String newAccessToken = jwtService.generateAccessToken(user);
-            String newRefreshToken = jwtService.generateRefreshToken(user);
-
-            return ResponseEntity.ok(new TokenResponse(newAccessToken, newRefreshToken));
+            return ResponseEntity.ok(new TokenResponse(newAccessToken, refreshToken));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(Map.of("error",e.getMessage()));
         }
