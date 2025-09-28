@@ -112,12 +112,6 @@
               placeholder="Enter your Aadhar number"
               class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="formErrors.aadhar" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>
-          </div>
-
-          <!-- Error alert -->
-          <div v-if="error" class="p-3 rounded bg-red-100 text-red-600 text-sm">
-            {{ error }}
           </div>
 
           <!-- Submit -->
