@@ -107,7 +107,7 @@
 
         <div class="space-y-4 mt-4">
           <div
-            v-for="app in mockLoanData.recentApplications"
+            v-for="app in recentApplications"
             :key="app.id"
             class="flex items-center justify-between p-3 border rounded-lg"
           >
@@ -127,6 +127,7 @@
 
         <button
           class="w-full mt-4 px-4 py-2 rounded-lg border hover:bg-gray-200"
+          @click="router.push('/loan')"
         >
           View All Applications
         </button>
@@ -163,7 +164,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import {
   TrendingUp,
   Calendar,
@@ -179,6 +180,8 @@ import router from "@/router";
 const store = useStore()
 // Mock Auth context
 const user = ref(store.getters.currentUser);
+
+const recentApplications = ref(store.getters.recentApplications)
 
 // Mock loan data
 const mockLoanData = {
@@ -221,4 +224,5 @@ function getStatusColor(status: string) {
       return "bg-gray-100 text-gray-800";
   }
 }
+
 </script>

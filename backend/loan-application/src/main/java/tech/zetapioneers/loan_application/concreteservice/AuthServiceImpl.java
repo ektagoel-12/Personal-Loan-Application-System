@@ -76,6 +76,7 @@ public class AuthServiceImpl implements AuthService {
         AuthResponse response = new AuthResponse();
         response.setAccessToken(accessToken);
         response.setRefreshToken(refreshToken);
+        response.setId(user.getId());
         response.setName(user.getName());
         response.setRole(user.getRole().name());
         response.setIncome(user.getIncome());

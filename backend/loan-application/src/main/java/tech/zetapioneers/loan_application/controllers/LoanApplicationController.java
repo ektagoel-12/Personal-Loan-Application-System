@@ -1,7 +1,13 @@
 package tech.zetapioneers.loan_application.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.zetapioneers.loan_application.concreteservice.LoanApplicationServiceImpl;
+import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
+import tech.zetapioneers.loan_application.exceptions.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -9,32 +15,42 @@ import java.util.List;
 @RequestMapping("/api/loans")
 public class LoanApplicationController {
 
-    public LoanApplicationController() {
+    LoanApplicationServiceImpl loanApplicationServiceImpl;
 
+    public LoanApplicationController(LoanApplicationServiceImpl loanApplicationServiceImpl) {
+        this.loanApplicationServiceImpl = loanApplicationServiceImpl;
     }
 
-    // Get all loan applications
     @GetMapping
-    public List<LoanApplication> getAllLoans() {
-        return null;
+    public ResponseEntity<List<LoanApplicationResponse>> getAllLoans(){
+        List<LoanApplicationResponse> loans = loanApplicationServiceImpl.getAllLoans();
+        if(loans.size()==0){
+            throw new ResourceNotFoundException("No Loans Found!!!");
+        }
+        return new ResponseEntity<>(loans, HttpStatus.OK);
     }
+
 
     // Get loan by id
     @GetMapping("/{id}")
-    public LoanApplication getLoanById(@PathVariable Long id) {
-        return null;
+    public LoanApplicationResponse getLoanById(@PathVariable Long id) {
+        return loanApplicationServiceImpl.getLoanById(id);
     }
 
     // Get all loans by user id
     @GetMapping("/user/{userId}")
-    public List<LoanApplication> getLoansByUserId(@PathVariable Long userId) {
-        return null;
+    public List<LoanApplicationResponse> getLoansByUserId(@PathVariable Long userId) {
+        return loanApplicationServiceImpl.getLoanByUser(userId);
     }
 
     // Create new loan
     @PostMapping
-    public LoanApplication createLoan(@RequestBody LoanApplication loan) {
-        return null;
+    public LoanApplicationResponse createLoan(@RequestBody LoanApplicationResponse loan) {
+        System.out.println(loan.getAmount());
+        Long id = loanApplicationServiceImpl.addLoanApplication(loan);
+        loan.setId(id);
+        loan.setRateOfInterest(loan.getPurpose().getInterestRate());
+        return loan;
     }
 
     // Update loan

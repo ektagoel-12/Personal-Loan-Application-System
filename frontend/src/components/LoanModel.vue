@@ -1,7 +1,9 @@
 <script setup>
+
 const { isOpen, application } = defineProps({
 isOpen: Boolean,
 application: Object,
+statusMap: Object
 })
 
 const emit = defineEmits(["close"])
@@ -14,10 +16,10 @@ function closeModal() {
   <!-- Modal Backdrop -->
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50"
   >
     <!-- Modal Container -->
-    <div class="bg-white rounded-2xl shadow-xl w-lvw max-w-lg p-6 ">
+    <div class="bg-white rounded-2xl shadow-l w-lvw max-w-lg p-6 ">
       <!-- Header -->
       <div class="flex justify-between items-center mb-4 ">
         <h2 class="text-lg font-semibold">
@@ -25,12 +27,9 @@ function closeModal() {
         </h2>
         <span
           class="px-2 py-1 text-xs font-semibold rounded"
-          :class="{
-            'bg-green-100 text-green-700': application.status === 'APPROVED',
-            'bg-blue-100 text-blue-700': application.status === 'UNDER_REVIEW',
-          }"
+          :class="statusMap[application.status].class"
         >
-          {{ application.status}}
+             {{ statusMap[application.status].label }}
         </span>
       </div>
 
@@ -78,11 +77,14 @@ function closeModal() {
       </div>
 
       <!-- Remarks -->
-      <div class="mb-6">
-        <p class="text-sm text-gray-500">Remarks</p>
-        <div class="bg-gray-100 p-2 rounded-md text-sm">
-          {{ application.remarks }}
-        </div>
+      <div
+        v-if="application.remarks && application.remarkedBy"
+        class="bg-gray-100 px-2 py-2 rounded-md text-sm mb-3 w-full"
+      >
+        <p class="text-gray-800">{{ application.remarks }}</p>
+        <p class="text-xs text-gray-500 mt-1 text-right">
+          — {{ application.remarkedBy }}
+        </p>
       </div>
 
       <!-- Footer -->
