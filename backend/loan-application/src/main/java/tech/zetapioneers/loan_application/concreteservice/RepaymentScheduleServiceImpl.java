@@ -92,9 +92,11 @@ public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
                     dto.setPrincipalAmount(s.getPrincipalAmount());
                     dto.setInterestAmount(s.getInterestAmount());
                     dto.setBalanceRemaining(s.getBalanceRemaining());
+                    dto.setId(s.getId());
 
                     // Set EMI using formula (same each month)
                     dto.setEmi(emi);
+                    dto.setIsPaid(s.getIsPaid());
 
                     return dto;
                 })

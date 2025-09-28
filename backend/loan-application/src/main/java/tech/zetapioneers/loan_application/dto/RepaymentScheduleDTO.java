@@ -9,4 +9,8 @@ public class RepaymentScheduleDTO {
     private Double interestAmount;
     private Double balanceRemaining;
     private double emi;
+    private Boolean isPaid;
+    private Long id;
+
+
 }

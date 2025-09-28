@@ -291,20 +291,17 @@
                 <ArrowUpDown class="w-4 h-4" />
               </div>
             </th>
+            <th class="px-4 py-2 cursor-pointer hover:bg-gray-50">
+              <div class="flex items-center justify-center gap-1">Paid</div>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="row in paginatedSchedule"
-            :key="row.month"
+            v-for="(row, index) in paginatedSchedule"
+            :key="row.id"
             class="border-t"
           >
-            <!-- <td class="px-4 py-2">
-              {{ row.month }}
-              <span class="ml-2 text-xs border rounded px-1">
-                Year {{ Math.ceil(row.month / 12) }}
-              </span>
-            </td> -->
             <td class="px-4 py-2">
               {{ getMonthName(row.month, selectedLoan.appliedDate) }}
             </td>
@@ -318,6 +315,22 @@
             </td>
             <td class="px-4 py-2">
               ₹{{ row.balanceRemaining.toLocaleString() }}
+            </td>
+            <td class="px-4 py-2">
+              <button
+                v-if="!row.isPaid"
+                @click="markAsPaid(selectedLoan.id, row.id)"
+                class="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm font-medium shadow-sm hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="!canPay(row)"
+              >
+                Pay Now
+              </button>
+              <span
+                v-else
+                class="bg-green-100 text-green-700 px-3 py-1.5 rounded-md text-sm font-medium"
+              >
+                Paid
+              </span>
             </td>
           </tr>
         </tbody>
@@ -333,29 +346,29 @@
           {{ Math.min(currentPage * rowsPerPage, sortedSchedule.length) }} of
           {{ sortedSchedule.length }} payments
         </span>
-        <div class="flex gap-2">
+
+        <div class="flex items-center gap-3">
+          <!-- Prev Button -->
           <button
-            class="border px-2 py-1 rounded"
+            class="border px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
             :disabled="currentPage === 1"
             @click="currentPage--"
           >
-            Prev
+            ← Prev
           </button>
+
+          <!-- Page Indicator -->
+          <span class="text-gray-700">
+            Page {{ currentPage }} of {{ totalPages }}
+          </span>
+
+          <!-- Next Button -->
           <button
-            v-for="page in totalPages"
-            :key="page"
-            class="border px-2 py-1 rounded"
-            :class="{ 'bg-gray-300': page === currentPage }"
-            @click="currentPage = page"
-          >
-            {{ page }}
-          </button>
-          <button
-            class="border px-2 py-1 rounded"
+            class="border px-3 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
             :disabled="currentPage === totalPages"
             @click="currentPage++"
           >
-            Next
+            Next →
           </button>
         </div>
       </div>
@@ -391,7 +404,6 @@ export default {
     Calculator,
   },
   setup() {
-    
     const store = useStore();
     const selectedLoan = ref(null);
     const currentPage = ref(1);
@@ -420,6 +432,23 @@ export default {
       }
       return loans;
     });
+    const markAsPaid = async (loanId, scheduleId) => {
+      try {
+        await makeRequestWithToken(
+          "POST",
+          `/api/loans/${loanId}/schedule/${scheduleId}/pay`
+        );
+
+        // Refresh schedule after payment
+        const response = await makeRequestWithToken(
+          "GET",
+          `/api/loans/${loanId}/schedule`
+        );
+        repaymentSchedule.value = response?.data || [];
+      } catch (err) {
+        console.error("Error marking payment:", err);
+      }
+    };
 
     //new reactive state to hold the schedule from API
     const repaymentSchedule = ref([]);
@@ -446,23 +475,24 @@ export default {
     });
 
     const summaryStats = computed(() => {
-  if (!selectedLoan.value || repaymentSchedule.value.length === 0) return null;
+      if (!selectedLoan.value || repaymentSchedule.value.length === 0)
+        return null;
 
-  const monthlyEmi = Math.round(repaymentSchedule.value[0].emi);
+      const monthlyEmi = Math.round(repaymentSchedule.value[0].emi);
 
-  const totalInterest = repaymentSchedule.value.reduce(
-    (sum, r) => sum + r.interestAmount,
-    0
-  );
+      const totalInterest = repaymentSchedule.value.reduce(
+        (sum, r) => sum + r.interestAmount,
+        0
+      );
 
-  const totalAmount = Math.round(selectedLoan.value.amount + totalInterest);
+      const totalAmount = Math.round(selectedLoan.value.amount + totalInterest);
 
-  return {
-    monthlyEmi,
-    totalInterest: Math.round(totalInterest),
-    totalAmount,
-  };
-});
+      return {
+        monthlyEmi,
+        totalInterest: Math.round(totalInterest),
+        totalAmount,
+      };
+    });
 
     const getEmiForLoan = (loan) => {
       const monthlyRate = loan.interestRate / 100 / 12;
@@ -471,6 +501,23 @@ export default {
         (loan.amount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
         (Math.pow(1 + monthlyRate, totalMonths) - 1);
       return Math.round(emi);
+    };
+    // Only allow paying the first unpaid EMI in order
+    const canPay = (row) => {
+      // if already paid → disabled
+      if (row.isPaid) return false;
+
+      // find this row's index in the full schedule
+      const index = sortedSchedule.value.findIndex((r) => r.id === row.id);
+
+      // ensure all previous months are paid
+      for (let i = 0; i < index; i++) {
+        if (!sortedSchedule.value[i].isPaid) {
+          return false; // found a previous unpaid EMI → block
+        }
+      }
+
+      return true; // ✅ allowed only if all before are paid
     };
 
     const paginatedSchedule = computed(() => {
@@ -565,6 +612,8 @@ export default {
       exportToCSV,
       getEmiForLoan,
       getMonthName,
+      markAsPaid,
+      canPay,
     };
   },
 };
