@@ -167,7 +167,7 @@ const raiseTicket = () => {
 
         <!-- View Button -->
         <button
-          class="mt-4 bg-[#eab308] text-[#1f2937] px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200 shadow-sm"
+          class="mt-4 bg-yellow-400 text-[#1f2937] px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200 shadow-sm"
           @click="openPopup(ticket.id)"
         >
           View Details

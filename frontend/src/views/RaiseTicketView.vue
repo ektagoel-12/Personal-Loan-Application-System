@@ -43,8 +43,10 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="max-w-2xl w-full mx-auto bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
-    <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">
+  <div
+    class="my-auto mt-10 max-w-2xl p-6 w-full mx-auto bg-white shadow-lg rounded-2xl border border-gray-200 font-inter"
+  >
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
       Raise a Support Ticket
     </h2>
 
@@ -54,7 +56,8 @@ const handleSubmit = async () => {
         <label class="block text-sm font-medium text-gray-700 mb-1">Request Type</label>
         <select
           v-model="formData.type"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 
+                 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-purple-700"
         >
           <option disabled value="">-- Select Request Type --</option>
           <option v-for="type in requestTypes" :key="type" :value="type">{{ type }}</option>
@@ -68,18 +71,20 @@ const handleSubmit = async () => {
           v-model="formData.subject"
           type="text"
           placeholder="Enter subject"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 
+                 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-purple-700"
         />
       </div>
 
       <!-- Loan ID -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Loan ID </label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Loan ID</label>
         <input
           v-model="formData.LoanId"
           type="number"
           placeholder="Enter Loan ID if applicable"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 
+                 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-purple-700"
         />
       </div>
 
@@ -90,7 +95,8 @@ const handleSubmit = async () => {
           v-model="formData.description"
           placeholder="Describe your issue or request"
           rows="4"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 
+                 focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-purple-700"
         ></textarea>
       </div>
 
@@ -98,7 +104,9 @@ const handleSubmit = async () => {
       <div class="text-right">
         <button
           type="submit"
-          class="bg-black text-white px-5 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
+          class="bg-purple-700 text-white px-5 py-2 rounded-lg font-medium 
+                 hover:bg-purple-800 transition-colors duration-200 
+                 focus:ring-2 focus:ring-yellow-400 shadow-md"
         >
           Submit Ticket
         </button>
@@ -106,3 +114,11 @@ const handleSubmit = async () => {
     </form>
   </div>
 </template>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+</style>

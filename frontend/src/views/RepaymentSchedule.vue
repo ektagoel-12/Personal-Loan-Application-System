@@ -53,14 +53,13 @@
             class="w-full border border-primary/30 rounded-lg pl-10 pr-8 py-2 bg-secondary text-textdark appearance-none focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="all">All Purposes</option>
-            <option value="Personal Use">Personal Use</option>
-            <option value="Home Purchase">Home Purchase</option>
-            <option value="Car Purchase">Car Purchase</option>
-            <option value="Education">Education</option>
-            <option value="Business">Business</option>
-            <option value="Medical Emergency">Medical Emergency</option>
-            <option value="Debt Consolidation">Debt Consolidation</option>
-            <option value="Home Improvement">Home Improvement</option>
+            <option
+              v-for="(purpose, key) in loanPurposes"
+              :key="key"
+              :value="purpose.label"
+            >
+              {{ purpose.label }}
+            </option>
           </select>
           <ChevronDown
             class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary pointer-events-none"
@@ -92,7 +91,7 @@
                 </div>
                 <div>
                   <p class="text-gray-500">Purpose</p>
-                  <p class="text-lg font-medium">{{ loan.purpose }}</p>
+                  <p class="text-lg font-medium">{{ loanPurposes[loan.purpose].label }}</p>
                 </div>
                 <div>
                   <p class="text-gray-500">Interest Rate</p>
@@ -324,7 +323,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import {
@@ -338,19 +337,6 @@ import {
   Calculator,
 } from "lucide-vue-next";
 
-export default {
-  name: "RepaymentSchedule",
-  components: {
-    Download,
-    ArrowLeft,
-    ArrowUpDown,
-    Filter,
-    ChevronDown,
-    DollarSign,
-    TrendingDown,
-    Calculator,
-  },
-  setup() {
     const store = useStore();
     const selectedLoan = ref(null);
     const currentPage = ref(1);
@@ -360,6 +346,7 @@ export default {
 
     const sortField = ref("month");
     const sortDirection = ref("asc");
+    const loanPurposes = computed(()=>(store.state.interestRate))
 
     const handleSort = (field) => {
       if (sortField.value === field) {
@@ -374,8 +361,9 @@ export default {
       let loans = store.state.applications.filter(
         (loan) => loan.status === "APPROVED"
       );
+      console.log(filterPurpose.value)
       if (filterPurpose.value !== "all") {
-        loans = loans.filter((loan) => loan.purpose === filterPurpose.value);
+        loans = loans.filter((loan) => loanPurposes.value[loan.purpose].label === filterPurpose.value);
       }
       return loans;
     });
@@ -476,64 +464,40 @@ export default {
 };
 
 
-    const clearSelection = () => {
-      selectedLoan.value = null;
-      currentPage.value = 1;
-      filterYear.value = "all";
-    };
+  const clearSelection = () => {
+    selectedLoan.value = null;
+    currentPage.value = 1;
+    filterYear.value = "all";
+  };
 
-    const exportToCSV = () => {
-      if (!selectedLoan.value) return;
-      const headers = [
-        "Month",
-        "EMI",
-        "Principal",
-        "Interest",
-        "Remaining Balance",
-      ];
-      const rows = repaymentSchedule.value.map((r) =>
-        [
-          r.month,
-          r.emi,
-          r.principalAmount,
-          r.interestAmount,
-          r.balanceRemaining,
-        ].join(",")
-      );
-      const csv = [headers.join(","), ...rows].join("\n");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `repayment-schedule-${selectedLoan.value.id}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    };
+  const exportToCSV = () => {
+    if (!selectedLoan.value) return;
+    const headers = [
+      "Month",
+      "EMI",
+      "Principal",
+      "Interest",
+      "Remaining Balance",
+    ];
+    const rows = repaymentSchedule.value.map((r) =>
+      [
+        r.month,
+        r.emi,
+        r.principalAmount,
+        r.interestAmount,
+        r.balanceRemaining,
+      ].join(",")
+    );
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `repayment-schedule-${selectedLoan.value.id}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
-    return {
-      filteredLoans,
-      selectedLoan,
-      selectLoan,
-      clearSelection,
-      repaymentSchedule,
-      filteredSchedule,
-      sortedSchedule,
-      paginatedSchedule,
-      summaryStats,
-      filterYear,
-      filterPurpose,
-      currentPage,
-      totalPages,
-      rowsPerPage,
-      sortField,
-      sortDirection,
-      handleSort,
-      exportToCSV,
-      getEmiForLoan,
-      getMonthName,
-    };
-  },
-};
 </script>
 
 <style scoped>

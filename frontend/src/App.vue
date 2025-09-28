@@ -8,7 +8,7 @@
       <SidebarComponent v-if="!isAuthRoute" />
 
       <!-- Routed views go here -->
-      <main :class="['flex-1','p-0','overflow-y-auto', 'bg-gray-50', !isAuthRoute ? 'p-0' : '']">
+      <main :class="['flex-1','p-0','min-h-full','m-w-full','overflow-y-auto', 'bg-gray-50', !isAuthRoute ? 'p-0' : '']">
         <RouterView />
       </main>
     </div>
@@ -17,7 +17,7 @@
 
 <script setup>
 import { RouterView, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import SidebarComponent from './components/SidebarComponent.vue'
 import TopbarComponent from './components/TopbarComponent.vue'
 import { useStore } from 'vuex'
@@ -25,6 +25,12 @@ import { useStore } from 'vuex'
 const route = useRoute()
 const store = useStore()
 const isAuthRoute = computed(() => ['/', '/login-form', '/registration-form'].includes(route.path))
+
+onMounted(()=>{
+  store.dispatch("getAllLoans")
+  console.log("loan fetched:",store.state.loans)
+  store.dispatch("fetchTickets",store.state.user.email)
+})
 
 </script>
 

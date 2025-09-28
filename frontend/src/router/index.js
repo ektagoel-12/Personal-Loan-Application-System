@@ -16,7 +16,6 @@ import LoanForm from '@/views/LoanForm.vue'
 import UserManagement from '@/views/UserManagement.vue'
 import TicketDetailsView from '@/views/TicketDetailsView.vue'
 import { useToast } from 'vue-toastification'
-import BgTrianles from '@/components/BgTrianles.vue'
 
 
 const router = createRouter({
@@ -36,8 +35,7 @@ const router = createRouter({
     { path: '/applyLoan' ,meta: { requiresAuth: true }, component: LoanForm},
     { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement},
     { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true },
-    {path:"/ticket/details/:ticketId", name: 'TicketDetails', component:TicketDetailsView, props: true},
-    {path:"/bg", component: BgTrianles}
+    {path:"/ticket/details/:ticketId", name: 'TicketDetails', component:TicketDetailsView, props: true}
   ]
 })
 
@@ -52,6 +50,7 @@ router.beforeEach((to, from, next) => {
     }
     else{
       toast.warning("Pls login as admin to view this page")
+      next("/login-form")
       return
     }
   }

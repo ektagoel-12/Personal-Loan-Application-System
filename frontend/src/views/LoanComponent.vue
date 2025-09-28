@@ -146,7 +146,9 @@ onMounted(()=>{
           </div>
           <div>
             <p class="text-gray-500">Last Updated</p>
-            <p class="font-medium">{{ loan.lastUpdated }}</p>
+             {{ loan.lastUpdated && new Date(loan.lastUpdated).getFullYear() !== 1970 
+                ? new Date(loan.lastUpdated).toLocaleDateString() 
+                : '--' }}
           </div>
         </div>
 

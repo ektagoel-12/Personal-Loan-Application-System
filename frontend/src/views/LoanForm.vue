@@ -149,192 +149,157 @@ function applyLoan() {
 }
 </script>
 
-
-
 <template>
-  <div class="flex flex-col md:flex-row gap-6 p-6">
+  <div class="flex flex-col md:flex-row gap-6 p-6 font-inter text-gray-800 bg-[#f9fafb]">
     <!-- Left Section -->
-    <div class="flex-1 bg-white rounded-2xl shadow p-6">
-      <h2 class="text-lg font-semibold mb-2">Loan Application</h2>
-      <p class="text-gray-500 mb-6">Apply for a personal loan with competitive interest rates</p>
-
+    <div class="flex-1 bg-white rounded-2xl shadow-md border border-[#f3e8ff] p-6">
+      <h2 class="text-2xl font-semibold mb-2 text-[#1f2937]">Loan Application</h2>
+      <p class="text-gray-500 mb-6"> Apply for a personal loan with competitive interest rates </p>
       <!-- Progress -->
       <div class="mb-6">
-        <p class="text-sm font-medium mb-1">Step {{ step }} of 4</p>
-        <div class="w-full h-2 bg-gray-200 rounded">
-          <div
-            class="h-2 bg-black rounded"
-            :style="{ width: (step / 4) * 100 + '%' }"
-          ></div>
+        <p class="text-sm font-medium mb-1 text-[#1f2937]">Step {{ step }} of 4</p>
+        <div class="w-full h-2 bg-[#f3e8ff] rounded-full overflow-hidden">
+          <div class="h-2 bg-[#7e22ce] transition-all duration-300" :style="{ width: (step / 4) * 100 + '%' }"></div>
         </div>
       </div>
-
       <!-- Step 1: Loan Details -->
-      <div v-if="step === 1">
-        <h3 class="font-semibold mb-4">Loan Details</h3>
-        <div class="grid grid-cols-2 gap-4">
+      <div v-if="step === 1" class="space-y-4">
+        <h3 class="text-lg font-semibold text-[#1f2937]">Loan Details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Loan Amount (₹)</label>
-            <input v-model="loan.amount" type="number" class="w-full border rounded-lg px-3 py-2" />
+            <label class="block text-sm text-gray-600 mb-1">Loan Amount (₹)</label>
+            <input v-model="loan.amount" type="number"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce]" />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Loan Tenure (Years)</label>
-            <select v-model="loan.tenure" class="w-full border rounded-lg px-3 py-2">
-              <option value="1">1 Year</option>
-              <option value="2">2 Years</option>
-              <option value="3">3 Years</option>
-              <option value="4">4 Years</option>
-              <option value="5">5 Years</option>
-              <option value="6">6 Years</option>
-              <option value="7">7 Years</option>
-              <option value="8">8 Years</option>
-              <option value="9">9 Years</option>
-              <option value="10">10 Years</option>
+            <label class="block text-sm text-gray-600 mb-1">Loan Tenure (Years)</label>
+            <select v-model="loan.tenure"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce]">
+              <option v-for="i in 10" :key="i" :value="i">{{ i }} Years</option>
             </select>
           </div>
         </div>
-        <div class="mt-4">
-          <label class="block text-sm font-medium mb-1">Loan Purpose</label>
-          <select v-model="loan.purpose" class="w-full border rounded-lg px-3 py-2">
-            <option 
-              v-for="(loanObj, loanType) in interestPerLoan" 
-              :key="loanType" 
-              :value="loanType">
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">Loan Purpose</label>
+          <select v-model="loan.purpose"
+            class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce]">
+            <option v-for="(loanObj, loanType) in interestPerLoan" :key="loanType" :value="loanType">
               {{ loanObj.label }}
             </option>
           </select>
         </div>
         <div class="mt-4 text-gray-600">
-          <span class="inline-flex items-center gap-2">
-            <Landmark /> Estimated EMI: ₹{{ emi }} per month
+          <span class="inline-flex items-center gap-2 text-sm font-medium">
+            <Landmark class="w-4 h-4 text-[#eab308]" /> Estimated EMI:
+            <span class="font-semibold text-[#1f2937]">₹{{ emi }}</span>
+            / month
           </span>
         </div>
       </div>
 
-      <!-- Step 2: Personal & Financial Details --> 
-       <div v-if="step === 2"> <h3 class="font-semibold mb-4">Personal & Financial Details</h3> 
-        <div class="grid grid-cols-2 gap-4"> 
-          <div> 
-            <label class="block text-sm font-medium mb-1">Monthly Income (₹)</label> 
-            <input v-model="loan.income" type="number" class="w-full border rounded-lg px-3 py-2" /> 
-          </div> 
-          <div> 
-            <label class="block text-sm font-medium mb-1">Credit Score</label> 
-            <input v-model="loan.creditScore" type="number" class="w-full border rounded-lg px-3 py-2" /> 
+      <!-- Step 2: Personal & Financial Details -->
+      <div v-if="step === 2" class="space-y-4">
+        <h3 class="text-lg font-semibold text-[#1f2937]">Personal & Financial Details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Monthly Income (₹)</label>
+            <input v-model="loan.income" type="number"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
           </div>
-         </div> 
-         <div class="mt-4"> 
-          <label class="block text-sm font-medium mb-1">Employment Type</label>
-           <select v-model="loan.employmentType" class="w-full border rounded-lg px-3 py-2">
-             <option>Salaried</option>
-              <option>Business</option> 
-              <option>Self-Employed</option> 
-            </select> 
-          </div> 
-        </div> 
-        <!-- Step 3: Contact Details -->
-          <div v-if="step === 3">
-             <h3 class="font-semibold mb-4">Contact Details</h3>
-              <div class="space-y-4"> <div> 
-                <label class="block text-sm font-medium mb-1">Full Name</label> 
-                <input v-model="userDetails.fullName" type="text" class="w-full border rounded-lg px-3 py-2" />
-               </div> 
-               <div> 
-                <label class="block text-sm font-medium mb-1">Email</label>
-                 <input v-model="userDetails.email" type="email" class="w-full border rounded-lg px-3 py-2" /> 
-                </div> 
-                <div>
-                   <label class="block text-sm font-medium mb-1" >Phone</label>
-                    <input v-model="userDetails.phoneNo" type="tel" class="w-full border rounded-lg px-3 py-2" /> 
-                  </div> 
-                  <div> 
-                    <label class="block text-sm font-medium mb-1">Address</label> 
-                    <textarea v-model="userDetails.address" rows="3" class="w-full border rounded-lg px-3 py-2"></textarea> 
-                  </div> 
-                </div> 
-              </div> 
-              <!-- Step 4: Review & Apply --> 
-              <div v-if="step === 4">
-                <h3 class="font-semibold mb-4">Review Your Application</h3> 
-                <div class="space-y-2 text-gray-700"> 
-                  <p><b>Loan Amount:</b> ₹{{ loan.amount }}</p> 
-                  <p><b>Tenure:</b> {{ loan.tenure }}</p> 
-                  <p><b>Purpose:</b> {{ loan.purpose }}</p> 
-                  <p><b>Monthly Income:</b> ₹{{ loan.income }}</p>
-                  <p><b>Credit Score:</b> {{ loan.creditScore }}</p> 
-                  <p><b>Employment:</b> {{ loan.employmentType }}</p>
-                  <p><b>Name:</b> {{ userDetails.fullName }}</p> 
-                  <p><b>Email:</b> {{ userDetails.email }}</p>
-                  <p><b>Phone:</b> {{ userDetails.phoneNo }}</p>
-                  <p><b>Address:</b> {{ userDetails.address }}</p> 
-                </div> 
-              </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Credit Score</label>
+            <input v-model="loan.creditScore" type="number"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">Employment Type</label>
+          <select v-model="loan.employmentType"
+            class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]">
+            <option>Salaried</option>
+            <option>Business</option>
+            <option>Self-Employed</option>
+          </select>
+        </div>
+      </div>
 
+      <!-- Step 3: Contact Details -->
+      <div v-if="step === 3" class="space-y-4">
+        <h3 class="text-lg font-semibold text-[#1f2937]">Contact Details</h3>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Full Name</label>
+            <input v-model="userDetails.fullName" type="text"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Email</label>
+            <input v-model="userDetails.email" type="email"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Phone</label>
+            <input v-model="userDetails.phoneNo" type="tel"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
+          </div>
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">Address</label>
+            <textarea v-model="userDetails.address" rows="3"
+              class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]"></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- Step 4: Review & Apply -->
+      <div v-if="step === 4" class="space-y-4">
+        <h3 class="text-lg font-semibold text-[#1f2937]">Review Your Application</h3>
+        <div class="space-y-2 text-gray-700 text-sm bg-[#f3e8ff]/30 border border-[#f3e8ff] rounded-lg p-4">
+          <p><b>Loan Amount:</b> ₹{{ loan.amount }}</p>
+          <p><b>Tenure:</b> {{ loan.tenure }} Years</p>
+          <p><b>Purpose:</b> {{ loan.purpose }}</p>
+          <p><b>Monthly Income:</b> ₹{{ loan.income }}</p>
+          <p><b>Credit Score:</b> {{ loan.creditScore }}</p>
+          <p><b>Employment:</b> {{ loan.employmentType }}</p>
+          <p><b>Name:</b> {{ userDetails.fullName }}</p>
+          <p><b>Email:</b> {{ userDetails.email }}</p>
+          <p><b>Phone:</b> {{ userDetails.phoneNo }}</p>
+          <p><b>Address:</b> {{ userDetails.address }}</p>
+        </div>
+      </div>
       <!-- Navigation -->
-      <div class="mt-6 flex justify-between">
-        <button
-          @click="prevStep"
-          :disabled="step === 1"
-          class="px-4 py-2 rounded-lg border text-gray-600 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <button
-          v-if="step < 4"
-          @click="nextStep"
-          class="px-6 py-2 rounded-lg bg-black text-white"
-        >
-          Next
-        </button>
-        <button
-          v-else
-          @click="applyLoan"
-          class="px-6 py-2 rounded-lg bg-green-600 text-white"
-        >
+      <div class="mt-6 flex justify-between"> 
+        <button @click="prevStep" :disabled="step === 1"
+          class="px-4 py-2 rounded-lg border border-[#f3e8ff] text-gray-600 hover:bg-[#f3e8ff] disabled:opacity-50">
+          Previous 
+        </button> 
+        <button v-if="step < 4" @click="nextStep"
+          class="px-6 py-2 rounded-lg bg-[#7e22ce] text-white hover:bg-purple-900"> Next </button> <button v-else
+          @click="applyLoan" class="px-6 py-2 rounded-lg bg-[#eab308] text-[#1f2937] hover:bg-yellow-600"> 
           Apply
-        </button>
+        </button> 
       </div>
-    </div>
-
-    <!-- Right Section -->
-    <div class="w-full md:w-1/3 flex flex-col gap-6">
-      <!-- Application Summary -->
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h3 class="font-semibold mb-4 flex gap-1">  <ScrollText/>  Application Summary</h3>
-        <p>Loan Amount: ₹{{ loan.amount.toLocaleString() }}</p>
-        <p>Tenure: {{ loan.tenure }}</p>
-        <p>Estimated EMI: ₹{{ emi }}</p>
-        <p>Interest Rate: {{ interestRate }}% p.a.</p>
-      </div>
-
-      <!-- Eligibility Score -->
-      <div class="bg-white rounded-2xl shadow p-6">
-        <p :class="[
-            'text-lg',
-            'font-bold',
-            { 
-              'text-red-600': eligibilityScore < 40,
-              'text-yellow-500': eligibilityScore >= 40 && eligibilityScore < 70,
-              'text-green-600': eligibilityScore >= 70
-            }
-          ]">
-            {{ eligibilityScore }}/100
-          </p>
-
-          <div class="w-full h-2 bg-gray-200 rounded mt-2">
-            <div
-              :class="[
-                'h-2', 'rounded',
-                { 
-                  'bg-red-600': eligibilityScore < 40,
-                  'bg-yellow-500': eligibilityScore >= 40 && eligibilityScore < 70,
-                  'bg-green-600': eligibilityScore >= 70
-                }
-              ]"
-              :style="{ width: eligibilityScore + '%' }"
-            ></div>
-          </div>
-        <p  v-if="eligibilityScore>90" class="text-gray-500 mt-2 text-sm">Excellent eligibility</p>
+    </div> <!-- Right Section -->
+    <div class="w-full md:w-1/3 flex flex-col gap-6"> <!-- Application Summary -->
+      <div class="bg-white rounded-2xl shadow-md border border-[#f3e8ff] p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-[#1f2937]">
+          <ScrollText class="w-5 h-5 text-[#eab308]" /> Application Summary
+        </h3>
+        <div class="space-y-1 text-sm text-gray-700">
+          <p>Loan Amount: ₹{{ loan.amount.toLocaleString() }}</p>
+          <p>Tenure: {{ loan.tenure }} Years</p>
+          <p>Estimated EMI: ₹{{ emi }}</p>
+          <p>Interest Rate: {{ interestRate }}% p.a.</p>
+        </div>
+      </div> <!-- Eligibility Score -->
+      <div class="bg-white rounded-2xl shadow-md border border-[#f3e8ff] p-6">
+        <p
+          :class="['text-2xl font-semibold', { 'text-red-600': eligibilityScore < 40, 'text-yellow-500': eligibilityScore >= 40 && eligibilityScore < 70, 'text-green-600': eligibilityScore >= 70 }]">
+          {{ eligibilityScore }}/100 </p>
+        <div class="w-full h-2 bg-[#f3e8ff] rounded mt-2 overflow-hidden">
+          <div
+            :class="['h-2', { 'bg-red-600': eligibilityScore < 40, 'bg-yellow-500': eligibilityScore >= 40 && eligibilityScore < 70, 'bg-green-600': eligibilityScore >= 70 }]"
+            :style="{ width: eligibilityScore + '%' }"></div>
+        </div>
+        <p v-if="eligibilityScore > 90" class="text-gray-500 mt-2 text-sm"> Excellent eligibility </p>
       </div>
     </div>
   </div>

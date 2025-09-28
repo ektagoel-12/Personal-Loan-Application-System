@@ -99,7 +99,7 @@
             @click="calculateEMI"
             class="w-full bg-[#7e22ce] text-white py-2 rounded-lg hover:bg-[#6b21a8] transition flex items-center justify-center gap-2"
           >
-            🔢 Recalculate
+            Recalculate
           </button>
         </div>
       </div>

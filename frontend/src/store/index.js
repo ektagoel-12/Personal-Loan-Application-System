@@ -68,10 +68,6 @@ const store = createStore({
       state.applications.push(application);
     },
 
-    REMOVE_APPLICATION(state, id) {
-      state.applications = state.applications.filter((app) => app.id !== id);
-    },
-
     // Tickets mutations
     SET_TICKETS(state, tickets) {
       state.tickets = tickets;
@@ -95,52 +91,48 @@ const store = createStore({
   actions: {
     async fetchDashboardData({ commit }) {
       commit("SET_LOADING", true);
-  try {
-    const res = await makeRequestWithToken("GET", "/admin");
-    const stats = res.data.stats;
+      try {
+        const res = await makeRequestWithToken("GET", "/admin");
+        const stats = res.data.stats;
 
-    // Rounding off to 2 decimals
-    stats.approvalRate = Math.round(stats.approvalRate*100)/100
-    stats.avgIncome = Math.round(stats.avgIncome*100)/100
+        // Rounding off to 2 decimals
+        stats.approvalRate = Math.round(stats.approvalRate*100)/100
+        stats.avgIncome = Math.round(stats.avgIncome*100)/100
 
-    // Transform monthlyTrends
-    let months = [];
-    let values = [];
-    if (stats.monthlyTrends?.length) {
-      stats.monthlyTrends.forEach((trend) => {
-        const month = Object.keys(trend)[0];
-        months.push(month);
-        values.push(trend[month]);
-      });
-    }
+        // Transform monthlyTrends
+        let months = [];
+        let values = [];
+        if (stats.monthlyTrends?.length) {
+          stats.monthlyTrends.forEach((trend) => {
+            const month = Object.keys(trend)[0];
+            months.push(month);
+            values.push(trend[month]);
+          });
+        }
 
-    // Transform statusDistribution
-    const statusDist = stats.statusDistribution || {};
-    const statusDistribution = {
-      approved: statusDist.APPROVED || 0,
-      pending: statusDist.PENDING || 0,
-      rejected: statusDist.REJECTED || 0,
-    };
+        // Transform statusDistribution
+        const statusDist = stats.statusDistribution || {};
+        const statusDistribution = {
+            approved: statusDist.APPROVED || 0,
+            pending: statusDist.PENDING || 0,
+            rejected: statusDist.REJECTED || 0,
+          };
 
-    // Commit transformed stats
-    commit("UPDATE_DASHBOARD_DATA", {
-      stats: {
-        ...stats,
-        monthlyTrends: { months, values },
-        statusDistribution,
-      },
-      applications: res.data.pendingApplications,
-    });
-  } catch (err) {
-    console.error("Failed to fetch dashboard data", err);
-  } finally {
-    commit("SET_LOADING", false);
-  }
+        // Commit transformed stats
+        commit("UPDATE_DASHBOARD_DATA", {
+          stats: {
+            ...stats,
+            monthlyTrends: { months, values },
+            statusDistribution,
+          },
+          applications: res.data.pendingApplications,
+        });
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+      } finally {
+        commit("SET_LOADING", false);
+      }
     },
-
-    // updateApplicationStatus({ commit }, { id, status }) {
-    //   commit("UPDATE_APPLICATION_STATUS", { id, status });
-    // },
 
     async updateApplicationStatus({ commit }, { id, payload }) {
       try {
@@ -181,46 +173,7 @@ const store = createStore({
     applyFilters({ commit }, filters) {
       commit("SET_FILTERS", filters);
     },
-
-    addApplication({ commit }, application) {
-      commit("ADD_APPLICATION", application);
-    },
-
-    removeApplication({ commit }, id) {
-      commit("REMOVE_APPLICATION", id);
-    },
-
-    async getAllLoans({commit}){
-      const id = this.state.user.role === 'ADMIN' ? '' : '/user/' +this.state.user.id
-      const response = await makeRequestWithToken('GET',`/api/loans${id}`)
-      const loans = response.data.map( (loan)=>{
-        let principal = loan.amount;
-        let monthlyRate = loan.rateOfInterest / 12 / 100;  
-        let tenureMonths = loan.tenure;                    
  
-        loan.emi = Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
-                  (Math.pow(1 + monthlyRate, tenureMonths) - 1));
-        loan.interestRate = loan.rateOfInterest
-        loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
-        loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
-        loan.remarkedBy = loan.remarksBy
-        return loan;
-      })
-
-      commit("GET_LOANS_USER",loans)
-    },
-    setCurrentUser({ commit }, payload) {
-      commit("UPDATE_CURR_USER", payload);
-    },
-
-    selectApplication({ commit }, app) {
-      commit("SET_SELECTED_APPLICATION", app);
-    },
-
-    applyFilters({ commit }, filters) {
-      commit("SET_FILTERS", filters);
-    },
-
     async addApplication({ commit }, application) {
       const response = await makeRequestWithToken('POST','/api/loans',application);
       if(response.status == 200){
@@ -241,10 +194,6 @@ const store = createStore({
         toast.error("Failed to add loan")
       }
       
-    },
-
-    removeApplication({ commit }, id) {
-      commit("REMOVE_APPLICATION", id);
     },
 
     // Tickets actions
