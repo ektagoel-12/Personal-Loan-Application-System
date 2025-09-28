@@ -1,82 +1,99 @@
 <template>
-  <div class="p-6 max-w-3xl mx-auto">
-    <button @click="$router.back()" class="mb-4 text-sm underline">← Back</button>
+  <div class="p-6 max-w-4xl mx-auto">
+    <!-- Back Button -->
+    <button 
+      @click="$router.back()" 
+      class="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition"
+    >
+      ← Back
+    </button>
 
-    <div v-if="loading">Loading...</div>
-
-    <div v-else class="card">
-      <h2 class="text-xl font-bold mb-2">Loan Application #{{ loan?.id }}</h2>
-
-      <div class="mb-4">
-        <p><strong>Applicant:</strong> {{ loan?.applicant }}</p>
-        <p><strong>Amount:</strong> ₹{{ loan?.amount }}</p>
-        <p><strong>Income:</strong> ₹{{ loan?.income }}</p>
-        <p><strong>Credit Score:</strong> {{ loan?.creditScore }}</p>
-        <p><strong>Loan Type:</strong> {{ loan?.purpose }}</p>
-        <p><strong>Applied Date:</strong> {{ loan?.appliedDate }}</p>
-        <p><strong>Status:</strong> {{ loan?.status }}</p>
+    <!-- Card -->
+    <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="flex gap-2 items-center text-2xl font-extrabold text-gray-800 tracking-tight">
+          <Search class="w-6 h-6 text-blue-600"/>
+          Loan Application #{{ loan.id }}
+        </h2>
+        <span 
+          class="px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm"
+          :class="{
+            'bg-blue-50 text-blue-700 border border-blue-200': loan?.status === 'NEW',
+            'bg-yellow-50 text-yellow-700 border border-yellow-200': loan?.status === 'PENDING',
+          }"
+        >
+          {{ loan.status }}
+        </span>
       </div>
 
-      <div class="mb-4">
-        <label class="block mb-1 font-semibold">Review Remarks</label>
-        <textarea v-model="remarks" rows="4" class="w-full border rounded p-2"></textarea>
+      <!-- Loan Details -->
+      <div class="grid grid-cols-2 gap-6 mb-8 text-gray-700">
+        <p><span class="font-semibold text-gray-900">Applicant:</span> {{ loan.name }}</p>
+        <p><span class="font-semibold text-gray-900">Amount:</span> ₹{{ loan.amount.toLocaleString() }}</p>
+        <p><span class="font-semibold text-gray-900">Income:</span> ₹{{ loan.income.toLocaleString() }}</p>
+        <p><span class="font-semibold text-gray-900">Credit Score:</span> {{ loan.creditScore }}</p>
+        <p><span class="font-semibold text-gray-900">Loan Type:</span> {{ loanTypeLabel[loan.loanType].label }}</p>
+        <p><span class="font-semibold text-gray-900">Applied Date:</span> {{ loan.applicationDate }}</p>
       </div>
 
-      <div class="flex gap-3">
-        <button @click="submitReview('APPROVED')" class="bg-green-600 text-white px-4 py-2 rounded">Approve</button>
-        <button @click="submitReview('REJECTED')" class="bg-red-600 text-white px-4 py-2 rounded">Reject</button>
+      <!-- Remarks -->
+      <div class="mb-8">
+        <label class="block mb-2 font-semibold text-gray-800">Review Remarks</label>
+        <textarea 
+          v-model="remarks" 
+          rows="4" 
+          class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none shadow-sm resize-none"
+          placeholder="Write your remarks here..."
+        ></textarea>
       </div>
 
-      <div v-if="responseMessage" class="mt-4 text-sm">
+      <!-- Action Buttons -->
+      <div class="flex gap-4">
+        <button 
+          @click="submitReview('APPROVED')" 
+          class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-4 py-3 rounded-xl shadow-md transition-transform transform hover:scale-[1.02]"
+        >
+          Approve
+        </button>
+        <button 
+          @click="submitReview('REJECTED')" 
+          class="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 py-3 rounded-xl shadow-md transition-transform transform hover:scale-[1.02]"
+        >
+           Reject
+        </button>
+      </div>
+
+      <!-- Response Message -->
+      <div 
+        v-if="responseMessage" 
+        class="mt-8 text-center font-medium text-lg"
+        :class="responseMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'"
+      >
         {{ responseMessage }}
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted , computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
+import { Search } from "lucide-vue-next";
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-const id = route.params.id;
-const loan = ref(null);
-const loading = ref(true);
+const id = Number(route.params.id);
+const loan = computed(() => store.getters.selectedApplication(id));
 const remarks = ref("");
 const responseMessage = ref("");
-
-const adminUser = ref({
-  id: 1,
-  name: "Admin User",
-  email: "admin@example.com"
-});
-
-async function loadLoan() {
-  loading.value = true;
-  try {
-    const res = await store.dispatch("fetchLoanById", id);
-    loan.value = res;
-  } catch (err) {
-    console.error(err);
-    responseMessage.value = "Failed to load application";
-  } finally {
-    loading.value = false;
-  }
-}
-
-function localIsoWithOffset(date = new Date()) {
-  const tzOffset = -date.getTimezoneOffset();
-  const diff = tzOffset >= 0 ? "+" : "-";
-  const pad = (n) => String(Math.floor(Math.abs(n))).padStart(2, "0");
-  const hours = pad(tzOffset / 60);
-  const minutes = pad(tzOffset % 60);
-  const iso = date.toISOString().replace("Z", "");
-  return `${iso}${diff}${hours}:${minutes}`;
-}
+const adminUser = store.state.user;
+const loanTypeLabel = store.state.interestRate
+console.log(loanTypeLabel)
 
 async function submitReview(status) {
   if (!loan.value) return;
@@ -84,25 +101,18 @@ async function submitReview(status) {
   const payload = {
     status,
     reviewedAt: new Date().toISOString(),
-    reviewedBy: adminUser.value.name,
+    reviewedBy: adminUser?.name,
     reviewRemarks: remarks.value
   };
 
   try {
     await store.dispatch("updateApplicationStatus", { id: loan.value.id, payload });
     responseMessage.value = `Application ${status.toLowerCase()} successfully.`;
-    router.push({ name: "AdminDashboard" });
+    router.push('/admin');
   } catch (err) {
     console.error(err);
     responseMessage.value = "Failed to update application";
   }
 }
 
-onMounted(() => {
-  loadLoan();
-});
 </script>
-
-<style scoped>
-.card { @apply bg-white shadow rounded p-4; }
-</style>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue"
 import { useStore } from "vuex"
-import  { Eye,SquareArrowDown } from "lucide-vue-next"
+import  { Eye } from "lucide-vue-next"
 import Model from "@/components/LoanModel.vue"
 
 const store = useStore()
@@ -60,13 +60,16 @@ const viewLoan = (loan) =>{
   showModel.value = true
 }
 
+onMounted(()=>{
+  store.dispatch("getAllLoans")
+})
 
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto p-6">
+  <div class="max-w-4xl  mx-auto p-4 font-sans text-[#1f2937]">
     <!-- Header -->
-    <h1 class="text-2xl font-bold text-gray-900">My Loan Applications</h1>
+    <h1 class="text-2xl font-bold text-[#1f2937]">My Loan Applications</h1>
     <p class="text-gray-500 mb-6">Track the status of your loan applications</p>
 
     <!-- Filters -->
@@ -75,9 +78,12 @@ const viewLoan = (loan) =>{
         v-model="searchTerm"
         type="text"
         placeholder="Search by application ID or purpose..."
-        class="flex-1 px-3 py-2 border rounded-lg"
+        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none"
       />
-      <select v-model="statusFilter" class="px-3 py-2 border rounded-lg">
+      <select
+        v-model="statusFilter"
+        class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none"
+      >
         <option value="ALL">All Status</option>
         <option value="APPROVED">Approved</option>
         <option value="PENDING">Under Review</option>
@@ -86,12 +92,12 @@ const viewLoan = (loan) =>{
       <input
         type="date"
         v-model="dateRange.from"
-        class="px-3 py-2 border rounded-lg"
+        class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none"
       />
       <input
         type="date"
         v-model="dateRange.to"
-        class="px-3 py-2 border rounded-lg"
+        class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none"
       />
     </div>
 
@@ -100,12 +106,12 @@ const viewLoan = (loan) =>{
       <div
         v-for="loan in filteredApplications"
         :key="loan.id"
-        class="bg-white shadow rounded-lg p-4 flex flex-col gap-3"
+        class="bg-white shadow-md border border-gray-100 rounded-xl p-4 flex flex-col gap-3"
       >
         <!-- Top Row -->
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-2">
-            <span class="font-semibold">{{ loan.id }}</span>
+            <span class="font-semibold text-[#1f2937]">#{{ loan.id }}</span>
             <span
               class="text-xs px-2 py-1 rounded-full font-medium"
               :class="statusMap[loan.status].class"
@@ -113,20 +119,14 @@ const viewLoan = (loan) =>{
               {{ statusMap[loan.status].label }}
             </span>
           </div>
-          <div class="flex gap-2 ">
-            <button @click="viewLoan(loan)" class="  px-3 py-1 border rounded-lg hover:shadow-md hover:bg-slate-100">
-              <div class="flex content-center text-xs">
-                <Eye class="h-4 w-4 mr-1 p-0 mb-0" /> View Details
-              </div>
-            </button>
+          <div class="flex gap-2">
             <button
-              v-if="loan.status === 'APPROVED'"
-              class="px-3 py-1 border rounded-lg hover:shadow-md hover:bg-slate-100"
+              @click="viewLoan(loan)"
+              class="px-3 py-1 border border-gray-300 rounded-lg hover:shadow-md hover:bg-[#f3e8ff] text-sm text-[#1f2937] flex items-center gap-1 transition"
             >
-              <div class="flex content-center text-xs ">
-                <SquareArrowDown class="h-4 w-4 mr-1" /> Download
-              </div>
+              <Eye class="h-4 w-4" /> View Details
             </button>
+            
           </div>
         </div>
 
@@ -146,30 +146,34 @@ const viewLoan = (loan) =>{
           </div>
           <div>
             <p class="text-gray-500">Last Updated</p>
-            <p class="font-medium">{{ loan.lastUpdated }}</p>
+             {{ loan.lastUpdated && new Date(loan.lastUpdated).getFullYear() !== 1970 
+                ? new Date(loan.lastUpdated).toLocaleDateString() 
+                : '--' }}
           </div>
         </div>
 
         <!-- Remarks -->
         <p
-          v-if="loan.remarks!== null && loan.remarkedBy !== null"
-          class="bg-gray-100 px-3 py-2 rounded-md text-sm"
+          v-if="loan.remarks !== null && loan.remarkedBy !== null"
+          class="bg-[#f3e8ff] px-3 py-2 rounded-md text-sm text-[#1f2937]"
         >
           {{ loan.remarks }}
         </p>
 
         <!-- EMI/Details -->
-        <div v-if="loan.emi" class="flex gap-6 text-sm text-gray-700">
+        <div v-if="loan.emi" class="flex gap-6 text-sm text-[#1f2937]">
           <span>EMI: ₹{{ loan.emi.toLocaleString() }}</span>
           <span>Interest: {{ loan.interestRate }}%</span>
           <span>Tenure: {{ loan.tenure }} years</span>
         </div>
 
-        <Model 
-         :isOpen="showModel"
-         :application = "selectLoan"
-         @close="showModel=false"
-         :statusMap="statusMap" />
+        <!-- Modal Component -->
+        <Model
+          :isOpen="showModel"
+          :application="selectLoan"
+          @close="showModel = false"
+          :statusMap="statusMap"
+        />
       </div>
     </div>
   </div>

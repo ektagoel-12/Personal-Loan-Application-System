@@ -15,6 +15,7 @@ import RepaymentSchedule from '@/views/RepaymentSchedule.vue'
 import LoanForm from '@/views/LoanForm.vue'
 import UserManagement from '@/views/UserManagement.vue'
 import TicketDetailsView from '@/views/TicketDetailsView.vue'
+import { useToast } from 'vue-toastification'
 
 
 const router = createRouter({
@@ -33,13 +34,14 @@ const router = createRouter({
     { path: '/repayment' ,meta: { requiresAuth: true } , component: RepaymentSchedule},
     { path: '/applyLoan' ,meta: { requiresAuth: true }, component: LoanForm},
     { path: '/users' ,meta: { requiresAdminAuth: true }, component:UserManagement},
-    { path: "/admin/loans/:id",meta:{requiresAdminAuth:true} ,name: 'AdminDashboard', component: LoanDetail, props: true },
-    {path:"/ticket/details/:ticketId", meta:{requiresAuth:true},name: 'TicketDetails', component:TicketDetailsView, props: true}
+    { path: "/admin/loans/:id", name: 'AdminDashboard', component: LoanDetail, props: true },
+    {path:"/ticket/details/:ticketId", name: 'TicketDetails', component:TicketDetailsView, props: true}
   ]
 })
 
 router.beforeEach((to, from, next) => {
   const store = useStore()
+  const toast = useToast()
   const user = store.getters.currentUser
   
   if(to.meta.requiresAdminAuth){
@@ -47,7 +49,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else{
-      alert("Pls login as admin to view this page")
+      toast.warning("Pls login as admin to view this page")
       next("/login-form")
       return
     }
@@ -57,7 +59,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else{
-      alert("You are not authorized to visit this page")
+      toast.warning("You are not authorized to visit this page")
       next("/login-form")
     }
   }

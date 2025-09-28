@@ -1,123 +1,133 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 font-sans p-6 text-textdark bg-neutral">
     <!-- Welcome Section -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl">Welcome back, {{ user?.name }}</h1>
-        <p class="text-muted-foreground">
+        <h1 class="text-3xl font-semibold">Welcome back, {{ user?.name }}</h1>
+        <p class="text-sm text-gray-500">
           Here's an overview of your loan portfolio
         </p>
       </div>
-      <button  @click="router.push('applyLoan')" class="flex items-center px-4 py-2 rounded-lg bg-black text-white hover:bg-primary/80">
-        <FileText class="mr-2 h-4 w-4" />
+      <button
+        @click="router.push('applyLoan')"
+        class="flex items-center px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 shadow-sm transition"
+      >
+        <FileText class="mr-2 h-4 w-4 text-white" />
         Apply for New Loan
       </button>
     </div>
 
     <!-- Quick Stats -->
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <div class="rounded-lg border p-4 shadow-sm">
+      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between pb-2">
           <h2 class="text-sm font-medium">Total Borrowed</h2>
-          <DollarSign class="h-4 w-4 text-muted-foreground" />
+          <DollarSign class="h-4 w-4 text-primary" />
         </div>
-        <div class="text-2xl">₹{{ mockLoanData.quickStats.totalBorrowed.toLocaleString() }}</div>
-        <p class="text-xs text-muted-foreground">Across all your loans</p>
+        <div class="text-2xl font-semibold">₹{{ totalAmountBorrowed }}</div>
+        <p class="text-xs text-gray-500">Across all your loans</p>
       </div>
 
-      <div class="rounded-lg border p-4 shadow-sm">
+      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between pb-2">
           <h2 class="text-sm font-medium">Amount Repaid</h2>
-          <TrendingUp class="h-4 w-4 text-muted-foreground" />
+          <TrendingUp class="h-4 w-4 text-primary" />
         </div>
-        <div class="text-2xl">₹{{ mockLoanData.quickStats.totalRepaid.toLocaleString() }}</div>
-        <p class="text-xs text-muted-foreground">+12% from last month</p>
+        <div class="text-2xl font-semibold text-primary">
+          ₹{{ mockLoanData.quickStats.totalRepaid.toLocaleString() }}
+        </div>
+        <p class="text-xs text-accent font-medium">+12% from last month</p>
       </div>
 
-      <div class="rounded-lg border p-4 shadow-sm">
+      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between pb-2">
           <h2 class="text-sm font-medium">Credit Score</h2>
-          <TrendingUp class="h-4 w-4 text-muted-foreground" />
+          <TrendingUp class="h-4 w-4 text-primary" />
         </div>
-        <div class="text-2xl">{{ mockLoanData.quickStats.creditScore }}</div>
-        <p class="text-xs text-muted-foreground">Excellent rating</p>
+        <div class="text-2xl font-semibold">{{ user.creditScore }}</div>
+        <p v-if="user.creditScore >= 750" class="text-xs text-green-600">Excellent rating</p>
+        <p v-else-if="user.creditScore >= 700" class="text-xs text-blue-600">Good rating</p>
+        <p v-else-if="user.creditScore >= 650" class="text-xs text-yellow-600">Fair rating</p>
+        <p v-else class="text-xs text-red-600">Poor rating</p>
       </div>
 
-      <div class="rounded-lg border p-4 shadow-sm">
+      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between pb-2">
           <h2 class="text-sm font-medium">Next EMI Due</h2>
-          <Calendar class="h-4 w-4 text-muted-foreground" />
+          <Calendar class="h-4 w-4 text-primary" />
         </div>
-        <div class="text-2xl">₹{{ mockLoanData.quickStats.nextEmiDue.toLocaleString() }}</div>
-        <p class="text-xs text-muted-foreground">Due on 15th Jan</p>
+        <div class="text-2xl font-semibold">
+          ₹{{ mockLoanData.quickStats.nextEmiDue.toLocaleString() }}
+        </div>
+        <p class="text-xs text-gray-500">Due on 15th Jan</p>
       </div>
     </div>
 
     <!-- Active Loan + Recent Applications -->
     <div class="grid gap-6 md:grid-cols-2">
       <!-- Active Loan -->
-      <div class="rounded-lg border p-4 shadow-sm">
-        <h2 class="flex items-center gap-2 font-medium">
+      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
+        <h2 class="flex items-center gap-2 font-medium text-primary">
           <DollarSign class="h-5 w-5" />
           Active Loan
         </h2>
-        <p class="text-sm text-muted-foreground">Your current loan details and progress</p>
+        <p class="text-sm text-gray-500">Your current loan details and progress</p>
 
         <div class="space-y-4 mt-4">
           <div class="flex justify-between text-sm">
             <span>Loan Amount</span>
-            <span>₹{{ mockLoanData.activeLoan.amount.toLocaleString() }}</span>
+            <span class="font-medium">₹{{ mockLoanData.activeLoan.amount.toLocaleString() }}</span>
           </div>
           <div class="flex justify-between text-sm">
             <span>Remaining Balance</span>
-            <span>₹{{ mockLoanData.activeLoan.remainingBalance.toLocaleString() }}</span>
+            <span class="font-medium">₹{{ mockLoanData.activeLoan.remainingBalance.toLocaleString() }}</span>
           </div>
           <div class="flex justify-between text-sm">
             <span>Monthly EMI</span>
-            <span>₹{{ mockLoanData.activeLoan.emi.toLocaleString() }}</span>
+            <span class="font-medium">₹{{ mockLoanData.activeLoan.emi.toLocaleString() }}</span>
           </div>
 
           <div class="space-y-2">
             <div class="flex justify-between text-sm">
               <span>Repayment Progress</span>
-              <span>{{ progressPercentage }}%</span>
+              <span class="text-primary">{{ progressPercentage }}%</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="w-full bg-secondary rounded-full h-2">
               <div
-                class="bg-blue-600 h-2 rounded-full"
+                class="bg-primary h-2 rounded-full"
                 :style="{ width: progressPercentage + '%' }"
               ></div>
             </div>
           </div>
 
-          <div class="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-            <Clock class="h-4 w-4 text-blue-600" />
+          <div class="flex items-center gap-2 p-3 bg-secondary rounded-lg">
+            <Clock class="h-4 w-4 text-primary" />
             <span class="text-sm">Next EMI due on {{ mockLoanData.activeLoan.nextDueDate }}</span>
           </div>
         </div>
       </div>
 
       <!-- Recent Applications -->
-      <div class="rounded-lg border p-4 shadow-sm">
-        <h2 class="flex items-center gap-2 font-medium">
+      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
+        <h2 class="flex items-center gap-2 font-medium text-primary">
           <FileText class="h-5 w-5" />
           Recent Applications
         </h2>
-        <p class="text-sm text-muted-foreground">Track your latest loan applications</p>
+        <p class="text-sm text-gray-500">Track your latest loan applications</p>
 
         <div class="space-y-4 mt-4">
           <div
             v-for="app in recentApplications"
             :key="app.id"
-            class="flex items-center justify-between p-3 border rounded-lg"
+            class="flex items-center justify-between p-3 border rounded-lg hover:bg-secondary/40 transition"
           >
             <div class="space-y-1">
-              <p class="text-sm">₹{{ app.amount.toLocaleString() }}</p>
-              <p class="text-xs text-muted-foreground">{{ app.purpose }}</p>
-              <p class="text-xs text-muted-foreground">{{ app.date }}</p>
+              <p class="text-sm font-medium">₹{{ app.amount.toLocaleString() }}</p>
+              <p class="text-xs text-gray-500">{{ app.purpose }}</p>
+              <p class="text-xs text-gray-400">{{ app.date }}</p>
             </div>
             <span
-              class="px-2 py-1 text-xs rounded"
+              class="px-2 py-1 text-xs rounded font-medium"
               :class="getStatusColor(app.status)"
             >
               {{ app.status.replace('_', ' ') }}
@@ -126,7 +136,7 @@
         </div>
 
         <button
-          class="w-full mt-4 px-4 py-2 rounded-lg border hover:bg-gray-200"
+          class="w-full mt-4 px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition"
           @click="router.push('/loan')"
         >
           View All Applications
@@ -135,25 +145,28 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="rounded-lg border p-4 shadow-sm">
-      <h2 class="font-medium">Quick Actions</h2>
-      <p class="text-sm text-muted-foreground">Common tasks and tools for managing your loans</p>
+    <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
+      <h2 class="font-medium text-primary">Quick Actions</h2>
+      <p class="text-sm text-gray-500">Common tasks and tools for managing your loans</p>
 
       <div class="grid gap-4 md:grid-cols-3 mt-4">
         <button
-          class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border hover:bg-gray-200"
+          @click="router.push('/calculator')"
+          class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition"
         >
           <Calculator class="h-5 w-5" />
           <span>EMI Calculator</span>
         </button>
         <button
-          class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border hover:bg-gray-200"
+          @click="router.push('/applyLoan')"
+          class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition"
         >
           <FileText class="h-5 w-5" />
           <span>New Application</span>
         </button>
         <button
-          class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border hover:bg-gray-200"
+          @click="router.push('/raise-ticket')"
+          class="flex items-center justify-center gap-2 h-20 px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition"
         >
           <AlertCircle class="h-5 w-5" />
           <span>Get Support</span>
@@ -163,7 +176,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { ref, computed, onMounted } from "vue";
 import {
   TrendingUp,
@@ -181,7 +194,8 @@ const store = useStore()
 // Mock Auth context
 const user = ref(store.getters.currentUser);
 
-const recentApplications = ref(store.getters.recentApplications)
+const recentApplications = computed( ()=>store.getters.recentApplications)
+const totalAmountBorrowed = computed(()=>store.getters.totalBorrowed)
 
 // Mock loan data
 const mockLoanData = {
@@ -192,10 +206,6 @@ const mockLoanData = {
     nextDueDate: "2024-01-15",
     status: "ACTIVE",
   },
-  recentApplications: [
-    { id: "1", amount: 100000, status: "UNDER_REVIEW", date: "2024-01-05", purpose: "Home Improvement" },
-    { id: "2", amount: 50000, status: "APPROVED", date: "2024-01-02", purpose: "Personal" },
-  ],
   quickStats: {
     totalBorrowed: 300000,
     totalRepaid: 120000,
@@ -212,7 +222,7 @@ const progressPercentage = computed(() =>
   )
 );
 
-function getStatusColor(status: string) {
+function getStatusColor(status) {
   switch (status) {
     case "APPROVED":
       return "bg-green-100 text-green-800";
@@ -224,5 +234,8 @@ function getStatusColor(status: string) {
       return "bg-gray-100 text-gray-800";
   }
 }
+onMounted(()=>{
+  store.dispatch("getAllLoans")
+})
 
 </script>
