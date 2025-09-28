@@ -25,7 +25,7 @@ export default {
               this.data?.pending || 0,
               this.data?.rejected || 0,
             ],
-            backgroundColor: ["#22c55e", "#3b82f6", "#ef4444"],
+            backgroundColor: ["#10B981", "#38BDF8", "#F87171"],
           },
         ],
       };
