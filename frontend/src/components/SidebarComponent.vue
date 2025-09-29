@@ -5,7 +5,7 @@
     <CreditCard class="h-5 w-5 text-purple-600" />
     <span class="font-semibold text-lg text-gray-900 hover:text-purple-600 transition cursor-pointer"
           @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')">
-      LoanFlow
+      LoanEase
     </span>
   </div>
 
