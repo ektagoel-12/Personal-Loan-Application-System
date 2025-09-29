@@ -33,7 +33,7 @@ onMounted(()=>{
       store.dispatch("fetchDashboardData")
     }
     store.dispatch("getAllLoans")
-    store.dispatch("fetchTickets",store.state.user.email)
+    store.dispatch("fetchTickets",store.state.user?.email)
   }
 })
 
