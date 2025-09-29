@@ -7,7 +7,7 @@ import tech.zetapioneers.loan_application.dto.AdminDto;
 import tech.zetapioneers.loan_application.dto.AdminLoansList;
 import tech.zetapioneers.loan_application.dto.AdminStats;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
-import tech.zetapioneers.loan_application.enums.Status;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.services.AdminLoanService;
 
@@ -29,8 +29,8 @@ public class AdminLoanServiceImpl extends AdminLoanService {
         List<LoanApplication> allApps = loanRepo.findAll();
 
         long total = allApps.size();
-        long approved = allApps.stream().filter(a -> a.getStatus() == Status.APPROVED).count();
-        long pending = allApps.stream().filter(a -> a.getStatus() == Status.PENDING).count();
+        long approved = allApps.stream().filter(a -> a.getStatus() == LoanStatus.APPROVED).count();
+        long pending = allApps.stream().filter(a -> a.getStatus() == LoanStatus.PENDING).count();
         double avgIncome = allApps.stream().mapToDouble(LoanApplication::getIncome).average().orElse(0);
 
         Map<String, Long> statusDist = allApps.stream()
@@ -52,7 +52,7 @@ public class AdminLoanServiceImpl extends AdminLoanService {
                 .monthlyCounts(monthlyCounts)
                 .build();
 
-        List<AdminLoansList> pendingApps = loanRepo.findByStatus(Status.PENDING)
+        List<AdminLoansList> pendingApps = loanRepo.findByStatus(LoanStatus.PENDING)
                 .stream().map(this::mapToDTO).collect(Collectors.toList());
 
         return AdminDto.builder()
@@ -66,7 +66,7 @@ public class AdminLoanServiceImpl extends AdminLoanService {
         LoanApplication app = loanRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Loan not found"));
 
-        app.setStatus(Status.valueOf(status));
+        app.setStatus(LoanStatus.valueOf(status));
         app.setReviewedBy(reviewedBy);
         app.setReviewedAt(reviewedAt);
         app.setReviewRemarks(reviewRemarks);

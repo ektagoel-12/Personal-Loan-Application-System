@@ -29,8 +29,11 @@ const isLoggedIn = computed(()=>store.getters.isLoggedIn)
 
 onMounted(()=>{
   if(isLoggedIn){
-  store.dispatch("getAllLoans")
-  store.dispatch("fetchTickets",store.state.user.email)
+    if(store.state.user && store.state.user.role === "ADMIN"){
+      store.dispatch("fetchDashboardData")
+    }
+    store.dispatch("getAllLoans")
+    store.dispatch("fetchTickets",store.state.user?.email)
   }
 })
 

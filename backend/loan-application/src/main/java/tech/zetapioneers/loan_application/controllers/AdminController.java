@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.zetapioneers.loan_application.dto.AdminDto;
 import tech.zetapioneers.loan_application.dto.AdminLoansList;
 import tech.zetapioneers.loan_application.dto.UpdateLoanStatus;
-import tech.zetapioneers.loan_application.enums.Status;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.services.AdminLoanService;
 import tech.zetapioneers.loan_application.services.RepaymentScheduleService;
 
@@ -30,7 +30,7 @@ public class AdminController {
     @PutMapping("/loans/{id}/status")
     public AdminLoansList updateStatus(@PathVariable Long id, @RequestBody UpdateLoanStatus req) {
         AdminLoansList result = loanService.updateStatus(id, req.getStatus(), req.getReviewRemarks(), req.getReviewedAt(), req.getReviewedBy());
-        if(Status.valueOf(result.getStatus()) == Status.APPROVED)
+        if(LoanStatus.valueOf(result.getStatus()) == LoanStatus.APPROVED)
             repaymentScheduleService.generateSchedule(id);
         return result;
     }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.zetapioneers.loan_application.enums.LoanType;
-import tech.zetapioneers.loan_application.enums.Status;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class LoanApplicationResponse {
     private Double income;
     private Double amount;
     private LoanType purpose;
-    private Status status;
+    private LoanStatus status;
     private LocalDate applicationDate;
     private LocalDateTime lastUpdated;
     private Double rateOfInterest;

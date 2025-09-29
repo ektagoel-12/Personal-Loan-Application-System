@@ -7,7 +7,7 @@
           class="text-xl font-bold text-[#7e22ce] cursor-pointer hover:text-[#6b21a8] transition"
           @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')"
         >
-          LoanFlow
+          LoanEase
         </h1>
         <span
           v-if="user"
@@ -22,12 +22,6 @@
 
       <!-- Right side -->
       <div class="flex items-center space-x-4">
-        <!-- Notifications -->
-        <button class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-[#f3e8ff] relative transition">
-          <Bell class="h-4 w-4 text-[#1f2937]" />
-          <span class="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        </button>
-
         <!-- User Menu -->
         <div v-if="user" class="relative">
           <button
@@ -56,11 +50,6 @@
                   @click="openProfile"
                 >
                   <User class="mr-2 h-4 w-4" /> Profile
-                </button>
-              </li>
-              <li>
-                <button class="flex items-center px-4 py-2 w-full text-sm text-[#1f2937] hover:bg-[#f3e8ff]">
-                  <Settings class="mr-2 h-4 w-4" /> Settings
                 </button>
               </li>
               <li>
@@ -114,7 +103,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Bell, LogOut, Settings, User } from 'lucide-vue-next'
+import { LogOut, Settings, User } from 'lucide-vue-next'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 

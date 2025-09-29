@@ -150,7 +150,7 @@ const store = createStore({
     },
 
     async getAllLoans({ commit, state }) {
-      const id = state.user.role === 'ADMIN' ? '' : '/user/' + state.user.id;
+      const id = state.user?.role === 'ADMIN' ? '' : '/user/' + state.user?.id;
       const response = await makeRequestWithToken('GET', `/api/loans${id}`);
       const loans = response.data.map((loan) => {
         const principal = loan.amount;
