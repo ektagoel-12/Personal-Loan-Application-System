@@ -149,24 +149,17 @@ const filteredApps = computed(() =>
 
 
 const barChartData = computed(() => {
-  const trends = stats.value?.monthlyTrends;
+  const trends = stats.value?.monthlyCounts;
 
-  if (Array.isArray(trends)) {
-    // Case: API response (array of objects)
-    const months = [];
-    const values = [];
-    trends.forEach((trend) => {
-      const month = Object.keys(trend)[0];
-      months.push(month);
-      values.push(trend[month]);
-    });
-    return { months, values };
-  } else if (trends && trends.months && trends.values) {
-    // Case: initial state (object with months and values)
-    return { months: trends.months, values: trends.values };
-  } else {
-    return { months: [], values: [] };
+  const months=[]
+  const values=[]
+
+  for (const month in trends) {
+    months.push(month); // or format if needed
+    values.push(trends[month]);
   }
+  
+    return { months, values };
 });
 
 // Computed for PieChart (status distribution)

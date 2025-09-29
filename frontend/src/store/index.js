@@ -11,7 +11,7 @@ const store = createStore({
       user: JSON.parse(localStorage.getItem('currUser')) || null,
       stats: {},
       applications: [],
-      tickets: [], // added tickets state
+      tickets: [], 
       allTickets: [],
       searchTerm: "",
       statusFilter: "all",
@@ -38,6 +38,7 @@ const store = createStore({
     },
     UPDATE_DASHBOARD_DATA(state, payload) {
       state.stats = payload.stats;
+      console.log(payload.stats)
       state.applications = payload.applications;
     },
     UPDATE_APPLICATION(state, { id, payload }) {
