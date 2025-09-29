@@ -29,7 +29,7 @@ export default {
           {
             label: "Applications",
             data: this.data?.values || [],
-            backgroundColor: "#B388FF",
+            backgroundColor: "#9666E6",
           },
         ],
       };
