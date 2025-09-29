@@ -41,9 +41,10 @@ const interestPerLoan = store.state.interestRate
 const interestRate = computed(() => interestPerLoan[loan.value.purpose]?.rate || 0);
 
 const emi = computed(()=>{
+    console.log(interestRate.value)
     let P = loan.value.amount;
     let R = interestRate.value / 100 / 12;
-    let N = loan.value.tenure * 12; // Get tenure in months
+    let N = loan.value.tenure * 12 ; // Get tenure in months
 
     if (P && R && N) {
       const emiCalculated = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
@@ -175,7 +176,7 @@ function applyLoan() {
             <label class="block text-sm text-gray-600 mb-1">Loan Tenure (Years)</label>
             <select v-model="loan.tenure"
               class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce]">
-              <option v-for="i in 10" :key="i" :value="i">{{ i }} Years</option>
+              <option v-for="i in 20" :key="i" :value="i">{{ i }} Years</option>
             </select>
           </div>
         </div>

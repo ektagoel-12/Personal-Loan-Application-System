@@ -157,7 +157,7 @@
               <p><span class="font-medium">Amount:</span> ₹{{ loan.amount }}</p>
               <p><span class="font-medium">EMI:</span> ₹{{ loan.emi }}</p>
               <p><span class="font-medium">Interest Rate:</span> {{ loan.interestRate }}%</p>
-              <p><span class="font-medium">Tenure:</span> {{ loan.tenure }} yrs</p>
+              <p><span class="font-medium">Tenure:</span> {{ loan.tenure/12 }} yrs</p>
               <p><span class="font-medium">Purpose:</span> {{ loan.purpose }}</p>
               <p><span class="font-medium">Applied Date:</span> {{ loan.appliedDate }}</p>
               <p><span class="font-medium">Application Date:</span> {{ loan.applicationDate }}</p>

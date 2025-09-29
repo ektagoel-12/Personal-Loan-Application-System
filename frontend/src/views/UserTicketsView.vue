@@ -68,7 +68,7 @@ const raiseTicket = () => {
     <!-- Header -->
     <div class="flex justify-between items-center mb-8">
       <h2 class="text-3xl flex gap-2 items-center font-bold text-[#1f2937]">
-        <BookOpenCheck class="text-[#7e22ce]" /> My Tickets
+        My Tickets
       </h2>
       <button
         @click="raiseTicket"

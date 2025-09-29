@@ -241,6 +241,12 @@ const store = createStore({
       throw err;
     }
   },
+
+  async fetchCurrentLoanAndUpcomingPayment({commit}){
+    try{
+      
+    }catch(err){}
+  }
   },
 
   getters: {
@@ -281,7 +287,18 @@ const store = createStore({
     isLoading: (state) => state.loading,
     isLoggedIn: (state) => state.user,
     currentUser: (state) => state.user,
-    selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null)
+    selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null),
+    ongoingLoans: (state) => ( state.applications.filter(loan => {
+                              if (loan.status !== "APPROVED") return false;
+
+                              const applicationDate = new Date(loan.applicationDate);
+                              const currentDate = new Date(); // Today's date
+                              const monthsSinceApplication =
+                                (currentDate.getFullYear() - applicationDate.getFullYear()) * 12 +
+                                (currentDate.getMonth() - applicationDate.getMonth());
+
+                              return monthsSinceApplication < loan.tenure;
+                        }))
   }
 });
 

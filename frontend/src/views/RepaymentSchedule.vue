@@ -1,15 +1,8 @@
 <template>
   <div class="space-y-6 p-6 font-sans text-textdark">
     <!-- Back button and header -->
-    <div v-if="selectedLoan" class="flex items-center gap-4">
+    <div v-if="selectedLoan" class="flex items-center justify-between gap-4">
       <!-- Back button -->
-      <button
-        class="border border-primary/30 rounded px-3 py-2 flex items-center gap-2 hover:bg-secondary transition"
-        @click="clearSelection"
-      >
-        <ArrowLeft class="w-5 h-5 text-primary" />
-        Back to Loans
-      </button>
       <div>
         <h1 class="text-3xl font-semibold text-primary">
           Repayment Schedule - {{ selectedLoan.id }}
@@ -18,9 +11,16 @@
           {{ selectedLoan.loanType }} | ₹{{
             selectedLoan.amount.toLocaleString()
           }}
-          | {{ selectedLoan.interestRate }}% | {{ selectedLoan.tenure }} years
+          | {{ selectedLoan.interestRate }}% | {{ selectedLoan.tenure/12 }} years
         </p>
       </div>
+       <button
+        class="border border-primary/30 rounded px-3 py-2 flex items-center gap-2 hover:bg-secondary transition"
+        @click="clearSelection"
+        >
+        <ArrowLeft class="w-5 h-5 text-primary" />
+        Back to Loans
+        </button>   
     </div>
 
     <!-- Loan selection -->
@@ -101,7 +101,7 @@
                 </div>
                 <div>
                   <p class="text-gray-500">Tenure</p>
-                  <p class="text-lg font-medium">{{ loan.tenure }} years</p>
+                  <p class="text-lg font-medium">{{ loan.tenure/12 }} years</p>
                 </div>
               </div>
 
@@ -277,7 +277,7 @@
             class="border-t"
           >
             <td class="px-4 py-2">
-              {{ getMonthName(row.month, selectedLoan.appliedDate) }}
+              {{ getMonthName(row.month, selectedLoan.lastUpdated) }}
             </td>
 
             <td class="px-4 py-2">₹{{ row.emi.toLocaleString() }}</td>
@@ -386,7 +386,7 @@ import {
       let loans = store.state.applications.filter(
         (loan) => loan.status === "APPROVED"
       );
-      console.log(filterPurpose.value)
+
       if (filterPurpose.value !== "all") {
         loans = loans.filter((loan) => loanPurposes.value[loan.purpose].label === filterPurpose.value);
       }
@@ -456,7 +456,7 @@ import {
 
     const getEmiForLoan = (loan) => {
       const monthlyRate = loan.interestRate / 100 / 12;
-      const totalMonths = loan.tenure * 12;
+      const totalMonths = loan.tenure;
       const emi =
         (loan.amount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
         (Math.pow(1 + monthlyRate, totalMonths) - 1);
@@ -505,12 +505,14 @@ import {
         repaymentSchedule.value = [];
       }
     };
-    const getMonthName = (monthIndex, startDate = null) => {
-      // If loan.appliedDate is available, use it as the start point
-      const baseDate = startDate ? new Date(startDate) : new Date();
-      baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
+    const getMonthName = (monthIndex, startDate ) => {
+      console.log(startDate)
+      const [day, month, year] = startDate.split("/").map(Number);
+      const baseDate = new Date(year,month+monthIndex-1,day) 
+      console.log(baseDate)
+      //baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
 
-      // Format as "Jan 2024" (you can change to "January" if you prefer full names)
+      // Format as "Jan 2024" 
       return baseDate.toLocaleString("default", {
         month: "short",
         year: "numeric",

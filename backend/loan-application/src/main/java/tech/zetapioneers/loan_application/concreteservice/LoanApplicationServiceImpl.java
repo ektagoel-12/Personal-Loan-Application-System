@@ -26,7 +26,7 @@ public class LoanApplicationServiceImpl {
         User user = userRepository.findById(loanApplicationResponse.getUserId()).get();
         loanApplication.setUser(user);
         loanApplication.setAmount(loanApplicationResponse.getAmount());
-        loanApplication.setTenureMonths(loanApplicationResponse.getTenure());
+        loanApplication.setTenureMonths(loanApplicationResponse.getTenure()*12);
         loanApplication.setIncome( loanApplicationResponse.getIncome());
         loanApplication.setCreditScore(loanApplicationResponse.getCreditScore());
         loanApplication.setStatus(loanApplicationResponse.getStatus());
