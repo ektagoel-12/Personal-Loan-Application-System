@@ -17,6 +17,6 @@ public class AdminStats {
     private double approvalRate;
     private long pending;
     private double avgIncome;
-    private List<Map<String,Long>> monthlyTrends;
+    private Map<String,Long> monthlyCounts;
     private Map<String,Long> statusDistribution;
 }

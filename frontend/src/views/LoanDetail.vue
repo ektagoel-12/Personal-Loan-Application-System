@@ -2,8 +2,8 @@
   <div class="p-6 max-w-4xl mx-auto">
     <!-- Back Button -->
     <button 
-      @click="$router.back()" 
-      class="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition"
+      @click="goBack" 
+      class="mb-6 flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition back-btn"
     >
       ← Back
     </button>
@@ -27,15 +27,15 @@
         </span>
       </div>
 
-      <!-- Loan Details -->
-      <div class="grid grid-cols-2 gap-6 mb-8 text-gray-700">
-        <p><span class="font-semibold text-gray-900">Applicant:</span> {{ loan.name }}</p>
-        <p><span class="font-semibold text-gray-900">Amount:</span> ₹{{ loan.amount.toLocaleString() }}</p>
-        <p><span class="font-semibold text-gray-900">Income:</span> ₹{{ loan.income.toLocaleString() }}</p>
-        <p><span class="font-semibold text-gray-900">Credit Score:</span> {{ loan.creditScore }}</p>
-        <p><span class="font-semibold text-gray-900">Loan Type:</span> {{ loanTypeLabel[loan.loanType].label }}</p>
-        <p><span class="font-semibold text-gray-900">Applied Date:</span> {{ loan.applicationDate }}</p>
-      </div>
+     <div class="grid grid-cols-2 gap-6 mb-8 text-gray-700">
+  <p><span class="font-semibold text-gray-900">Applicant:</span> {{ loan?.name ?? "-" }}</p>
+  <p><span class="font-semibold text-gray-900">Amount:</span> ₹{{ loan?.amount?.toLocaleString('en-IN') ?? "-" }}</p>
+  <p><span class="font-semibold text-gray-900">Income:</span> ₹{{ loan?.income?.toLocaleString() ?? "-" }}</p>
+  <p><span class="font-semibold text-gray-900">Credit Score:</span> {{ loan?.creditScore ?? "-" }}</p>
+  <p><span class="font-semibold text-gray-900">Loan Type:</span> {{ loanTypeLabel[loan?.loanType]?.label ?? "N/A" }}</p>
+  <p><span class="font-semibold text-gray-900">Applied Date:</span> {{ loan?.applicationDate ?? "-" }}</p>
+</div>
+
 
       <!-- Remarks -->
       <div class="mb-8">
@@ -94,6 +94,10 @@ const responseMessage = ref("");
 const adminUser = store.state.user;
 const loanTypeLabel = store.state.interestRate
 console.log(loanTypeLabel)
+
+function goBack() {
+  router.back();
+}
 
 async function submitReview(status) {
   if (!loan.value) return;
