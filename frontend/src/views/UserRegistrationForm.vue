@@ -1,145 +1,135 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-md">
-
-      <div class="p-6 border-b">
-        <h2 class="text-2xl font-semibold text-center">Create Account</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
-          Join our loan management platform
-        </p>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary to-white p-6 font-sans">
+    <div class="w-full max-w-md bg-neutral rounded-2xl shadow-lg border border-secondary/50">
+      
+      <!-- Header -->
+      <div class="p-6 border-b border-secondary/30 text-center">
+        <h2 class="text-2xl font-bold text-primary">Create Account</h2>
+        <p class="text-sm text-gray-600">Join our loan management platform</p>
       </div>
 
+      <!-- Form -->
       <div class="p-6">
-        <form @submit.prevent="handleSubmit" class="space-y-4">
+        <form @submit.prevent="handleSubmit" class="space-y-5">
+          
           <!-- Name -->
           <div>
-            <label for="name" class="block text-sm font-medium">Full Name</label>
+            <label for="name" class="block text-sm font-medium text-textdark">Full Name</label>
             <input
               id="name"
               type="text"
               v-model="formData.name"
               placeholder="Enter your full name"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="formErrors.name" class="text-red-500 text-sm">{{ formErrors.name }}</p>
           </div>
 
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-medium">Email</label>
+            <label for="email" class="block text-sm font-medium text-textdark">Email</label>
             <input
               id="email"
               type="email"
               v-model="formData.email"
               placeholder="Enter your email"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="formErrors.email" class="text-red-500 text-sm">{{ formErrors.email }}</p>
           </div>
 
           <!-- Password -->
           <div>
-            <label for="password" class="block text-sm font-medium">Password</label>
+            <label for="password" class="block text-sm font-medium text-textdark">Password</label>
             <div class="relative">
               <input
                 id="password"
                 :type="showPassword ? 'text' : 'password'"
                 v-model="formData.password"
                 placeholder="Enter your password"
-                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring focus:ring-indigo-300"
+                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="button"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-accent"
                 @click="showPassword = !showPassword"
               >
-                <span v-if="showPassword"><component :is="EyeOff" class="h-4 w-4" /></span>
-                <span v-else><component :is="Eye" class="h-4 w-4" /></span>
+                <component :is="showPassword ? EyeOff : Eye" class="h-4 w-4" />
               </button>
             </div>
-
-            <p v-if="formErrors.password" class="text-red-500 text-sm">{{ formErrors.password }}</p>
           </div>
 
           <!-- Confirm Password -->
           <div>
-            <label for="confirmPassword" class="block text-sm font-medium">Confirm Password</label>
+            <label for="confirmPassword" class="block text-sm font-medium text-textdark">Confirm Password</label>
             <div class="relative">
               <input
                 id="confirmPassword"
                 :type="showConfirmPassword ? 'text' : 'password'"
                 v-model="formData.confirmPassword"
                 placeholder="Confirm your password"
-                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring focus:ring-indigo-300"
+                class="w-full mt-1 px-3 py-2 border rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="button"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-accent"
                 @click="showConfirmPassword = !showConfirmPassword"
               >
-                <span v-if="showConfirmPassword"><component :is="EyeOff" class="h-4 w-4" /></span>
-                <span v-else><component :is="Eye" class="h-4 w-4" /></span>
+                <component :is="showConfirmPassword ? EyeOff : Eye" class="h-4 w-4" />
               </button>
             </div>
           </div>
 
           <!-- Income -->
           <div>
-            <label for="income" class="block text-sm font-medium">Income</label>
+            <label for="income" class="block text-sm font-medium text-textdark">Income</label>
             <input
               id="income"
               type="number"
               v-model="formData.income"
               placeholder="Enter your annual income"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="formErrors.income" class="text-red-500 text-sm">{{ formErrors.income }}</p>
           </div>
 
           <!-- Credit Score -->
           <div>
-            <label for="creditScore" class="block text-sm font-medium">Credit Score</label>
+            <label for="creditScore" class="block text-sm font-medium text-textdark">Credit Score</label>
             <input
               id="creditScore"
               type="number"
               v-model="formData.creditScore"
               placeholder="Enter your credit score"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.creditScore }}</p>
           </div>
           
           <!-- Aadhar -->
           <div>
-            <label for="creditScore" class="block text-sm font-medium">Aadhar Number</label>
+            <label for="aadhar" class="block text-sm font-medium text-textdark">Aadhar Number</label>
             <input
               id="aadhar"
               type="text"
               v-model="formData.aadhar"
               placeholder="Enter your Aadhar number"
-              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+              class="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="formErrors.creditScore" class="text-red-500 text-sm">{{ formErrors.aadhar }}</p>
-          </div>
-
-          <!-- Error alert -->
-          <div v-if="error" class="p-3 rounded bg-red-100 text-red-600 text-sm">
-            {{ error }}
           </div>
 
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-black hover:bg-indigo-500 text-white py-2 rounded-lg flex items-center justify-center"
+            :disabled="isLoading"
+            class="w-full bg-primary hover:bg-accent text-white py-2.5 rounded-lg font-medium shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Account
+            <span v-if="isLoading">Creating Account...</span>
+            <span v-else>Create Account</span>
           </button>
         </form>
 
+        <!-- Switch to Login -->
         <div class="mt-6 text-center">
           <button
             type="button"
-            class="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400"
+            class="text-sm text-primary hover:text-accent"
             @click="router.push('/login-form')"
           >
             Already have an account? Sign in
@@ -153,11 +143,13 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { Eye, EyeOff } from 'lucide-vue-next'
+import { useToast } from 'vue-toastification'
 import router from '../router'
 import { makeRequestWithoutToken } from '@/utils/requests'
 import { useStore } from 'vuex'
 
 const store = useStore()
+const toast = useToast()
 
 const formData = reactive({
   name: '',
@@ -166,27 +158,16 @@ const formData = reactive({
   confirmPassword: '',
   income: null,
   creditScore: null,
-  aadhar:''
+  aadhar: ''
 })
 
-const formErrors = reactive({
-  name: null,
-  email: null,
-  password: null,
-  income: null,
-  creditScore: null,
-  aadhar:''
-})
-
-const error = ref('')
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+const isLoading = ref(false)
 
-// Validation
+// Validation functions
 const validEmail = (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
-
 const validName = (name) => name.length >= 2
-
 const validPassword = (password) => {
   return password.length >= 8 &&
          /[A-Z]/.test(password) &&
@@ -194,77 +175,98 @@ const validPassword = (password) => {
          /\d/.test(password) &&
          /[!@#$%^&*(),.?":{}|<>]/.test(password)
 }
-
 const validAadhar = (aadhar) => {
-    return aadhar.length == 12 &&  (/^\d+$/.test(aadhar));
+    return aadhar.length === 12 && (/^\d+$/.test(aadhar))
 }
 
-
-// Submit
-const handleSubmit = async() => {
-  error.value = ''
-
+// Validation with toast notifications
+const validateForm = () => {
   if (!validName(formData.name)) {
-    formErrors.name = 'Name should be at least 2 letters'
-    return
+    toast.error('Name should be at least 2 characters long')
+    return false
   }
-  if (!validEmail(formData.email)) {
-    formErrors.email = 'Not a valid email'
-    return
-  }
-  if (formData.password !== formData.confirmPassword) {
-    error.value = 'Passwords do not match'
-    return
-  }
-  if (!validPassword(formData.password)) {
-    formErrors.password = 'Password must have 8+ chars, 1 upper, 1 lower, 1 number, 1 special'
-    return
-  }
-  if (!formData.income || formData.income <= 0) {
-    formErrors.income = 'Please enter valid income'
-    return
-  }
-  if (!formData.creditScore || formData.creditScore <= 0) {
-    formErrors.creditScore = 'Please enter valid credit score'
-    return
-  }
-  if(!validAadhar(formData.aadhar)){
-    formErrors.aadhar = "Please enter a valid aadhar"
-    return;
-  }
-
-  const response = await makeRequestWithoutToken("POST","/auth/register",formData);
-
-  if(!response)return;
-
-  localStorage.setItem('token',response.data["accessToken"]);
-  localStorage.setItem('refreshToken',response.data["refreshToken"]);
   
-  localStorage.setItem('currUser',JSON.stringify({
-      name : response.data["name"],
-      email : response.data["email"],
-      role : response.data["role"],
-      creditScore : response.data["creditScore"],
-      income : response.data["income"],
-      aadhar : response.data["aadhar"],
-      id: response.data["id"]
-  }))
-
-  store.dispatch("setCurrentUser",{
-      name : response.data["name"],
-      email : response.data["email"],
-      role : response.data["role"],
-      creditScore : response.data["creditScore"],
-      income : response.data["income"],
-      aadhar : response.data["aadhar"],
-      id: response.data["id"]
-  })
-
-  if(response.data["role"] == "ADMIN"){
-    router.push("/admin")
+  if (!validEmail(formData.email)) {
+    toast.error('Please enter a valid email address')
+    return false
   }
-  else{
-    router.push("/user-dashboard")
+  
+  if (formData.password !== formData.confirmPassword) {
+    toast.error('Passwords do not match')
+    return false
+  }
+  
+  if (!validPassword(formData.password)) {
+    toast.error('Password must have 8+ characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character')
+    return false
+  }
+  
+  if (!formData.income || formData.income <= 0) {
+    toast.error('Please enter a valid income amount')
+    return false
+  }
+  
+  if (!formData.creditScore || formData.creditScore <= 0) {
+    toast.error('Please enter a valid credit score')
+    return false
+  }
+  
+  if (!validAadhar(formData.aadhar)) {
+    toast.error('Please enter a valid 12-digit Aadhar number')
+    return false
+  }
+  
+  return true
+}
+
+// Submit handler
+const handleSubmit = async () => {
+  if (!validateForm()) {
+    return
+  }
+
+  isLoading.value = true
+
+  try {
+    const response = await makeRequestWithoutToken("POST", "/auth/register", formData)
+
+    if (!response) {
+      toast.error('Registration failed. Please try again.')
+      return
+    }
+
+    // Store tokens and user data
+    localStorage.setItem('token', response.data["accessToken"])
+    localStorage.setItem('refreshToken', response.data["refreshToken"])
+    
+    const userData = {
+      name: response.data["name"],
+      email: response.data["email"],
+      role: response.data["role"],
+      creditScore: response.data["creditScore"],
+      income: response.data["income"],
+      aadhar: response.data["aadhar"],
+      id: response.data["id"]
+    }
+
+    localStorage.setItem('currUser', JSON.stringify(userData))
+    store.dispatch("setCurrentUser", userData)
+
+    // Show success toast
+    toast.success(`Welcome ${userData.name}! Account created successfully.`)
+
+    // Navigate based on role
+    if (response.data["role"] === "ADMIN") {
+      router.push("/admin")
+    } else {
+      router.push("/user-dashboard")
+    }
+
+  } catch (error) {
+    console.error('Registration error:', error)
+    toast.error('Registration failed. Please check your details and try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 </script>

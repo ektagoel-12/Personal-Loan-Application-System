@@ -24,7 +24,7 @@ export async function makeRequestWithoutToken(type, endpoint, body) {
         }
     }
     catch(error){
-        alert(error?.response?.data?.error || "some error occured")
+        console.log(error?.response?.data?.error || "some error occured")
     }
 
     return response;

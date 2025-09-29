@@ -1,75 +1,15 @@
 import { makeRequestWithToken } from "@/utils/requests";
 import { createStore } from "vuex";
+import { useToast } from "vue-toastification";
 
+
+const toast = useToast()
 const store = createStore({
   state() {
     return {
       count: 0,
       user: JSON.parse(localStorage.getItem('currUser')) || null,
-      stats: {
-        totalApplications: 1250,
-        approvalRate: 78,
-        pending: 45,
-        avgIncome: 125000,
-        monthlyTrends: {
-          months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-          values: [70, 90, 100, 110, 120, 130],
-        },
-        statusDistribution: {
-          approved: 78,
-          pending: 15,
-          rejected: 7,
-        }
-      },
-      // applications: [
-      //   {
-      //     id: "38",
-      //     applicant: "Sarah Johnson",
-      //     creditScore: 680,
-      //     income: 95000,
-      //     amount: 250000,
-      //     purpose: "Home Loan",
-      //     status: "APPROVED",
-      //     appliedDate: "2024-01-05",
-      //     lastUpdated: "2024-01-08",
-      //     emi: 15000,
-      //     interestRate: 8.5,
-      //     tenure: 20,
-      //     remarks: "Application approved after document verification.",
-      //     progress: 100,
-      //   },
-      //   {
-      //     id: "LA2024002",
-      //     applicant: "Mike Davis",
-      //     creditScore: 750,
-      //     income: 60000,
-      //     amount: 150000,
-      //     purpose: "Business Loan",
-      //     status: "REJECTED",
-      //     appliedDate: "2024-01-10",
-      //     lastUpdated: "2024-01-12",
-      //     emi: 12000,
-      //     interestRate: 9.0,
-      //     tenure: 15,
-      //     remarks: "Additional income documents required.",
-      //     progress: 65,
-      //   },{
-      //     id: "LA20240232",
-      //     applicant: "Mike Davis",
-      //     creditScore: 750,
-      //     income: 60000,
-      //     amount: 150000,
-      //     purpose: "Business Loan",
-      //     status: "PENDING",
-      //     appliedDate: "2025-09-24",
-      //     lastUpdated: "2024-01-12",
-      //     emi: 12000,
-      //     interestRate: 9.0,
-      //     tenure: 15,
-      //     remarks: "Additional income documents required.",
-      //     progress: 65,
-      //   }
-      // ],
+      stats: {},
       applications: [],
       tickets: [], // added tickets state
       allTickets: [],
@@ -78,6 +18,17 @@ const store = createStore({
       dateRange: { from: null, to: null },
       selectedApplication: null,
       loading: false,
+      interestRate : {  "HOME_LOAN": { label: "Home Loan", rate: 7.5 },
+                      "PERSONAL_LOAN": { label: "Personal Loan", rate: 10.0 },
+                      "CAR_LOAN": { label: "Car Loan", rate: 8.0 },
+                      "EDUCATION_LOAN": { label: "Education Loan", rate: 6.5 },
+                      "BUSINESS_LOAN": { label: "Business Loan", rate: 12.5 },
+                      "GOLD_LOAN": { label: "Gold Loan", rate: 9.0 },
+                      "CREDIT_CARD_LOAN": { label: "Credit Card Loan", rate: 18.0 },
+                      "PAYDAY_LOAN": { label: "Payday Loan", rate: 30.0 },
+                      "HOME_EQUITY_LOAN": { label: "Home Equity Loan", rate: 8.5 },
+                      "STUDENT_LOAN": { label: "Student Loan", rate: 5.0 }
+                    }
     };
   },
 
@@ -106,10 +57,6 @@ const store = createStore({
       state.applications = payload;
     },
 
-    SET_SELECTED_APPLICATION(state, app) {
-      state.selectedApplication = app;
-    },
-
     SET_FILTERS(state, { searchTerm, statusFilter, dateRange }) {
       if (searchTerm !== undefined) state.searchTerm = searchTerm;
       if (statusFilter !== undefined) state.statusFilter = statusFilter;
@@ -119,10 +66,6 @@ const store = createStore({
     ADD_APPLICATION(state, application) {
       application.appliedDate = application.applicationDate
       state.applications.push(application);
-    },
-
-    REMOVE_APPLICATION(state, id) {
-      state.applications = state.applications.filter((app) => app.id !== id);
     },
 
     // Tickets mutations
@@ -148,48 +91,48 @@ const store = createStore({
   actions: {
     async fetchDashboardData({ commit }) {
       commit("SET_LOADING", true);
-  try {
-    const res = await makeRequestWithToken("GET", "/admin");
-    const stats = res.data.stats;
+      try {
+        const res = await makeRequestWithToken("GET", "/admin");
+        const stats = res.data.stats;
 
-    // Transform monthlyTrends
-    let months = [];
-    let values = [];
-    if (stats.monthlyTrends?.length) {
-      stats.monthlyTrends.forEach((trend) => {
-        const month = Object.keys(trend)[0];
-        months.push(month);
-        values.push(trend[month]);
-      });
-    }
+        // Rounding off to 2 decimals
+        stats.approvalRate = Math.round(stats.approvalRate*100)/100
+        stats.avgIncome = Math.round(stats.avgIncome*100)/100
 
-    // Transform statusDistribution
-    const statusDist = stats.statusDistribution || {};
-    const statusDistribution = {
-      approved: statusDist.APPROVED || 0,
-      pending: statusDist.PENDING || 0,
-      rejected: statusDist.REJECTED || 0,
-    };
+        // Transform monthlyTrends
+        let months = [];
+        let values = [];
+        if (stats.monthlyTrends?.length) {
+          stats.monthlyTrends.forEach((trend) => {
+            const month = Object.keys(trend)[0];
+            months.push(month);
+            values.push(trend[month]);
+          });
+        }
 
-    // Commit transformed stats
-    commit("UPDATE_DASHBOARD_DATA", {
-      stats: {
-        ...stats,
-        monthlyTrends: { months, values },
-        statusDistribution,
-      },
-      applications: res.data.pendingApplications,
-    });
-  } catch (err) {
-    console.error("Failed to fetch dashboard data", err);
-  } finally {
-    commit("SET_LOADING", false);
-  }
+        // Transform statusDistribution
+        const statusDist = stats.statusDistribution || {};
+        const statusDistribution = {
+            approved: statusDist.APPROVED || 0,
+            pending: statusDist.PENDING || 0,
+            rejected: statusDist.REJECTED || 0,
+          };
+
+        // Commit transformed stats
+        commit("UPDATE_DASHBOARD_DATA", {
+          stats: {
+            ...stats,
+            monthlyTrends: { months, values },
+            statusDistribution,
+          },
+          applications: res.data.pendingApplications,
+        });
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+      } finally {
+        commit("SET_LOADING", false);
+      }
     },
-
-    // updateApplicationStatus({ commit }, { id, status }) {
-    //   commit("UPDATE_APPLICATION_STATUS", { id, status });
-    // },
 
     async updateApplicationStatus({ commit }, { id, payload }) {
       try {
@@ -206,7 +149,7 @@ const store = createStore({
     },
 
     async getAllLoans({ commit, state }) {
-      const id = state.user.role === 'ADMIN' ? '' : '/user/' + state.user.id;
+      const id = state.user?.role === 'ADMIN' ? '' : '/user/' + state.user?.id;
       const response = await makeRequestWithToken('GET', `/api/loans${id}`);
       const loans = response.data.map((loan) => {
         const principal = loan.amount;
@@ -230,57 +173,7 @@ const store = createStore({
     applyFilters({ commit }, filters) {
       commit("SET_FILTERS", filters);
     },
-
-    addApplication({ commit }, application) {
-      commit("ADD_APPLICATION", application);
-    },
-
-    removeApplication({ commit }, id) {
-      commit("REMOVE_APPLICATION", id);
-    },
-
-    async fetchLoanById({ state, commit }, id) {
-      try {
-        const res = await makeRequestWithToken("GET", `/admin/loans/${id}`);
-        console.log(res);
-        commit("SET_SELECTED_APPLICATION", res.data);
-        return res.data;
-      } catch (err) {
-        console.error("Failed to fetch loan by ID", err);
-        return null;
-      }
-    },
-
-    async getAllLoans({commit}){
-      const id = this.state.user.role === 'ADMIN' ? '' : '/user/' +this.state.user.id
-      const response = await makeRequestWithToken('GET',`/api/loans${id}`)
-      const loans = response.data.map( (loan)=>{
-        let principal = loan.amount;
-        let monthlyRate = loan.rateOfInterest / 12 / 100;  
-        let tenureMonths = loan.tenure;                    
  
-        loan.emi = Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
-                  (Math.pow(1 + monthlyRate, tenureMonths) - 1));
-        loan.interestRate = loan.rateOfInterest
-        loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
-        loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
-        loan.remarkedBy = loan.remarksBy
-        return loan;
-      })
-      commit("GET_LOANS_USER",loans)
-    },
-    setCurrentUser({ commit }, payload) {
-      commit("UPDATE_CURR_USER", payload);
-    },
-
-    selectApplication({ commit }, app) {
-      commit("SET_SELECTED_APPLICATION", app);
-    },
-
-    applyFilters({ commit }, filters) {
-      commit("SET_FILTERS", filters);
-    },
-
     async addApplication({ commit }, application) {
       const response = await makeRequestWithToken('POST','/api/loans',application);
       if(response.status == 200){
@@ -295,26 +188,13 @@ const store = createStore({
         loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
         loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
         loan.remarkedBy = loan.remarksBy 
+
         commit("ADD_APPLICATION", loan);
       }else{
-        alert("Failed to add loan")
+        toast.error("Failed to add loan")
       }
       
     },
-
-    removeApplication({ commit }, id) {
-      commit("REMOVE_APPLICATION", id);
-    },
-    // fetchLoanById({ state, commit }, id) {
-    //   const loan = state.applications.find((app) => app.id === id) || null;
-    //   commit("SET_SELECTED_APPLICATION", loan);
-    //   return loan;
-    // }
-    // fetchLoanById({ state, commit }, id) {
-    //   const loan = state.applications.find((app) => app.id === id) || null;
-    //   commit("SET_SELECTED_APPLICATION", loan);
-    //   return loan;
-    // },
 
     // Tickets actions
     async fetchTickets({ commit }, userEmail) {
@@ -372,6 +252,10 @@ const store = createStore({
                                     .slice(0, 3)},
     tickets: (state) => state.tickets,
     allTickets: (state) => state.allTickets,
+    recentApplications: (state) => (state.applications.slice() 
+                                    .sort((a, b) => new Date(b.applicationDate) - (a.applicationDate)) // latest first
+                                    .slice(0, 3)),
+    totalBorrowed: (state) => ( state.applications.filter((app)=>(app.status === 'APPROVED')).reduce((prev,app)=>(prev+app.amount),0)),
     filteredApplications: (state) => {
       return state.applications.filter((app) => {
         const matchesSearch =
@@ -397,8 +281,8 @@ const store = createStore({
     isLoading: (state) => state.loading,
     isLoggedIn: (state) => state.user,
     currentUser: (state) => state.user,
-    selectedApplication: (state) => state.selectedApplication,
-  },
+    selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null)
+  }
 });
 
 export default store;

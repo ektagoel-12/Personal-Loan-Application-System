@@ -8,7 +8,7 @@
       <SidebarComponent v-if="!isAuthRoute" />
 
       <!-- Routed views go here -->
-      <main :class="['flex-1', 'overflow-y-auto', 'bg-gray-50', !isAuthRoute ? 'p-6' : '']">
+      <main :class="['flex-1','p-0','min-h-full','m-w-full','overflow-y-auto', 'bg-gray-50', !isAuthRoute ? 'p-0' : '']">
         <RouterView />
       </main>
     </div>
@@ -25,10 +25,16 @@ import { useStore } from 'vuex'
 const route = useRoute()
 const store = useStore()
 const isAuthRoute = computed(() => ['/', '/login-form', '/registration-form'].includes(route.path))
+const isLoggedIn = computed(()=>store.getters.isLoggedIn)
 
 onMounted(()=>{
-  console.log("")
-  store.dispatch('getAllLoans')
+  if(isLoggedIn){
+    if(store.state.user && store.state.user.role === "ADMIN"){
+      store.dispatch("fetchDashboardData")
+    }
+    store.dispatch("getAllLoans")
+    store.dispatch("fetchTickets",store.state.user?.email)
+  }
 })
 
 </script>

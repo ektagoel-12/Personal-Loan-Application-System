@@ -1,44 +1,44 @@
 <template>
-  <div class="p-4 space-y-6">
+  <div class="p-4 space-y-6 font-inter text-[#1f2937] bg-white">
     <!-- Filters Section -->
-    <div class="flex space-x-4 bg-gray-100 p-4 rounded-lg shadow">
+    <div class="flex space-x-4 bg-[#f3e8ff] p-4 rounded-lg shadow">
       <!-- Name Filter -->
       <div class="flex flex-col w-1/3">
-        <label for="nameFilter" class="font-medium text-sm text-gray-700 mb-1"
+        <label for="nameFilter" class="font-medium text-sm mb-1"
           >Filter by Name</label
         >
         <input
           id="nameFilter"
           v-model="nameFilter"
           type="text"
-          class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="px-3 py-2 border border-[#7e22ce]/30 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
           placeholder="Search by name"
         />
       </div>
 
       <!-- Email Filter -->
       <div class="flex flex-col w-1/3">
-        <label for="emailFilter" class="font-medium text-sm text-gray-700 mb-1"
+        <label for="emailFilter" class="font-medium text-sm mb-1"
           >Filter by Email</label
         >
         <input
           id="emailFilter"
           v-model="emailFilter"
           type="text"
-          class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="px-3 py-2 border border-[#7e22ce]/30 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
           placeholder="Search by email"
         />
       </div>
 
       <!-- Role Filter -->
       <div class="flex flex-col w-1/3">
-        <label for="roleFilter" class="font-medium text-sm text-gray-700 mb-1"
+        <label for="roleFilter" class="font-medium text-sm mb-1"
           >Filter by Role</label
         >
         <select
           id="roleFilter"
           v-model="roleFilter"
-          class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="px-3 py-2 border border-[#7e22ce]/30 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:outline-none"
         >
           <option value="">All Roles</option>
           <option value="ADMIN">Admin</option>
@@ -50,10 +50,10 @@
     <!-- Table Section -->
     <div class="overflow-x-auto">
       <table
-        class="min-w-full table-auto border-collapse border border-gray-200 shadow rounded-lg"
+        class="min-w-full table-auto border-collapse border border-[#f3e8ff] shadow rounded-lg"
       >
         <thead>
-          <tr class="bg-gray-50 text-left text-sm font-semibold text-gray-600">
+          <tr class="bg-[#7e22ce]/10 text-left text-sm font-semibold text-[#7e22ce]">
             <th class="px-4 py-3 border-b">User ID</th>
             <th class="px-4 py-3 border-b">Name</th>
             <th class="px-4 py-3 border-b">Email</th>
@@ -61,47 +61,49 @@
             <th class="px-4 py-3 border-b">Credit Score</th>
             <th class="px-4 py-3 border-b">Aadhar</th>
             <th class="px-4 py-3 border-b">Role</th>
-            <th class="px-4 py-3 border-b text-center">Make Admin</th>
-            <th class="px-4 py-3 border-b text-center">Remove Admin</th>
+            <!-- <th class="px-4 py-3 border-b text-center">Make Admin</th> -->
+            <th class="px-4 py-3 border-b text-center">change role</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="user in filteredUsers"
             :key="user.id"
-            class="border-t hover:bg-blue-50 transition cursor-pointer"
+            class="border-t hover:bg-[#f3e8ff]/40 transition cursor-pointer"
             @click="toggleShowLoanDetails(user.id)"
           >
-            <td class="px-4 py-2 text-sm text-gray-700">{{ user.id }}</td>
-            <td class="px-4 py-2 text-sm text-gray-800 font-medium">{{ user.name }}</td>
-            <td class="px-4 py-2 text-sm text-gray-600">{{ user.email }}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">{{ user.income }}</td>
+            <td class="px-4 py-2 text-sm">{{ user.id }}</td>
+            <td class="px-4 py-2 text-sm font-medium">{{ user.name }}</td>
+            <td class="px-4 py-2 text-sm">{{ user.email }}</td>
+            <td class="px-4 py-2 text-sm">{{ user.income }}</td>
             <td class="px-4 py-2 text-sm">
               <span
                 :class="[
                   'px-2 py-1 rounded-md text-xs font-semibold',
-                  user.creditScore >= 700 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700',
+                  user.creditScore >= 700
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700',
                 ]"
               >
                 {{ user.creditScore }}
               </span>
             </td>
-            <td class="px-4 py-2 text-sm text-gray-600">{{ user.aadhar }}</td>
-            <td class="px-4 py-2 text-sm text-gray-700 capitalize">{{ user.role }}</td>
-            <td class="px-4 py-2 text-center">
+            <td class="px-4 py-2 text-sm">{{ user.aadhar }}</td>
+            <td class="px-4 py-2 text-sm capitalize">{{ user.role }}</td>
+            <td class="px-4 py-2 text-center" v-show="user.role === `USER`">
               <button
                 @click.stop="changeToAdmin(user.id)"
-                class="bg-green-500 text-white px-3 py-1.5 rounded-lg hover:bg-green-600 transition text-sm"
+                class="bg-[#7e22ce] text-white px-3 py-1.5 rounded-lg hover:bg-[#6b21a8] transition text-sm"
               >
-                Add
+                Change Role
               </button>
             </td>
-            <td class="px-4 py-2 text-center">
+            <td class="px-4 py-2 text-center" v-show="user.role === `ADMIN`">
               <button
                 @click.stop="changeToUser(user.id)"
                 class="bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition text-sm"
               >
-                Remove
+                Change Role
               </button>
             </td>
           </tr>
@@ -125,16 +127,16 @@
           ✕
         </button>
 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Loan History</h2>
+        <h2 class="text-2xl font-bold text-[#7e22ce] mb-6">Loan History</h2>
 
         <div v-if="filteredApplications.length" class="space-y-5">
           <div
             v-for="loan in filteredApplications"
             :key="loan.id"
-            class="border rounded-lg p-4 bg-gray-50 shadow-sm hover:shadow-md transition"
+            class="border border-[#f3e8ff] rounded-lg p-4 bg-[#f9f9f9] shadow-sm hover:shadow-md transition"
           >
             <div class="flex justify-between items-center mb-2">
-              <h3 class="text-lg font-semibold text-gray-700">
+              <h3 class="text-lg font-semibold">
                 Loan #{{ loan.id }}
               </h3>
               <span
@@ -144,14 +146,14 @@
                     ? 'bg-green-100 text-green-700'
                     : loan.status === 'REJECTED'
                     ? 'bg-red-100 text-red-700'
-                    : 'bg-yellow-100 text-yellow-700',
+                    : 'bg-[#eab308]/20 text-[#eab308]',
                 ]"
               >
                 {{ loan.status }}
               </span>
             </div>
 
-            <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-gray-600">
+            <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
               <p><span class="font-medium">Amount:</span> ₹{{ loan.amount }}</p>
               <p><span class="font-medium">EMI:</span> ₹{{ loan.emi }}</p>
               <p><span class="font-medium">Interest Rate:</span> {{ loan.interestRate }}%</p>
@@ -173,6 +175,12 @@
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -189,13 +197,15 @@
 }
 </style>
 
-
 <script setup>
 import { useStore } from "vuex";
 import { makeRequestWithToken } from "@/utils/requests";
 import { ref, onMounted, computed } from "vue";
+import { useToast } from "vue-toastification";
 
 const store = useStore();
+const toast = useToast();
+
 let users = ref([]);
 let nameFilter = ref("");
 let emailFilter = ref("");
@@ -234,15 +244,17 @@ const changeToAdmin = async (userId) => {
     role: "ADMIN",
   });
   if (!response) {
-    alert("Updating the user failed");
+    toast.error("Updating the user failed");
     return;
   }
   let response1 = await makeRequestWithToken("GET", "/users", null);
   if (!response1) {
-    alert("Failed loading users");
+    toast.error("Failed loading users");
     return;
   }
+  response1.data.sort((user1,user2)=>user1.id - user2.id)
   users.value = response1.data;
+  toast.info("Update Successfull")
 };
 
 const changeToUser = async (userId) => {
@@ -250,24 +262,27 @@ const changeToUser = async (userId) => {
     role: "USER",
   });
   if (!response) {
-    alert("Updating the user failed");
+    toast.error("Updating the user failed");
     return;
   }
   let response1 = await makeRequestWithToken("GET", "/users", null);
   if (!response1) {
-    alert("Failed loading users");
+    toast.error("Failed loading users");
     return;
   }
+  response1.data.sort((user1,user2)=> user1.id-user2.id)
   users.value = response1.data;
+  toast.info("Update Successfull")
 };
 
 // lifecycle
 onMounted(async () => {
   let response = await makeRequestWithToken("GET", "/users", null);
   if (!response) {
-    alert("Failed loading users");
+    toast.error("Failed loading users");
     return;
   }
+  response.data.sort((user1,user2)=> user1.id - user2.id)
   users.value = response.data;
 });
 </script>

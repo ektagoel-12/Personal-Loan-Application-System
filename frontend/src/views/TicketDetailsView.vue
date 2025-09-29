@@ -2,38 +2,77 @@
   <!-- Overlay -->
   <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
     <!-- Modal Card -->
-    <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-6 relative">
+    <div class="bg-white rounded-2xl shadow-lg max-w-md w-full p-6 relative font-inter text-gray-800">
       <!-- Close Button -->
-      <button @click="$emit('close')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
+      <button
+        @click="$emit('close')"
+        class="absolute top-3 right-3 text-gray-400 hover:text-[#7e22ce] text-2xl font-bold transition"
+      >
+        &times;
+      </button>
 
       <!-- Ticket Details -->
-       <div v-if="ticket">
-      <h3 class="text-2xl font-semibold text-gray-800 mb-2">{{ ticket.subject }}</h3>
-      <p class="text-sm text-gray-500 mb-1">Ticket #{{ ticket.id }}</p>
-      <p class="inline-block mt-1 px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded">{{ ticket.type }}</p>
-      <span class="px-3 py-1 text-sm font-medium rounded-full" :class="statusClass(ticket.status)">{{ ticket.status }}</span>
+      <div v-if="ticket">
+        <h3 class="text-2xl font-semibold text-gray-900 mb-2">
+          {{ ticket.subject }}
+        </h3>
+        <p class="text-sm text-gray-500 mb-1">Ticket #{{ ticket.id }}</p>
 
-      <!-- User Info -->
-      <div class="text-sm text-gray-600 mt-4 space-y-1">
-        <p><span class="font-medium">User:</span> {{ ticket.user.name }}</p>
-        <p><span class="font-medium">Email:</span> {{ ticket.user.email }}</p>
-        <p v-if="ticket.loan"><span class="font-medium">Loan ID:</span> {{ ticket.loan.id }}</p>
-      </div>
+        <!-- Type Badge -->
+        <p
+          class="inline-block mt-1 px-3 py-1 text-xs font-medium text-[#7e22ce] bg-[#f3e8ff] rounded-full"
+        >
+          {{ ticket.type }}
+        </p>
 
-      <!-- Description -->
-      <p class="text-gray-700 mt-4"><span class="font-medium">Description:</span> {{ ticket.description }}</p>
-        <div class="flex items-center text-xs text-gray-500 space-x-6 mb-4">
+        <!-- Status Badge -->
+        <span
+          class="ml-2 px-3 py-1 text-sm font-medium rounded-full"
+          :class="statusClass(ticket.status)"
+        >
+          {{ ticket.status }}
+        </span>
+
+        <!-- User Info -->
+        <div class="text-sm text-gray-700 mt-4 space-y-1">
+          <p><span class="font-medium">User:</span> {{ ticket.user.name }}</p>
+          <p><span class="font-medium">Email:</span> {{ ticket.user.email }}</p>
+          <p v-if="ticket.loan"><span class="font-medium">Loan ID:</span> {{ ticket.loan.id }}</p>
+        </div>
+
+        <!-- Description -->
+        <p class="text-gray-700 mt-4">
+          <span class="font-medium">Description:</span> {{ ticket.description }}
+        </p>
+
+        <!-- Meta Info -->
+        <div class="flex items-center text-xs text-gray-500 space-x-6 mt-3">
           <p>Created: {{ ticket.createAt }}</p>
           <p>Updated: {{ ticket.updatedAt }}</p>
         </div>
-      <!-- Admin Response -->
-      <div v-if="ticket.response" class="mt-3 p-3 bg-gray-50 border-l-4 border-green-600 rounded">
-        <p class="text-sm text-gray-700"><span class="font-medium">Admin Response:</span> {{ ticket.response }}</p>
+
+        <!-- Admin Response -->
+        <div
+          v-if="ticket.response"
+          class="mt-4 p-3 bg-[#f3e8ff] border-l-4 border-[#7e22ce] rounded"
+        >
+          <p class="text-sm text-gray-800">
+            <span class="font-medium text-[#7e22ce]">Admin Response:</span>
+            {{ ticket.response }}
+          </p>
+        </div>
       </div>
     </div>
-   </div>
   </div>
 </template>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.font-inter {
+  font-family: "Inter", sans-serif;
+}
+</style>
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
