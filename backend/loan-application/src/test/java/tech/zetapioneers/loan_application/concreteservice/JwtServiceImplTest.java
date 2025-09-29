@@ -2,6 +2,7 @@ package tech.zetapioneers.loan_application.concreteservice;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import tech.zetapioneers.loan_application.entities.User;
 import tech.zetapioneers.loan_application.exceptions.InvalidTokenException;
 import tech.zetapioneers.loan_application.exceptions.TokenExpiredException;
@@ -14,13 +15,16 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JwtServiceImplTest {
-
     private JwtServiceImpl jwtService;
     private User mockUser;
 
     @BeforeEach
     void setUp() {
         jwtService = new JwtServiceImpl();
+        ReflectionTestUtils.setField(jwtService, "HMAC_ALG", "HmacSHA256");
+        ReflectionTestUtils.setField(jwtService, "SECRET_KEY", "testsecretkey123456");
+        ReflectionTestUtils.setField(jwtService, "ACCESS_TOKEN_EXPIRATION", 60000L); // 1 minute
+        ReflectionTestUtils.setField(jwtService, "REFRESH_TOKEN_EXPIRATION", 120000L); // 2 minutes
         mockUser = new User();
         mockUser.setId(new Random().nextLong(1));
         mockUser.setName("test tester");

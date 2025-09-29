@@ -277,7 +277,7 @@
             class="border-t"
           >
             <td class="px-4 py-2">
-              {{ getMonthName(row.month, selectedLoan.appliedDate) }}
+              {{ getMonthName(row.month, selectedLoan.applicationDate) }}
             </td>
 
             <td class="px-4 py-2">₹{{ row.emi.toLocaleString() }}</td>

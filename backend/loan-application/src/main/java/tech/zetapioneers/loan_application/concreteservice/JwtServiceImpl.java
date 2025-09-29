@@ -2,7 +2,6 @@ package tech.zetapioneers.loan_application.concreteservice;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.entities.User;
@@ -27,27 +26,16 @@ public class JwtServiceImpl implements JwtService {
     private static final Base64.Decoder B64D = Base64.getUrlDecoder();
 
     @Value("${jwt.HMAC_ALG}")
-    private String hmacAlg;
+    private String HMAC_ALG;
 
     @Value("${jwt.SECRET_KEY}")
-    private String secretKey;
+    private String SECRET_KEY;
 
     @Value("${jwt.ACCESS_TOKEN_EXPIRATION}")
-    private Long accessTokenExpiration;
+    private Long ACCESS_TOKEN_EXPIRATION;
 
     @Value("${jwt.REFRESH_TOKEN_EXPIRATION}")
-    private Long refreshTokenExpiration;
-
-    private  static String  HMAC_ALG , SECRET_KEY;
-    private static  Long ACCESS_TOKEN_EXPIRATION , REFRESH_TOKEN_EXPIRATION;
-
-    @PostConstruct
-    public void init() {
-        HMAC_ALG = hmacAlg;
-        SECRET_KEY = secretKey;
-        ACCESS_TOKEN_EXPIRATION = accessTokenExpiration;
-        REFRESH_TOKEN_EXPIRATION = refreshTokenExpiration;
-    }
+    private Long REFRESH_TOKEN_EXPIRATION;
 
     // Generate access token for a user
     @Override
@@ -134,19 +122,19 @@ public class JwtServiceImpl implements JwtService {
     }
 
     // Helper methods
-    private static String json(Map<String, String> map) throws Exception {
+    private  String json(Map<String, String> map) throws Exception {
         return M.writeValueAsString(map);
     }
 
-    private static Map<String, String> fromJson(String json) throws Exception {
+    private Map<String, String> fromJson(String json) throws Exception {
         return M.readValue(json, new TypeReference<Map<String, String>>() {});
     }
 
-    private static String toB64(String s) {
+    private String toB64(String s) {
         return B64.encodeToString(s.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static String sign(String data) throws NoSuchAlgorithmException, InvalidKeyException {
+    private String sign(String data) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac mac = Mac.getInstance(HMAC_ALG);
         mac.init(new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), HMAC_ALG));
         return B64.encodeToString(mac.doFinal(data.getBytes(StandardCharsets.UTF_8)));
