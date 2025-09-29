@@ -74,7 +74,7 @@ function closeModal() {
         </div>
         <div>
           <p class="text-gray-500">Tenure</p>
-          <p class="font-medium text-[#1f2937]">{{ application.tenure }} yrs</p>
+          <p class="font-medium text-[#1f2937]">{{ application.tenure/12 }} yrs</p>
         </div>
       </div>
 

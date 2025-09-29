@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { ClipboardList } from "lucide-vue-next";
@@ -179,26 +179,19 @@ const pieChartData = computed(() => {
   };
 });
 
-const fetchDashboardData = () => store.dispatch("fetchDashboardData");
+const fetchDashboardData = () =>{ store.dispatch("fetchDashboardData")};
 
-const updateStatus= (id, status) => {
-  const payload = {
-    status,
-    reviewedBy: "Admin User",
-    reviewedAt: new Date().toISOString(),
-    reviewRemarks: "Auto status update"
-  };
-  store.dispatch("updateApplicationStatus", { id, payload });
-}
+watch(applications,()=>{  autoUpdateStatuses();})
 
 const autoUpdateStatuses = () => {
   const now = new Date();
   applications.value.forEach(app => {
     if (app.status === 'PENDING') {
-      const appDate = new Date(app.appliedDate + "T00:00:00"); // ensures valid Date
+      const appDate = new Date(app.applicationDate + "T00:00:00"); // ensures valid Date
       const hoursPassed = (now - appDate) / (1000 * 60 * 60);
       if (hoursPassed < 48) {
-        updateStatus(app.id, 'NEW');
+        console.log("calling mutation")
+        store.commit("UPDATE_APPLICATION_STATUS",{ id : app.id,status:"NEW"})
       }
     }
   });
@@ -210,11 +203,6 @@ const goToEdit = (id) => {
 
 onMounted(() => {
   fetchDashboardData();
-  autoUpdateStatuses();
-  console.log("Mounting")
-  for(let loans of applications.value){
-  console.log(loanTypeLabel[loans.status])
-}
 });
 </script>
 
