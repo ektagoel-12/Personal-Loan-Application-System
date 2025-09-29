@@ -7,7 +7,7 @@
           class="text-xl font-bold text-[#7e22ce] cursor-pointer hover:text-[#6b21a8] transition"
           @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')"
         >
-          LoanFlow
+          LoanEase
         </h1>
         <span
           v-if="user"
