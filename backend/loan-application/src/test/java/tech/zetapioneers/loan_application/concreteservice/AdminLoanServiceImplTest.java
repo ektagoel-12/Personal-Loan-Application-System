@@ -11,8 +11,8 @@ import tech.zetapioneers.loan_application.dto.AdminLoansList;
 import tech.zetapioneers.loan_application.dto.AdminStats;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.enums.LoanType;
-import tech.zetapioneers.loan_application.enums.Status;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 
 import java.time.LocalDate;
@@ -61,7 +61,7 @@ class AdminLoanServiceImplTest {
         loanApplication1.setIncome(80000.0);
         loanApplication1.setCreditScore(750);
         loanApplication1.setLoanType(HOME_LOAN);
-        loanApplication1.setStatus(Status.PENDING);
+        loanApplication1.setStatus(LoanStatus.PENDING);
         loanApplication1.setApplicationDate(LocalDate.of(2024, Month.JANUARY, 15));
 
         loanApplication2 = new LoanApplication();
@@ -71,7 +71,7 @@ class AdminLoanServiceImplTest {
         loanApplication2.setIncome(60000.0);
         loanApplication2.setCreditScore(680);
         loanApplication2.setLoanType(PERSONAL_LOAN);
-        loanApplication2.setStatus(Status.APPROVED);
+        loanApplication2.setStatus(LoanStatus.APPROVED);
         loanApplication2.setApplicationDate(LocalDate.of(2024, Month.FEBRUARY, 20));
 
         loanApplication3 = new LoanApplication();
@@ -81,7 +81,7 @@ class AdminLoanServiceImplTest {
         loanApplication3.setIncome(45000.0);
         loanApplication3.setCreditScore(600);
         loanApplication3.setLoanType(EDUCATION_LOAN);
-        loanApplication3.setStatus(Status.REJECTED);
+        loanApplication3.setStatus(LoanStatus.REJECTED);
         loanApplication3.setApplicationDate(LocalDate.of(2024, Month.JANUARY, 25));
     }
 
@@ -92,7 +92,7 @@ class AdminLoanServiceImplTest {
         List<LoanApplication> pendingApplications = Collections.singletonList(loanApplication1);
 
         when(loanRepo.findAll()).thenReturn(allApplications);
-        when(loanRepo.findByStatus(Status.PENDING)).thenReturn(pendingApplications);
+        when(loanRepo.findByStatus(LoanStatus.PENDING)).thenReturn(pendingApplications);
 
         // When
         AdminDto result = adminLoanService.getAdminDashboard();
@@ -125,7 +125,7 @@ class AdminLoanServiceImplTest {
 
         // Verify repository calls
         verify(loanRepo).findAll();
-        verify(loanRepo).findByStatus(Status.PENDING);
+        verify(loanRepo).findByStatus(LoanStatus.PENDING);
     }
 
     @Test
@@ -155,7 +155,7 @@ class AdminLoanServiceImplTest {
         // Verify that the loan application was updated
         verify(loanRepo).findById(loanId);
         verify(loanRepo).save(loanApplication1);
-        assertEquals(Status.APPROVED, loanApplication1.getStatus());
+        assertEquals(LoanStatus.APPROVED, loanApplication1.getStatus());
         assertEquals(reviewRemarks, loanApplication1.getReviewRemarks());
         assertEquals(reviewedAt, loanApplication1.getReviewedAt());
         assertEquals(reviewedBy, loanApplication1.getReviewedBy());
