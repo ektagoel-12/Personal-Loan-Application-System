@@ -18,7 +18,7 @@
     </div>
 
     <!-- Quick Stats -->
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between pb-2">
           <h2 class="text-sm font-medium">Total Borrowed</h2>
@@ -34,9 +34,9 @@
           <TrendingUp class="h-4 w-4 text-primary" />
         </div>
         <div class="text-2xl font-semibold text-primary">
-          ₹{{ mockLoanData.quickStats.totalRepaid.toLocaleString() }}
+          ₹{{ store.getters.getTotalPaid }}
         </div>
-        <p class="text-xs text-accent font-medium">+12% from last month</p>
+        <p class="text-xs text-accent font-medium">Across all your loans</p>
       </div>
 
       <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
@@ -49,17 +49,6 @@
         <p v-else-if="user.creditScore >= 700" class="text-xs text-blue-600">Good rating</p>
         <p v-else-if="user.creditScore >= 650" class="text-xs text-yellow-600">Fair rating</p>
         <p v-else class="text-xs text-red-600">Poor rating</p>
-      </div>
-
-      <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
-        <div class="flex items-center justify-between pb-2">
-          <h2 class="text-sm font-medium">Next EMI Due</h2>
-          <Calendar class="h-4 w-4 text-primary" />
-        </div>
-        <div class="text-2xl font-semibold">
-          ₹{{ nextEmiDue}}
-        </div>
-        <p class="text-xs text-gray-500">Due on 15th Jan</p>
       </div>
     </div>
 
@@ -238,6 +227,7 @@ function getStatusColor(status) {
   }
 }
 onMounted(()=>{
+  store.dispatch("fetchTotalPaid",store.getters.currentUser.id)
   store.dispatch("getAllLoans")
 })
 
