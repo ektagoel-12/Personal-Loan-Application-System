@@ -11,7 +11,7 @@ const store = createStore({
       user: JSON.parse(localStorage.getItem('currUser')) || null,
       stats: {},
       applications: [],
-      tickets: [], // added tickets state
+      tickets: [], 
       allTickets: [],
       searchTerm: "",
       statusFilter: "all",
@@ -38,6 +38,7 @@ const store = createStore({
     },
     UPDATE_DASHBOARD_DATA(state, payload) {
       state.stats = payload.stats;
+      console.log(payload.stats)
       state.applications = payload.applications;
     },
     UPDATE_APPLICATION(state, { id, payload }) {
@@ -50,6 +51,7 @@ const store = createStore({
       state.user = payload
     },
     UPDATE_APPLICATION_STATUS(state, { id, status }) {
+      console.log("Mutatation called with  ",id,status)
       const app = state.applications.find(app => app.id === id);
       if (app) app.status = status;
     },
@@ -75,9 +77,9 @@ const store = createStore({
      SET_ALL_TICKETS(state, tickets) {
       state.allTickets = tickets;
     },
-      ADD_TICKET(state, ticket) {
-    state.tickets.push(ticket);
-  },
+    ADD_TICKET(state, ticket) {
+      state.tickets.push(ticket);
+    },
     UPDATE_TICKET_STATUS(state, { id, status }) {
     const ticket = state.allTickets.find(t => t.id === id);
     if (ticket) ticket.status = status;
@@ -137,7 +139,7 @@ const store = createStore({
     async updateApplicationStatus({ commit }, { id, payload }) {
       try {
         const res = await makeRequestWithToken("PUT", `/admin/loans/${id}/status`, payload);
-        console.log("Updated loan:", res.data);
+
         commit("UPDATE_APPLICATION", { id, payload: res.data });
       } catch (err) {
         console.error("Failed to update application status", err);
@@ -241,6 +243,12 @@ const store = createStore({
       throw err;
     }
   },
+
+  async fetchCurrentLoanAndUpcomingPayment({commit}){
+    try{
+      
+    }catch(err){}
+  }
   },
 
   getters: {
@@ -281,7 +289,18 @@ const store = createStore({
     isLoading: (state) => state.loading,
     isLoggedIn: (state) => state.user,
     currentUser: (state) => state.user,
-    selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null)
+    selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null),
+    ongoingLoans: (state) => ( state.applications.filter(loan => {
+                              if (loan.status !== "APPROVED") return false;
+
+                              const applicationDate = new Date(loan.applicationDate);
+                              const currentDate = new Date(); // Today's date
+                              const monthsSinceApplication =
+                                (currentDate.getFullYear() - applicationDate.getFullYear()) * 12 +
+                                (currentDate.getMonth() - applicationDate.getMonth());
+
+                              return monthsSinceApplication < loan.tenure;
+                        }))
   }
 });
 

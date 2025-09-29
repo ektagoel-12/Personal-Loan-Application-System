@@ -35,6 +35,12 @@ export async function makeRequestWithToken(type, endpoint, body) {
     const token = localStorage.getItem("token");
     let response = null;
 
+    if (!token) {
+        console.warn("No token found. Redirecting to login.");
+        window.location.href = "/login-form";
+        return { error: "No token" }; // ✅ Prevents null return
+    }
+
     const config = {
         headers: { Authorization: `Bearer ${token}` }
     };

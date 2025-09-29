@@ -37,13 +37,11 @@ public class AdminLoanServiceImpl extends AdminLoanService {
                 .collect(Collectors.groupingBy(a -> a.getStatus().name(), Collectors.counting()));
 
         Map<String, Long> monthlyCounts = allApps.stream()
+                .filter(app -> app.getApplicationDate() != null)
                 .collect(Collectors.groupingBy(
-                        app -> app.getApplicationDate().getMonth().name() + " " + app.getApplicationDate().getYear(),
+                        app -> app.getApplicationDate().getMonth().name().substring(0,3),
                         Collectors.counting()
                 ));
-
-        List<Map<String, Long>> monthlyTrends = new ArrayList<>();
-        monthlyTrends.add(monthlyCounts);
 
         AdminStats stats = AdminStats.builder()
                 .totalApplications(total)
@@ -51,7 +49,7 @@ public class AdminLoanServiceImpl extends AdminLoanService {
                 .pending(pending)
                 .avgIncome(avgIncome)
                 .statusDistribution(statusDist)
-                .monthlyTrends(monthlyTrends)
+                .monthlyCounts(monthlyCounts)
                 .build();
 
         List<AdminLoansList> pendingApps = loanRepo.findByStatus(LoanStatus.PENDING)

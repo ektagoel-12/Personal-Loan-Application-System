@@ -22,7 +22,7 @@
       <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between pb-2">
           <h2 class="text-sm font-medium">Total Borrowed</h2>
-          <DollarSign class="h-4 w-4 text-primary" />
+          <IndianRupee  class="h-4 w-4 text-primary" />
         </div>
         <div class="text-2xl font-semibold">₹{{ totalAmountBorrowed }}</div>
         <p class="text-xs text-gray-500">Across all your loans</p>
@@ -57,7 +57,7 @@
           <Calendar class="h-4 w-4 text-primary" />
         </div>
         <div class="text-2xl font-semibold">
-          ₹{{ mockLoanData.quickStats.nextEmiDue.toLocaleString() }}
+          ₹{{ nextEmiDue}}
         </div>
         <p class="text-xs text-gray-500">Due on 15th Jan</p>
       </div>
@@ -68,7 +68,7 @@
       <!-- Active Loan -->
       <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
         <h2 class="flex items-center gap-2 font-medium text-primary">
-          <DollarSign class="h-5 w-5" />
+          <IndianRupee class="h-5 w-5" />
           Active Loan
         </h2>
         <p class="text-sm text-gray-500">Your current loan details and progress</p>
@@ -181,11 +181,11 @@ import { ref, computed, onMounted } from "vue";
 import {
   TrendingUp,
   Calendar,
-  DollarSign,
   Clock,
   FileText,
   Calculator,
   AlertCircle,
+  IndianRupee 
 } from "lucide-vue-next";
 import { useStore } from "vuex";
 import router from "@/router";
@@ -196,6 +196,9 @@ const user = ref(store.getters.currentUser);
 
 const recentApplications = computed( ()=>store.getters.recentApplications)
 const totalAmountBorrowed = computed(()=>store.getters.totalBorrowed)
+// console.log(store.getters.ongoingLoans)
+// const nextEmiDue = computed( ()=>(store.getters.ongoingLoans.reduce((prev,curr)=>prev+curr.emi)),0)
+// console.log(nextEmiDue.value)
 
 // Mock loan data
 const mockLoanData = {
