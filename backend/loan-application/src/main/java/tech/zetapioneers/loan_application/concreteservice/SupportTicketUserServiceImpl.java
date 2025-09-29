@@ -8,7 +8,6 @@ import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
 import tech.zetapioneers.loan_application.entities.User;
-import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
 import tech.zetapioneers.loan_application.exceptions.LoanNotFoundException;
 import tech.zetapioneers.loan_application.exceptions.TicketNotFoundException;
 import tech.zetapioneers.loan_application.exceptions.UserNotFoundException;
@@ -19,7 +18,7 @@ import tech.zetapioneers.loan_application.services.SupportTicketUserService;
 
 import java.util.List;
 @Service
-public class SupportTicketUserServiceImp implements SupportTicketUserService {
+public class SupportTicketUserServiceImpl implements SupportTicketUserService {
 
     @Autowired
     SupportTicketRepository supportTicketRepository;

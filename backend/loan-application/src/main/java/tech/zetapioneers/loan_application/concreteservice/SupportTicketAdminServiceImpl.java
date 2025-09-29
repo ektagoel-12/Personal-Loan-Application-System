@@ -3,7 +3,6 @@ package tech.zetapioneers.loan_application.concreteservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import tech.zetapioneers.loan_application.dto.SupportTicketRequestDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseBodyDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class SupportTicketAdminServiceImp implements SupportTicketAdminService {
+public class SupportTicketAdminServiceImpl implements SupportTicketAdminService {
 
     @Autowired
     private SupportTicketRepository supportTicketRepository;

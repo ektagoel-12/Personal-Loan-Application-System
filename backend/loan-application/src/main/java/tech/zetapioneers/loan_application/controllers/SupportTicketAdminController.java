@@ -3,7 +3,7 @@ package tech.zetapioneers.loan_application.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.zetapioneers.loan_application.concreteservice.SupportTicketAdminServiceImp;
+import tech.zetapioneers.loan_application.concreteservice.SupportTicketAdminServiceImpl;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseBodyDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
@@ -16,7 +16,7 @@ import java.util.List;
 public class SupportTicketAdminController {
 
     @Autowired
-    private SupportTicketAdminServiceImp supportTicketAdminServiceImp;
+    private SupportTicketAdminServiceImpl supportTicketAdminServiceImp;
 
     @GetMapping
     public ResponseEntity<List<SupportTicketResponseDto>> getAllTickets() {

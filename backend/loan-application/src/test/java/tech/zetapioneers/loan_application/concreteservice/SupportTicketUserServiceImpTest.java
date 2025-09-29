@@ -3,7 +3,6 @@ package tech.zetapioneers.loan_application.concreteservice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -43,7 +42,7 @@ class SupportTicketUserServiceImpTest {
     @Mock
     private UserRepository userRepository;
     @InjectMocks
-    private SupportTicketUserServiceImp serviceImp;
+    private SupportTicketUserServiceImpl serviceImp;
 
     private User user1, user2, user3;
 

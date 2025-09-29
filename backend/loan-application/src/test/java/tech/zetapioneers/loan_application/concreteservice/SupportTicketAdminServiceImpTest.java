@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +33,7 @@ class SupportTicketAdminServiceImpTest {
     private SupportTicketRepository supportTicketRepository;
 
     @InjectMocks
-    private SupportTicketAdminServiceImp serviceImp;
+    private SupportTicketAdminServiceImpl serviceImp;
 
     private User user1, user2, user3;
 
@@ -62,7 +60,7 @@ class SupportTicketAdminServiceImpTest {
         user2.setRole(Role.ADMIN);
 
         user3.setId(3L);
-        user3.setEmail("prem2@gmail.com");
+        user3.setEmail("prem3@gmail.com");
         user3.setAadhar("989765949375");
         user3.setIncome(1000.0);
         user3.setCreditScore(689);

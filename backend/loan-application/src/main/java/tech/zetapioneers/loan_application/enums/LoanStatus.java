@@ -1,6 +1,6 @@
 package tech.zetapioneers.loan_application.enums;
 
-public enum Status {
+public enum LoanStatus {
     PENDING,
     APPROVED,
     REJECTED
