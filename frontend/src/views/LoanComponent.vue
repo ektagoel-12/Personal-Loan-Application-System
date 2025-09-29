@@ -35,6 +35,7 @@ const statusMap = store.state.user.role === 'ADMIN' ? adminStatusMap : usersStat
 
 // Filtering logic 
 const filteredApplications = computed(() => {
+  console.log(filteredApplications.value)
   return store.state.applications.filter((app) => {
     const matchesSearch =
       app.id.toString().toLowerCase().includes(searchTerm.value.toLowerCase()) ||
@@ -59,6 +60,7 @@ const viewLoan = (loan) =>{
   selectLoan.value = loan
   showModel.value = true
 }
+
 
 onMounted(()=>{
   store.dispatch("getAllLoans")
@@ -162,7 +164,7 @@ onMounted(()=>{
         <div v-if="loan.emi" class="flex gap-6 text-sm text-[#1f2937]">
           <span>EMI: ₹{{ loan.emi.toLocaleString() }}</span>
           <span>Interest: {{ loan.interestRate }}%</span>
-          <span>Tenure: {{ loan.tenure }} years</span>
+          <span>Tenure: {{ loan.tenure/12 }} years</span>
         </div>
 
         <!-- Modal Component -->
