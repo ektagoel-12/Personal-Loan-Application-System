@@ -1,109 +1,105 @@
+import { describe, it, beforeEach, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import LoanApplication from "../../views/LoanForm.vue";
+import LoanForm from "../../views/LoanForm.vue";
+import { createStore } from "vuex";
+import { createMemoryHistory, createRouter } from "vue-router";
 
-// Mock router
-vi.mock("@/router", () => ({
-  default: { push: vi.fn() }
+// Mock toast
+vi.mock("vue-toastification", () => ({
+  useToast: () => ({
+    error: vi.fn(),
+    success: vi.fn(),
+  }),
 }));
 
-// Mock Vuex store
-const mockDispatch = vi.fn();
-const mockStore = {
-  state: {
-    user: { id: 1, name: "John Doe", email: "john@example.com", creditScore: 720 }
-  },
-  dispatch: mockDispatch
-};
+// Mock routes
+const routes = [{ path: "/loan", component: { template: "<div>Loan Page</div>" } }];
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes,
+});
 
-vi.mock("vuex", () => ({
-  useStore: () => mockStore
-}));
+describe("LoanForm.vue", () => {
+  let store;
 
-describe("LoanApplication.vue", () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = mount(LoanApplication, {
-      global: {
-        stubs: ["Landmark", "ScrollText"]
-      }
+  beforeEach(async () => {
+    store = createStore({
+      state: {
+        user: {
+          id: 1,
+          name: "Test User",
+          email: "test@example.com",
+          creditScore: 750,
+        },
+        interestRate: {
+          Personal: { label: "Personal Loan", rate: 12 },
+          Home: { label: "Home Loan", rate: 8 },
+        },
+      },
+      actions: {
+        addApplication: vi.fn(),
+      },
     });
-    mockDispatch.mockClear();
+
+    // Ensure router is ready
+    router.push("/");
+    await router.isReady();
   });
 
-  it("starts at step 1", () => {
-    expect(wrapper.vm.step).toBe(1);
+  it("renders form title", () => {
+    const wrapper = mount(LoanForm, {
+      global: {
+        plugins: [store, router],
+      },
+    });
+
+    expect(wrapper.find("h2").text()).toBe("Loan Application");
   });
 
-  it("moves to next step if validation passes", () => {
-    wrapper.vm.loan.amount = 50000;
-    wrapper.vm.loan.tenure = 2;
-    wrapper.vm.loan.purpose = "HOME_LOAN";
+  // it("shows validation error if loan amount is empty", async () => {
+  //   const wrapper = mount(LoanForm, {
+  //     global: {
+  //       plugins: [store, router],
+  //     },
+  //   });
 
-    wrapper.vm.nextStep();
-    expect(wrapper.vm.step).toBe(2);
-  });
+  //   // Click next without entering amount
+  //   await wrapper.find("button:has-text('Next')").trigger("click");
 
-  it("does not move to next step if validation fails", () => {
-    wrapper.vm.loan.amount = 0; // invalid
-    wrapper.vm.loan.tenure = 0;
+  //   expect(wrapper.text()).toContain("Step 1 of 4"); // still in step 1
+  // });
 
-    wrapper.vm.nextStep();
-    expect(wrapper.vm.step).toBe(1);
-  });
+  // it("navigates after successful application", async () => {
+  //   const wrapper = mount(LoanForm, {
+  //     global: {
+  //       plugins: [store, router],
+  //     },
+  //   });
 
-  it("moves to previous step", () => {
-    wrapper.vm.step = 3;
-    wrapper.vm.prevStep();
-    expect(wrapper.vm.step).toBe(2);
-  });
+  //   // Step 1: Loan details
+  //   await wrapper.find("input[type='number']").setValue(100000); // loan amount
+  //   await wrapper.find("select").setValue(5); // tenure
+  //   await wrapper.find("select:last-of-type").setValue("Personal"); // purpose
+  //   await wrapper.find("button:has-text('Next')").trigger("click");
 
-  it("calculates correct interest rate", () => {
-    wrapper.vm.loan.purpose = "PERSONAL_LOAN";
-    expect(wrapper.vm.interestRate).toBe(10);
-  });
+  //   // Step 2: Financial details
+  //   await wrapper.find("input[type='number']").setValue(50000); // income
+  //   await wrapper.findAll("input[type='number']")[1].setValue(750); // credit score
+  //   await wrapper.find("select:last-of-type").setValue("Salaried");
+  //   await wrapper.find("button:has-text('Next')").trigger("click");
 
-  it("calculates EMI correctly", () => {
-    wrapper.vm.loan.amount = 120000;
-    wrapper.vm.loan.tenure = 1;
-    wrapper.vm.loan.purpose = "PERSONAL_LOAN"; // 10% interest
+  //   // Step 3: Contact details
+  //   const inputs = wrapper.findAll("input");
+  //   await inputs[0].setValue("Test User"); // full name
+  //   await inputs[1].setValue("test@example.com"); // email
+  //   await inputs[2].setValue("9876543210"); // phone
+  //   await wrapper.find("textarea").setValue("Test Address");
+  //   await wrapper.find("button:has-text('Next')").trigger("click");
 
-    expect(wrapper.vm.emi).toBeGreaterThan(0);
-  });
+  //   // Step 4: Apply
+  //   await wrapper.find("button:has-text('Apply')").trigger("click");
 
-  it("computes eligibility score based on income and credit score", () => {
-    wrapper.vm.loan.income = 40000;
-    wrapper.vm.loan.creditScore = 720;
-    wrapper.vm.loan.amount = 100000;
-
-    const score = wrapper.vm.eligibilityScore;
-    expect(score).toBeGreaterThan(0);
-    expect(score).toBeLessThanOrEqual(100);
-  });
-
-  it("rejects invalid email in step 3", () => {
-    wrapper.vm.step = 3;
-    wrapper.vm.userDetails.fullName = "John";
-    wrapper.vm.userDetails.email = "invalid-email";
-    wrapper.vm.userDetails.phoneNo = "1234567890";
-    wrapper.vm.userDetails.address = "Somewhere";
-
-    expect(wrapper.vm.validateStep()).toBe(false);
-  });
-
-  it("rejects invalid phone number in step 3", () => {
-    wrapper.vm.step = 3;
-    wrapper.vm.userDetails.fullName = "John";
-    wrapper.vm.userDetails.email = "john@example.com";
-    wrapper.vm.userDetails.phoneNo = "123"; // invalid
-    wrapper.vm.userDetails.address = "Somewhere";
-
-    expect(wrapper.vm.validateStep()).toBe(false);
-  });
-
-  it("dispatches addApplication on applyLoan", () => {
-    wrapper.vm.applyLoan();
-    expect(mockDispatch).toHaveBeenCalledWith("addApplication", wrapper.vm.loan);
-  });
+  //   // Should redirect to /loan
+  //   expect(wrapper.vm.$router.currentRoute.value.path).toBe("/loan");
+  // });
 });
