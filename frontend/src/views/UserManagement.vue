@@ -61,8 +61,8 @@
             <th class="px-4 py-3 border-b">Credit Score</th>
             <th class="px-4 py-3 border-b">Aadhar</th>
             <th class="px-4 py-3 border-b">Role</th>
-            <th class="px-4 py-3 border-b text-center">Make Admin</th>
-            <th class="px-4 py-3 border-b text-center">Remove Admin</th>
+            <!-- <th class="px-4 py-3 border-b text-center">Make Admin</th> -->
+            <th class="px-4 py-3 border-b text-center">change role</th>
           </tr>
         </thead>
         <tbody>
@@ -90,20 +90,20 @@
             </td>
             <td class="px-4 py-2 text-sm">{{ user.aadhar }}</td>
             <td class="px-4 py-2 text-sm capitalize">{{ user.role }}</td>
-            <td class="px-4 py-2 text-center">
+            <td class="px-4 py-2 text-center" v-show="user.role === `USER`">
               <button
                 @click.stop="changeToAdmin(user.id)"
                 class="bg-[#7e22ce] text-white px-3 py-1.5 rounded-lg hover:bg-[#6b21a8] transition text-sm"
               >
-                Add
+                Change Role
               </button>
             </td>
-            <td class="px-4 py-2 text-center">
+            <td class="px-4 py-2 text-center" v-show="user.role === `ADMIN`">
               <button
                 @click.stop="changeToUser(user.id)"
                 class="bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition text-sm"
               >
-                Remove
+                Change Role
               </button>
             </td>
           </tr>
@@ -252,6 +252,7 @@ const changeToAdmin = async (userId) => {
     toast.error("Failed loading users");
     return;
   }
+  response1.data.sort((user1,user2)=>user1.id - user2.id)
   users.value = response1.data;
   toast.info("Update Successfull")
 };
@@ -269,6 +270,7 @@ const changeToUser = async (userId) => {
     toast.error("Failed loading users");
     return;
   }
+  response1.data.sort((user1,user2)=> user1.id-user2.id)
   users.value = response1.data;
   toast.info("Update Successfull")
 };
@@ -280,6 +282,7 @@ onMounted(async () => {
     toast.error("Failed loading users");
     return;
   }
+  response.data.sort((user1,user2)=> user1.id - user2.id)
   users.value = response.data;
 });
 </script>

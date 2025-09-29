@@ -8,9 +8,9 @@ import tech.zetapioneers.loan_application.dto.EmiPreviewResponse;
 import tech.zetapioneers.loan_application.dto.RepaymentScheduleDTO;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.RepaymentSchedule;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.concreteservice.RepaymentScheduleServiceImpl;
-import tech.zetapioneers.loan_application.enums.Status;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class RepaymentScheduleController {
         LoanApplication loan = loanApplicationRepository.findById(loanId)
                 .orElseThrow(() -> new RuntimeException("Loan not found with id: " + loanId));
 
-        if (loan.getStatus() != Status.APPROVED) {
+        if (loan.getStatus() != LoanStatus.APPROVED) {
             throw new RuntimeException("Loan is not approved. Current status: " + loan.getStatus());
         }
 

@@ -1,8 +1,7 @@
 package tech.zetapioneers.loan_application.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import tech.zetapioneers.loan_application.enums.TicketRequestTypes;
 import tech.zetapioneers.loan_application.enums.TicketStatus;
 
@@ -13,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "support_tickets")
 @NoArgsConstructor
+@AllArgsConstructor
 public class SupportTicket {
 
     @Id

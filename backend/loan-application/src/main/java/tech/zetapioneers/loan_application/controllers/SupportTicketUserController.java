@@ -3,9 +3,9 @@ package tech.zetapioneers.loan_application.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.zetapioneers.loan_application.concreteservice.SupportTicketUserServiceImpl;
 import tech.zetapioneers.loan_application.dto.SupportTicketRequestDto;
 import tech.zetapioneers.loan_application.dto.SupportTicketResponseDto;
-import tech.zetapioneers.loan_application.concreteservice.SupportTicketUserServiceImp;
 import tech.zetapioneers.loan_application.entities.SupportTicket;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class SupportTicketUserController {
 
     @Autowired
-    private SupportTicketUserServiceImp supportTicketUserServiceImp;
+    private SupportTicketUserServiceImpl supportTicketUserServiceImp;
 
 
     @PostMapping

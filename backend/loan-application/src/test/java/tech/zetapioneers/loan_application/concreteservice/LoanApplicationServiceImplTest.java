@@ -8,8 +8,8 @@ import org.mockito.MockitoAnnotations;
 import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.enums.LoanType;
-import tech.zetapioneers.loan_application.enums.Status;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
 
@@ -50,7 +50,7 @@ class LoanApplicationServiceImplTest {
         loanApplication.setTenureMonths(12);
         loanApplication.setIncome(40000.0);
         loanApplication.setCreditScore(750);
-        loanApplication.setStatus(Status.PENDING);
+        loanApplication.setStatus(LoanStatus.PENDING);
         loanApplication.setApplicationDate(LocalDate.of(2025, 9, 25));
         loanApplication.setLoanType(LoanType.CAR_LOAN); // ✅ FIXED: prevent NPE
     }
@@ -63,7 +63,7 @@ class LoanApplicationServiceImplTest {
         response.setTenure(loanApplication.getTenureMonths());
         response.setIncome(loanApplication.getIncome());
         response.setCreditScore(loanApplication.getCreditScore());
-        response.setStatus(Status.PENDING);
+        response.setStatus(LoanStatus.PENDING);
         response.setApplicationDate(loanApplication.getApplicationDate());
         response.setPurpose(loanApplication.getLoanType());
 
