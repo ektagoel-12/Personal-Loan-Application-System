@@ -2,11 +2,9 @@ package tech.zetapioneers.loan_application.entities;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
-import lombok.Getter;
+import lombok.*;
 import tech.zetapioneers.loan_application.enums.LoanType;
-import tech.zetapioneers.loan_application.enums.Status;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "loan_applications")
 @ToString
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoanApplication {
 
     @Id
@@ -43,7 +43,7 @@ public class LoanApplication {
     private Integer creditScore;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private LoanStatus status;
 
     private LocalDate applicationDate;
 
