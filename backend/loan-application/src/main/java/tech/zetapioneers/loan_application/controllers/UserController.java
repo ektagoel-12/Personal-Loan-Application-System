@@ -31,6 +31,13 @@ public class UserController {
         return new ResponseEntity<>(targetUser.get(),HttpStatus.OK);
     }
 
+    @GetMapping("/paid/{id}")
+    public ResponseEntity<?> getTotalPaidByUserById(@PathVariable Long id){
+        Double totalPaid = userService.getTotalPaidAmountById(id);
+        totalPaid = Math.round(totalPaid * 100.0)/100.0;
+        return new ResponseEntity<>(totalPaid,HttpStatus.OK);
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateUserById(@PathVariable Long id,@RequestBody UpdateUserRequest body){
         Optional<User> targetUser = userService.updateUserById(id,body);

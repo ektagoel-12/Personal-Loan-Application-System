@@ -28,7 +28,8 @@ const store = createStore({
                       "PAYDAY_LOAN": { label: "Payday Loan", rate: 30.0 },
                       "HOME_EQUITY_LOAN": { label: "Home Equity Loan", rate: 8.5 },
                       "STUDENT_LOAN": { label: "Student Loan", rate: 5.0 }
-                    }
+                    },
+      totalPaid : 0
     };
   },
 
@@ -88,6 +89,9 @@ const store = createStore({
     const ticket = state.allTickets.find(t => t.id === id);
     if (ticket) ticket.response = response;
   },
+  UPDATE_TOTAL_PAID(state,{response}){
+    state.totalPaid = response.data;
+  }
   },
 
   actions: {
@@ -244,10 +248,17 @@ const store = createStore({
     }
   },
 
-  async fetchCurrentLoanAndUpcomingPayment({commit}){
+
+  async fetchTotalPaid({commit},id){
     try{
-      
-    }catch(err){}
+        const response = await makeRequestWithToken("GET",`/users/paid/${id}`)
+        console.log(response)
+        commit("UPDATE_TOTAL_PAID",{response})
+      }
+      catch(error){
+        console.log(error)
+        console.log("some error occured")
+    }
   }
   },
 
@@ -284,6 +295,7 @@ const store = createStore({
         return matchesSearch && matchesStatus && matchesDate;
       });
     },
+    getTotalPaid: (state) => state.totalPaid,
     stats: (state) => state.stats,
     applications: (state) => state.applications,
     isLoading: (state) => state.loading,
