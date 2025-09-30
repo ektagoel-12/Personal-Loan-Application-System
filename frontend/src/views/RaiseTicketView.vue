@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useToast } from "vue-toastification";
 import router from "@/router";
@@ -7,13 +7,15 @@ import router from "@/router";
 const store = useStore();
 const toast = useToast();
 
-const requestTypes = [
-  "Application_Status",
-  "Document_Upload_Issue",
-  "EMI_Query",
-  "Loan_Closure",
-  "Others"
-];
+const applications=computed(()=>store.getters.applications);
+console.log(applications)
+const requestTypes = {
+  Application_Status : "Application Status",
+  Document_Upload_Issue: "Document Upload Issue",
+  EMI_Query : "Emi Query",
+  Loan_Closure: "Loan Closure",
+  Others : "Others"
+}
 
 const formData = ref({
   type: "",
@@ -60,7 +62,7 @@ const handleSubmit = async () => {
                  focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-purple-700"
         >
           <option disabled value="">-- Select Request Type --</option>
-          <option v-for="type in requestTypes" :key="type" :value="type">{{ type }}</option>
+          <option v-for="type in Object.keys(requestTypes)" :key="type" :value="type">{{ requestTypes[type] }}</option>
         </select>
       </div>
 
@@ -78,14 +80,15 @@ const handleSubmit = async () => {
 
       <!-- Loan ID -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Loan ID</label>
-        <input
+        <label class="block text-sm font-medium text-gray-700 mb-1">Loan Id</label>
+        <select
           v-model="formData.LoanId"
-          type="number"
-          placeholder="Enter Loan ID if applicable"
           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 
                  focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-purple-700"
-        />
+        >
+          <option disabled value="">-- Select Loan Id --</option>
+          <option v-for="type of applications" :key="type" :value="type.id">{{ type.id }}</option>
+        </select>
       </div>
 
       <!-- Description -->

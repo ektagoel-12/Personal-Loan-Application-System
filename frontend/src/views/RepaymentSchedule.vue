@@ -149,7 +149,7 @@
     <div v-if="summaryStats" class="grid gap-6 md:grid-cols-3">
       <div class="border border-secondary rounded-lg p-6 shadow-sm bg-white">
         <h3 class="flex items-center gap-2 text-lg font-medium text-primary">
-          <DollarSign class="w-5 h-5 text-green-600" />
+          <IndianRupee class="w-5 h-5 text-green-600" />
           Monthly EMI
         </h3>
         <p class="text-xl font-semibold mt-2">
@@ -199,7 +199,7 @@
         <div class="relative w-40">
           <select
             v-model="filterYear"
-            class="w-full border border-primary/30 rounded-lg pl-3 pr-10 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            class="appearance-none w-full border border-primary/30 rounded-lg pl-3 pr-10 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="all">All Years</option>
             <option v-for="year in selectedLoan.tenure" :key="year" :value="year">
@@ -357,9 +357,9 @@ import {
   ArrowUpDown,
   Filter,
   ChevronDown,
-  DollarSign,
   TrendingDown,
   Calculator,
+  IndianRupee,
 } from "lucide-vue-next";
 
     const store = useStore();
@@ -506,11 +506,8 @@ import {
       }
     };
     const getMonthName = (monthIndex, startDate ) => {
-      console.log(startDate)
       const [day, month, year] = startDate.split("/").map(Number);
       const baseDate = new Date(year,month+monthIndex-1,day) 
-      console.log(baseDate)
-      //baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
 
       // Format as "Jan 2024" 
       return baseDate.toLocaleString("default", {

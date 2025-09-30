@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue"
 import { useStore } from "vuex"
 import  { Eye } from "lucide-vue-next"
 import Model from "@/components/LoanModel.vue"
+import { Search } from "lucide-vue-next"
 
 const store = useStore()
 
@@ -12,6 +13,8 @@ const statusFilter = ref("ALL")
 const dateRange = ref({ from: null, to: null })
 const selectLoan = ref(null)
 const showModel = ref(false)
+const loanLabel = computed(()=>(store.state.interestRate))
+
 
 // Map for status display
 const usersStatusMap = {
@@ -28,7 +31,7 @@ const adminStatusMap = {
   REJECTED: { label: "Rejected", class: "bg-red-100 text-red-800" },
 }
 
-const statusMap = store.state.user.role === 'ADMIN' ? adminStatusMap : usersStatusMap
+const statusMap = computed(()=>(store.state.user.role === 'ADMIN' ? adminStatusMap : usersStatusMap))
 
 
 
@@ -39,14 +42,14 @@ const filteredApplications = computed(() => {
   return store.state.applications.filter((app) => {
     const matchesSearch =
       app.id.toString().toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      app.purpose.toLowerCase().includes(searchTerm.value.toLowerCase())
+      loanLabel.value[app.purpose]?.label.toLowerCase().includes(searchTerm.value.toLowerCase())
 
     const matchesStatus =
       statusFilter.value === "ALL" || app.status === statusFilter.value
 
     let matchesDate = true
     if (dateRange.value.from && dateRange.value.to) {
-      const appDate = new Date(app.appliedDate)
+      const appDate = new Date(app.applicationDate)
       matchesDate =
         appDate >= new Date(dateRange.value.from) &&
         appDate <= new Date(dateRange.value.to)
@@ -64,24 +67,30 @@ const viewLoan = (loan) =>{
 
 onMounted(()=>{
   store.dispatch("getAllLoans")
+  console.log(filteredApplications)
 })
 
 </script>
 
 <template>
-  <div class="max-w-4xl  mx-auto p-4 font-sans text-[#1f2937]">
+  <div class="mx-auto p-4 font-sans text-[#1f2937]">
     <!-- Header -->
-    <h1 class="text-2xl font-bold text-[#1f2937]">My Loan Applications</h1>
+    <h1 class="text-3xl font-bold text-[#1f2937]">My Loan Applications</h1>
     <p class="text-gray-500 mb-6">Track the status of your loan applications</p>
 
     <!-- Filters -->
-    <div class="flex gap-2 mb-6 flex-wrap">
-      <input
-        v-model="searchTerm"
-        type="text"
-        placeholder="Search by application ID or purpose..."
-        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none"
-      />
+    <div class="flex gap-2 mb-6 flex-wrap items-center">
+      <span class="flex-shrink-0 px-3">
+      <Search />
+      </span>
+      <div class="flex-1">
+        <input
+          v-model="searchTerm"
+          type="text"
+          placeholder="Search by application ID or purpose..."
+          class="w-full px-3 py-2 border-0 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none border-radius-lg"
+        />
+      </div>
       <select
         v-model="statusFilter"
         class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce] transition outline-none"
@@ -140,7 +149,7 @@ onMounted(()=>{
           </div>
           <div>
             <p class="text-gray-500">Purpose</p>
-            <p class="font-medium">{{ loan.purpose }}</p>
+            <p class="font-medium">{{ loanLabel[loan.purpose]?.label }}</p>
           </div>
           <div>
             <p class="text-gray-500">Applied On</p>
