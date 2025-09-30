@@ -73,8 +73,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
-    @ExceptionHandler(InvalidLoanRepuestException.class)
-    public ResponseEntity<Map<String,Object>> handleInvalidLoanRepuestException(InvalidLoanRepuestException ex){
+    @ExceptionHandler(InvalidLoanRequestException.class)
+    public ResponseEntity<Map<String,Object>> handleInvalidLoanRepuestException(InvalidLoanRequestException ex){
         Map<String,Object> body=new HashMap<>();
         body.put("timestamp",LocalDateTime.now());
         body.put("error","Loan is not created");

@@ -145,6 +145,7 @@ function prevStep() {
 }
 
 function applyLoan() {
+  console.log(loan.value)
   store.dispatch("addApplication",loan.value);
   router.push("/loan").then(toast.success("Loan Applied Successfully"))
 }
