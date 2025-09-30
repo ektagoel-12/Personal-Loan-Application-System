@@ -12,8 +12,10 @@ import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository
 import tech.zetapioneers.loan_application.repositories.RepaymentScheduleRepository;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanApplicationServiceImpl {
@@ -30,17 +32,22 @@ public class LoanApplicationServiceImpl {
     public Long addLoanApplication(LoanApplicationResponse loanApplicationResponse){
        //active loan <=5 -->updated
        //requested loan amount <= income*60 (5 years total monthly income) - total already approved loan amount
-
+        // one loan in 24 hour per user
         LoanApplication loanApplication = new LoanApplication();
         User user = userRepository.findById(loanApplicationResponse.getUserId()).get();
 
         List<LoanApplication> userLoans=loanApplicationRepository.findAllByUser(user);
-            List<LoanApplication> activeApprovedLoans = userLoans.stream()
+        LoanApplication latestLoan=userLoans.stream().sorted((t1, t2) -> t2.getApplicationDate()
+                        .compareTo(t1.getApplicationDate())).toList().get(0);
+        if(latestLoan.getApplicationDate().equals(LocalDate.now())) throw new InvalidLoanRequestException("Duplicate application detected. You can only apply once per day.......");
+
+        List<LoanApplication> activeApprovedLoans = userLoans.stream()
                     .filter(loan -> loan.getStatus() == LoanStatus.APPROVED) // approved loans
                     .filter(loan ->
                             repaymentScheduleRepository.findByLoan_Id(loan.getId()).stream()
                                     .anyMatch(schedule -> schedule.getBalanceRemaining() > 0 && !schedule.getIsPaid())
                     ).toList();
+
             double totalSum = activeApprovedLoans.stream()
                     .map(LoanApplication::getAmount)
                     .reduce(0.0, (sum, amount) -> sum + amount);
