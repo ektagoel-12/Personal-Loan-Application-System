@@ -37,10 +37,12 @@ public class LoanApplicationServiceImpl {
         User user = userRepository.findById(loanApplicationResponse.getUserId()).get();
 
         List<LoanApplication> userLoans=loanApplicationRepository.findAllByUser(user);
-        LoanApplication latestLoan=userLoans.stream().sorted((t1, t2) -> t2.getApplicationDate()
-                        .compareTo(t1.getApplicationDate())).toList().get(0);
-        if(latestLoan.getApplicationDate().equals(LocalDate.now())) throw new InvalidLoanRequestException("Duplicate application detected. You can only apply once per day.......");
 
+        if(userLoans.size()>0) {
+            LoanApplication latestLoan = userLoans.stream().sorted((t1, t2) -> t2.getApplicationDate()
+                    .compareTo(t1.getApplicationDate())).toList().get(0);
+        if(latestLoan.getApplicationDate().equals(LocalDate.now())) throw new InvalidLoanRequestException("Duplicate application detected. You can only apply once per day.......");
+        }
         List<LoanApplication> activeApprovedLoans = userLoans.stream()
                     .filter(loan -> loan.getStatus() == LoanStatus.APPROVED) // approved loans
                     .filter(loan ->

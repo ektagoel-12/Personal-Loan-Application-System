@@ -33,7 +33,7 @@
           />
           <button
             type="button"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-accent"
+            class="absolute right-3 top-1/2 text-gray-500 hover:text-accent"
             @click="showPassword = !showPassword"
           >
             <component :is="showPassword ? EyeOff : Eye" class="h-4 w-4" />

@@ -1,0 +1,12 @@
+tech.zetapioneers.loan_application
+tech.zetapioneers.loan_application.aspects
+tech.zetapioneers.loan_application.concreteservice
+tech.zetapioneers.loan_application.config
+tech.zetapioneers.loan_application.controllers
+tech.zetapioneers.loan_application.dto
+tech.zetapioneers.loan_application.entities
+tech.zetapioneers.loan_application.enums
+tech.zetapioneers.loan_application.exceptions
+tech.zetapioneers.loan_application.filters
+tech.zetapioneers.loan_application.repositories
+tech.zetapioneers.loan_application.services
