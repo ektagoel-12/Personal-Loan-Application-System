@@ -324,8 +324,8 @@ const lineOption = computed(() => ({
       data: amortizationData.value.map((d) => d.remaining),
       type: "line",
       smooth: true,
-      lineStyle: { width: 3, color: "#3b82f6" },
-      itemStyle: { color: "#3b82f6" }
+      lineStyle: { width: 3, color: "#7e22ce" },
+      itemStyle: { color: "#7e22ce" }
     }
   ]
 }));

@@ -26,20 +26,9 @@
       </div>
     </div>
 
-    <div class="card bg-[#ffffff] border border-[#e5e7eb] rounded-xl p-6 shadow-sm grid grid-cols-2 gap-6 mb-8">
-      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
-        <h3 class=" text-sm font-medium text-[#7e22ce] mb-2">Application Trends</h3>
-        <BarChart v-if="barChartData.months.length" :data="barChartData" />
-      </div>
-      <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
-        <h3 class="text-sm font-medium text-[#7e22ce] mb-2">Application Status</h3>
-        <PieChart v-if="pieChartData.approved + pieChartData.pending + pieChartData.rejected > 0" 
-          :data="pieChartData" />
-      </div>
-    </div>
     <div class="bg-white shadow-lg rounded-xl p-6 border border-gray-100">
-  <!-- Title -->
-  <h3 class="text-xl flex gap-2 items-center font-bold text-[#1f2937] mb-6">
+     
+      <h3 class="text-xl flex gap-2 items-center font-bold text-[#1f2937] mb-6">
   <ClipboardList class="text-[#7e22ce]" />
   List of Pending Applications
 </h3>
@@ -113,6 +102,19 @@
         </tbody>
       </table>
     </div>
+
+     <!-- Title -->
+      <div class="card bg-[#ffffff] border border-[#e5e7eb] rounded-xl p-6 shadow-sm grid grid-cols-2 gap-6 mb-8">
+        <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+          <h3 class=" text-sm font-medium text-[#7e22ce] mb-2">Application Trends</h3>
+          <BarChart v-if="barChartData.months.length" :data="barChartData" />
+        </div>
+        <div class="card bg-[#f3e8ff] border border-[#e9d5ff] rounded-xl p-4 shadow-sm">
+          <h3 class="text-sm font-medium text-[#7e22ce] mb-2">Application Status</h3>
+          <PieChart v-if="pieChartData.approved + pieChartData.pending + pieChartData.rejected > 0" 
+            :data="pieChartData" />
+        </div>
+      </div>
   </div>
   </div>
 </template>
