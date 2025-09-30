@@ -198,6 +198,7 @@ const goToEdit = (id) => {
 
 onMounted(() => {
   fetchDashboardData();
+  store.dispatch("getAllLoans")
 });
 </script>
 

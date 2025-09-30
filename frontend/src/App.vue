@@ -29,6 +29,7 @@ const isLoggedIn = computed(()=>store.getters.isLoggedIn)
 
 onMounted(()=>{
   if(isLoggedIn.value){
+
     if(store.state.user && store.state.user.role === "ADMIN"){
       store.dispatch("fetchDashboardData")
     }

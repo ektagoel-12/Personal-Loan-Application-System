@@ -13,6 +13,8 @@ const statusFilter = ref("ALL")
 const dateRange = ref({ from: null, to: null })
 const selectLoan = ref(null)
 const showModel = ref(false)
+const loanLabel = computed(()=>(store.state.interestRate))
+
 
 // Map for status display
 const usersStatusMap = {
@@ -29,7 +31,7 @@ const adminStatusMap = {
   REJECTED: { label: "Rejected", class: "bg-red-100 text-red-800" },
 }
 
-const statusMap = store.state.user.role === 'ADMIN' ? adminStatusMap : usersStatusMap
+const statusMap = computed(()=>(store.state.user.role === 'ADMIN' ? adminStatusMap : usersStatusMap))
 
 
 
@@ -40,7 +42,7 @@ const filteredApplications = computed(() => {
   return store.state.applications.filter((app) => {
     const matchesSearch =
       app.id.toString().toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-      app.purpose.toLowerCase().includes(searchTerm.value.toLowerCase())
+      loanLabel.value[app.purpose]?.label.toLowerCase().includes(searchTerm.value.toLowerCase())
 
     const matchesStatus =
       statusFilter.value === "ALL" || app.status === statusFilter.value
@@ -65,6 +67,7 @@ const viewLoan = (loan) =>{
 
 onMounted(()=>{
   store.dispatch("getAllLoans")
+  console.log(filteredApplications)
 })
 
 </script>
@@ -146,7 +149,7 @@ onMounted(()=>{
           </div>
           <div>
             <p class="text-gray-500">Purpose</p>
-            <p class="font-medium">{{ loan.purpose }}</p>
+            <p class="font-medium">{{ loanLabel[loan.purpose]?.label }}</p>
           </div>
           <div>
             <p class="text-gray-500">Applied On</p>

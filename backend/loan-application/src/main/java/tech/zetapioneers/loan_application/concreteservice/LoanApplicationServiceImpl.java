@@ -50,6 +50,10 @@ public class LoanApplicationServiceImpl {
                 throw new InvalidLoanRequestException("Maximum active loan should be less than 5.");
             if (loanApplicationResponse.getAmount() > approvalAmount - totalSum)
                 throw new InvalidLoanRequestException("Exceed the loan amount limit");
+        if(!user.getIncome().equals(loanApplicationResponse.getIncome())){
+            user.setIncome(loanApplication.getIncome());
+            userRepository.save(user);
+        }
         loanApplication.setUser(user);
         loanApplication.setAmount(loanApplicationResponse.getAmount());
         loanApplication.setTenureMonths(loanApplicationResponse.getTenure()*12);
