@@ -1,6 +1,7 @@
 package tech.zetapioneers.loan_application.concreteservice;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.EmiPreviewRequest;
 import tech.zetapioneers.loan_application.dto.EmiPreviewResponse;
@@ -120,6 +121,7 @@ public class RepaymentScheduleServiceImpl implements RepaymentScheduleService {
         }
 
         schedule.setIsPaid(true);
+
         repaymentScheduleRepository.save(schedule);
     }
 }
