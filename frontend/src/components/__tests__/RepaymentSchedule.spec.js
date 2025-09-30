@@ -19,6 +19,7 @@ vi.mock('lucide-vue-next', () => ({
   DollarSign: { name: 'DollarSign', template: '<div>DollarSign</div>' },
   TrendingDown: { name: 'TrendingDown', template: '<div>TrendingDown</div>' },
   Calculator: { name: 'Calculator', template: '<div>Calculator</div>' },
+  IndianRupee : {name : 'IndianRupee' , template : '<div>Indian Rupee</div>'}
 }));
 
 describe('RepaymentSchedule', () => {

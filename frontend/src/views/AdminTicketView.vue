@@ -93,7 +93,7 @@ const filteredTickets = computed(() => {
   <div class="max-w-6xl mx-auto p-6 bg-white font-inter text-gray-800 relative">
     <!-- Topbar -->
     <h2 class="text-3xl font-bold mb-6 text-[#1f2937] text-center">
-      🎟️ Admin Ticket Dashboard
+       Admin Ticket Dashboard
     </h2>
 
     <!-- Filter & Sort -->
