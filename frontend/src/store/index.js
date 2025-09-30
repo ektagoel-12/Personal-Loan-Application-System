@@ -11,13 +11,14 @@ const store = createStore({
       user: JSON.parse(localStorage.getItem('currUser')) || null,
       stats: {},
       applications: [],
-      tickets: [], 
+      tickets: [], // added tickets state
       allTickets: [],
       searchTerm: "",
       statusFilter: "all",
       dateRange: { from: null, to: null },
       selectedApplication: null,
       loading: false,
+      emisPaid:{},
       interestRate : {  "HOME_LOAN": { label: "Home Loan", rate: 7.5 },
                       "PERSONAL_LOAN": { label: "Personal Loan", rate: 10.0 },
                       "CAR_LOAN": { label: "Car Loan", rate: 8.0 },
@@ -38,7 +39,6 @@ const store = createStore({
     },
     UPDATE_DASHBOARD_DATA(state, payload) {
       state.stats = payload.stats;
-      console.log(payload.stats)
       state.applications = payload.applications;
     },
     UPDATE_APPLICATION(state, { id, payload }) {
@@ -51,14 +51,12 @@ const store = createStore({
       state.user = payload
     },
     UPDATE_APPLICATION_STATUS(state, { id, status }) {
-      console.log("Mutatation called with  ",id,status)
       const app = state.applications.find(app => app.id === id);
       if (app) app.status = status;
     },
     GET_LOANS_USER(state, payload) {
       state.applications = payload;
     },
-
     SET_FILTERS(state, { searchTerm, statusFilter, dateRange }) {
       if (searchTerm !== undefined) state.searchTerm = searchTerm;
       if (statusFilter !== undefined) state.statusFilter = statusFilter;
@@ -88,6 +86,9 @@ const store = createStore({
     const ticket = state.allTickets.find(t => t.id === id);
     if (ticket) ticket.response = response;
   },
+  ADD_EMIPAID(state,{loanId,count}){
+    state.emisPaid[loanId] = count
+  }
   },
 
   actions: {
@@ -244,10 +245,14 @@ const store = createStore({
     }
   },
 
-  async fetchCurrentLoanAndUpcomingPayment({commit}){
+  async fetchLoanProgress({commit},loanId){
     try{
-      
-    }catch(err){}
+      const response = await makeRequestWithToken("GET",`/api/loans/${loanId}/schedule`);
+      const count = response.data.filter((emi)=>emi.isPaid).length
+      commit("ADD_EMIPAID",{loanId,count})
+    }catch(err){
+      console.log(err)
+    }
   }
   },
 
@@ -264,6 +269,7 @@ const store = createStore({
                                     .sort((a, b) => new Date(b.applicationDate) - (a.applicationDate)) // latest first
                                     .slice(0, 3)),
     totalBorrowed: (state) => ( state.applications.filter((app)=>(app.status === 'APPROVED')).reduce((prev,app)=>(prev+app.amount),0)),
+    borrowingCapacity: (state) =>( state.user.income * 60 ),
     filteredApplications: (state) => {
       return state.applications.filter((app) => {
         const matchesSearch =
@@ -290,9 +296,10 @@ const store = createStore({
     isLoggedIn: (state) => state.user,
     currentUser: (state) => state.user,
     selectedApplication: (state) => (id) => (state.applications.find(app => app.id === Number(id)) || null),
-    ongoingLoans: (state) => ( state.applications.filter(loan => {
+    getEmisPaid: (state) => (state.emisPaid),
+    ongoingLoans : (state) => ( state.applications.filter(loan => {
                               if (loan.status !== "APPROVED") return false;
-
+    
                               const applicationDate = new Date(loan.applicationDate);
                               const currentDate = new Date(); // Today's date
                               const monthsSinceApplication =
@@ -301,7 +308,7 @@ const store = createStore({
 
                               return monthsSinceApplication < loan.tenure;
                         }))
-  }
+      }
 });
 
 export default store;

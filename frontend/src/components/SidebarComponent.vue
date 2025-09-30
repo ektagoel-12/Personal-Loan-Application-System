@@ -2,10 +2,10 @@
 <aside class="h-screen w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
   <!-- Header -->
   <div class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
-    <CreditCard class="h-5 w-5 text-purple-600" />
+    <AArrowUp  class="h-5 w-5 text-purple-600" />
     <span class="font-semibold text-lg text-gray-900 hover:text-purple-600 transition cursor-pointer"
-          @click="router.push(user.role === 'ADMIN' ? '/admin' : '/user-dashboard')">
-      LoanEase
+          @click="router.push('/applyLoan')">
+      Apply Loan
     </span>
   </div>
 
@@ -51,14 +51,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import {
-  LayoutDashboard,
   FileText,
   Calculator,
   MessageSquare,
   Settings,
   Users,
   TrendingUp,
-  CreditCard
+  AArrowUp
 } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'

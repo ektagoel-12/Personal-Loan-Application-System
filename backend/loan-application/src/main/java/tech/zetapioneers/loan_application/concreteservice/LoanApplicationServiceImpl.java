@@ -24,6 +24,10 @@ public class LoanApplicationServiceImpl {
     public Long addLoanApplication(LoanApplicationResponse loanApplicationResponse){
         LoanApplication loanApplication = new LoanApplication();
         User user = userRepository.findById(loanApplicationResponse.getUserId()).get();
+        if(!user.getIncome().equals(loanApplicationResponse.getIncome())){
+            user.setIncome(loanApplication.getIncome());
+            userRepository.save(user);
+        }
         loanApplication.setUser(user);
         loanApplication.setAmount(loanApplicationResponse.getAmount());
         loanApplication.setTenureMonths(loanApplicationResponse.getTenure()*12);

@@ -506,11 +506,8 @@ import {
       }
     };
     const getMonthName = (monthIndex, startDate ) => {
-      console.log(startDate)
       const [day, month, year] = startDate.split("/").map(Number);
       const baseDate = new Date(year,month+monthIndex-1,day) 
-      console.log(baseDate)
-      //baseDate.setMonth(baseDate.getMonth() + (monthIndex - 1));
 
       // Format as "Jan 2024" 
       return baseDate.toLocaleString("default", {
