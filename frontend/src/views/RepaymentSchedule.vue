@@ -23,7 +23,7 @@
         </button>   
     </div>
 
-    <!-- Loan selection -->
+    <!-- Loan selection-->
     <div v-else>
       <!-- Page header -->
       <div>
@@ -477,7 +477,7 @@ import {
         }
       }
 
-      return true; // ✅ allowed only if all before are paid
+      return true; //  allowed only if all before are paid
     };
 
     const paginatedSchedule = computed(() => {

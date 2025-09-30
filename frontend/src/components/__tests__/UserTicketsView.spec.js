@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest"; // ✅ added vi
+import { describe, it, expect, beforeEach, vi } from "vitest"; //  added vi
 import { mount } from "@vue/test-utils";
 import UserTicketsView from "@/views/UserTicketsView.vue";
 

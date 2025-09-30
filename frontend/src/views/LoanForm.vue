@@ -154,7 +154,7 @@ function applyLoan() {
      return;
   }
   store.dispatch("addApplication",loan.value);
-  router.push("/loan").then(toast.success("Loan Applied Successfully"))
+  router.push("/loan")
 }
 </script>
 

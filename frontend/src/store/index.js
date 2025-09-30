@@ -195,7 +195,7 @@ const store = createStore({
         loan.appliedDate = new Date(loan.applicationDate).toLocaleDateString();
         loan.lastUpdated = new Date(loan.lastUpdated).toLocaleDateString();
         loan.remarkedBy = loan.remarksBy 
-
+        toast.success("Loan Applied Successfully")
         commit("ADD_APPLICATION", loan);
       }else{
         toast.error("Failed to add loan")

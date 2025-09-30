@@ -46,9 +46,9 @@
         </p>
 
         <!-- Meta Info -->
-        <div class="flex items-center text-xs text-gray-500 space-x-6 mt-3">
-          <p>Created: {{ ticket.createAt }}</p>
-          <p>Updated: {{ ticket.updatedAt }}</p>
+        <div class="flex justify-between items-center text-xs text-gray-500 space-x-6 mt-3">
+          <p>Created: {{ ticket.createAt.split('T')[0] }} at {{ ticket.createAt.split('T')[1].split('.')[0] }}  </p>
+          <p>Updated: {{ ticket.updatedAt.split('T')[0]  }} at {{ ticket.updatedAt.split('T')[1].split('.')[0] }}</p>
         </div>
 
         <!-- Admin Response -->
@@ -95,6 +95,7 @@ const fetchTicket = async (id) => {
   try {
     const response = await makeRequestWithToken("GET", `/ticket/admin/ticketId/${id}`);
     ticket.value = response.data;
+    // console.log(ticket.value.updatedAt)
   } catch (err) {
     console.error("Error fetching ticket:", err);
   }

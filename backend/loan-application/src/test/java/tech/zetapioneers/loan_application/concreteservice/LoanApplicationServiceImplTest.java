@@ -52,7 +52,7 @@ class LoanApplicationServiceImplTest {
         loanApplication.setCreditScore(750);
         loanApplication.setStatus(LoanStatus.PENDING);
         loanApplication.setApplicationDate(LocalDate.of(2025, 9, 25));
-        loanApplication.setLoanType(LoanType.CAR_LOAN); // ✅ FIXED: prevent NPE
+        loanApplication.setLoanType(LoanType.CAR_LOAN); //  FIXED: prevent NPE
     }
 
     @Test
