@@ -2,7 +2,7 @@
   <div class="space-y-6 p-6 font-inter text-[#1f2937] bg-white">
     <!-- Title -->
     <div>
-      <h1 class="text-3xl font-bold ">EMI Calculator</h1>
+      <h1 class="text-3xl font-bold">EMI Calculator</h1>
       <p class="text-gray-500">
         Calculate your monthly EMI and plan your loan repayment
       </p>

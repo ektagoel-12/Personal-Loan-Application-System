@@ -28,7 +28,7 @@ const isAuthRoute = computed(() => ['/', '/login-form', '/registration-form'].in
 const isLoggedIn = computed(()=>store.getters.isLoggedIn)
 
 onMounted(()=>{
-  if(isLoggedIn){
+  if(isLoggedIn.value){
     if(store.state.user && store.state.user.role === "ADMIN"){
       store.dispatch("fetchDashboardData")
     }
