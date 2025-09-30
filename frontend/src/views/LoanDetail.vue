@@ -15,7 +15,7 @@
         <h2 class="flex gap-2 items-center text-2xl font-extrabold text-gray-800 tracking-tight">
           <Search class="w-6 h-6 text-blue-600"/>
           Loan Application #{{ loan.id }}
-        </h2>
+        </h2>¸
         <span 
           class="px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm"
           :class="{
