@@ -212,7 +212,7 @@ function applyLoan() {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm text-gray-600 mb-1">Monthly Income (₹)</label>
-            <input v-model="loan.income" type="number"
+            <input disabled v-model="loan.income" type="number"
               class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
             <div v-if="loan.income !== store.state.user.income" class="text-xs font-light italic lowercase text-purple-300">
               your income will be updated to this.</div>         
@@ -302,6 +302,9 @@ function applyLoan() {
         </div>
       </div> <!-- Eligibility Score -->
       <div class="bg-white rounded-2xl shadow-md border border-[#f3e8ff] p-6">
+         <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-[#1f2937]">
+           Eligibility Score
+        </h3>
         <p
           :class="['text-2xl font-semibold', { 'text-red-600': eligibilityScore < 40, 'text-yellow-500': eligibilityScore >= 40 && eligibilityScore < 70, 'text-green-600': eligibilityScore >= 70 }]">
           {{ eligibilityScore }}/100 </p>
