@@ -124,8 +124,8 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { ClipboardList } from "lucide-vue-next";
-import BarChart from "./BarChart.vue";
-import PieChart from "./PieChart.vue";
+import BarChart from "../components/BarChart.vue";
+import PieChart from "../components/PieChart.vue";
 
 const store = useStore();
 const router = useRouter();
