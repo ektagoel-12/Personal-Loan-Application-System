@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
+import tech.zetapioneers.loan_application.dto.RepaymentScheduleDTO;
 import tech.zetapioneers.loan_application.dto.UpdateUserRequest;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.enums.Role;
 import tech.zetapioneers.loan_application.exceptions.NotAllowedException;
 import tech.zetapioneers.loan_application.exceptions.UserNotFoundException;
@@ -19,6 +22,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    LoanApplicationServiceImpl loanApplicationService;
+
+    @Autowired
+    RepaymentScheduleServiceImpl repaymentScheduleService;
 
     @Override
     public List<User> getAllUser() {
@@ -84,6 +93,24 @@ public class UserServiceImpl implements UserService {
         }
         else{
             throw new NotAllowedException("You are not authorized to delete other users");
+        }
+    }
+
+    public double getTotalPaidAmountById(Long userId){
+        try {
+            List<LoanApplicationResponse> loanList = loanApplicationService.getLoanByUser(userId).stream().filter(loanApplicationResponse -> loanApplicationResponse.getStatus() == LoanStatus.APPROVED).toList();
+            double totalPaid = 0.0;
+            for(LoanApplicationResponse loanApplicationResponse : loanList){
+                Long totalPaidForLoanApplicationResponse = repaymentScheduleService.getSchedule(loanApplicationResponse.getId()).stream().filter(RepaymentScheduleDTO::getIsPaid).count();
+                if(totalPaidForLoanApplicationResponse == 0)continue;
+                Double emi = repaymentScheduleService.getSchedule(loanApplicationResponse.getId()).get(0).getEmi();
+                totalPaid += emi * totalPaidForLoanApplicationResponse;
+            }
+            return totalPaid;
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+            return 0.0;
         }
     }
 }
