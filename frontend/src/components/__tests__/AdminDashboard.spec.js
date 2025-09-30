@@ -2,7 +2,7 @@ import { mount, flushPromises } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { createWebHistory } from "vue-router";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import AdminDashboard from "@/views/AdminDashboard.vue";
+import AdminDashboard from "../../views/AdminDashboard.vue";
 
 const push=vi.fn();
 vi.mock("vue-router", () => ({

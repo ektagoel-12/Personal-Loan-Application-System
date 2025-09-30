@@ -29,7 +29,8 @@ const store = createStore({
                       "PAYDAY_LOAN": { label: "Payday Loan", rate: 30.0 },
                       "HOME_EQUITY_LOAN": { label: "Home Equity Loan", rate: 8.5 },
                       "STUDENT_LOAN": { label: "Student Loan", rate: 5.0 }
-                    }
+                    },
+      totalPaid : 0
     };
   },
 
@@ -88,6 +89,9 @@ const store = createStore({
   },
   ADD_EMIPAID(state,{loanId,count}){
     state.emisPaid[loanId] = count
+  },
+  UPDATE_TOTAL_PAID(state,{response}){
+    state.totalPaid = response.data;
   }
   },
 
@@ -245,13 +249,26 @@ const store = createStore({
     }
   },
 
+
+  
   async fetchLoanProgress({commit},loanId){
-    try{
+   try{
       const response = await makeRequestWithToken("GET",`/api/loans/${loanId}/schedule`);
       const count = response.data.filter((emi)=>emi.isPaid).length
       commit("ADD_EMIPAID",{loanId,count})
     }catch(err){
       console.log(err)
+    }
+  },
+  async fetchTotalPaid({commit},id){
+     try{
+        const response = await makeRequestWithToken("GET",`/users/paid/${id}`)
+        console.log(response)
+        commit("UPDATE_TOTAL_PAID",{response})
+      }
+      catch(error){
+        console.log(error)
+        console.log("some error occured")
     }
   }
   },
@@ -268,7 +285,7 @@ const store = createStore({
     recentApplications: (state) => (state.applications.slice() 
                                     .sort((a, b) => new Date(b.applicationDate) - (a.applicationDate)) // latest first
                                     .slice(0, 3)),
-    totalBorrowed: (state) => ( state.applications.filter((app)=>(app.status === 'APPROVED')).reduce((prev,app)=>(prev+app.amount),0)),
+    totalBorrowed: (state) => ( state.applications.filter((app)=>(app.status === 'APPROVED')).reduce((prev,app)=>( prev+app.emi*app.tenure),0) - state.totalPaid ),
     borrowingCapacity: (state) =>( state.user.income * 60 ),
     filteredApplications: (state) => {
       return state.applications.filter((app) => {
@@ -290,6 +307,7 @@ const store = createStore({
         return matchesSearch && matchesStatus && matchesDate;
       });
     },
+    getTotalPaid: (state) => state.totalPaid,
     stats: (state) => state.stats,
     applications: (state) => state.applications,
     isLoading: (state) => state.loading,

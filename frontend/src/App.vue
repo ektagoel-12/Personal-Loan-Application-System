@@ -33,7 +33,6 @@ onMounted(()=>{
     if(store.state.user && store.state.user.role === "ADMIN"){
       store.dispatch("fetchDashboardData")
     }
-    
     store.dispatch("getAllLoans")
     store.dispatch("fetchTickets",store.state.user?.email)
   }

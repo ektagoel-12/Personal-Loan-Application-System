@@ -217,11 +217,6 @@
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-content">
-          <!-- Brand Section -->
-          <div class="footer-brand">
-            <div class="brand-icon">₹</div>
-            <span class="brand-text">LoanEase</span>
-          </div>
 
           <!-- Footer Links -->
           <div class="footer-links">
@@ -885,19 +880,17 @@ import logo from "../assets/LoanEase_logo.png";
 }
 
 .footer-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 60px;
+  display: block;          /* was a 2-col grid; remove it */
   margin-bottom: 40px;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
 }
 
 .footer-links {
   display: grid;
-  justify-content: center;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  grid-template-columns: repeat(3, minmax(220px, 1fr)); /* 3 equal columns */
+  gap: 64px;               /* spacing between columns */
+  width: 100%;             /* stretch across the container */
+  text-align: left;
 }
 
 .footer-title {

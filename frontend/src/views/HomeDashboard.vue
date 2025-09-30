@@ -34,9 +34,9 @@
           <TrendingUp class="h-4 w-4 text-primary" />
         </div>
         <div class="text-2xl font-semibold text-primary">
-          ₹{{ mockLoanData.totalRepaid.toLocaleString() }}
+          ₹{{ store.getters.getTotalPaid }}
         </div>
-        <p class="text-xs text-accent font-medium">+12% from last month</p>
+        <p class="text-xs text-accent font-medium">Across all your loans</p>
       </div>
 
       <div class="rounded-lg border border-secondary bg-white p-4 shadow-sm">
@@ -252,6 +252,7 @@ function getStatusColor(status) {
   }
 }
 onMounted(()=>{
+  store.dispatch("fetchTotalPaid",store.getters.currentUser.id)
   store.dispatch("getAllLoans")
 })
 

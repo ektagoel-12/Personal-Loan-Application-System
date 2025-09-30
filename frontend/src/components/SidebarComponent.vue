@@ -1,7 +1,7 @@
 <template>
 <aside class="h-screen w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
   <!-- Header -->
-  <div class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
+  <div v-if="user.role === 'USER'" class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
     <AArrowUp  class="h-5 w-5 text-purple-600" />
     <span class="font-semibold text-lg text-gray-900 hover:text-purple-600 transition cursor-pointer"
           @click="router.push('/applyLoan')">

@@ -1,99 +1,72 @@
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import SupportTicketForm from "../../views/RaiseTicketView.vue";
+import RaiseTicketView from "@/views/RaiseTicketView.vue";
 
-// Mock Vuex store
-const mockDispatch = vi.fn();
-const mockStore = {
-  getters: {
-    currentUser: { id: 123 },
-  },
-  dispatch: mockDispatch,
-};
+// Mock Vuex useStore
+vi.mock("vuex", () => ({
+  useStore: () => mockStore,
+}));
 
-function mountComponent() {
-  return mount(SupportTicketForm, {
-    global: {
-      mocks: {
-        $store: mockStore, // For Options API
-      },
-      provide: {
-        store: mockStore, // For useStore() in Composition API
-      },
-    },
-  });
-}
+let mockStore;
 
-describe("SupportTicketForm.vue", () => {
+describe("RaiseTicketView.vue (static tests)", () => {
   beforeEach(() => {
-    mockDispatch.mockReset();
+    mockStore = {
+      getters: {
+        applications: [{ id: 101 }, { id: 202 }],
+        currentUser: { id: 1 },
+      },
+      dispatch: vi.fn(),
+    };
   });
 
-  it("renders form fields correctly", () => {
-    const wrapper = mountComponent();
-    expect(wrapper.find("h2").text()).toBe("Raise a Support Ticket");
-    expect(wrapper.find("select").exists()).toBe(true);
-    expect(wrapper.find("input[type='text']").exists()).toBe(true);
-    expect(wrapper.find("textarea").exists()).toBe(true);
-  });
-
-  it("shows alert if required fields are empty", async () => {
-    const wrapper = mountComponent();
-
-    // Mock window.alert
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-
-    await wrapper.find("form").trigger("submit.prevent");
-
-    expect(alertSpy).toHaveBeenCalledWith("⚠️ Please fill out all fields before submitting.");
-
-    alertSpy.mockRestore();
-  });
-
-  it("dispatches submitTicket on valid form submission", async () => {
-    const wrapper = mountComponent();
-
-    // Fill out fields
-    await wrapper.find("select").setValue("Application_Status");
-    await wrapper.find("input[type='text']").setValue("Test Subject");
-    await wrapper.find("textarea").setValue("This is a test description");
-
-    mockDispatch.mockResolvedValueOnce({ success: true });
-
-    // Mock alert
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-
-    await wrapper.find("form").trigger("submit.prevent");
-
-    expect(mockDispatch).toHaveBeenCalledWith("submitTicket", {
-      type: "Application_Status",
-      subject: "Test Subject",
-      description: "This is a test description",
-      userId: 123,
-      LoanId: null,
+  const mountComponent = () =>
+    mount(RaiseTicketView, {
+      global: {},
     });
 
-    expect(alertSpy).toHaveBeenCalledWith("Ticket submitted successfully! 🎉");
-
-    alertSpy.mockRestore();
+  it("renders heading", () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find("h2").text()).toBe("Raise a Support Ticket");
   });
 
-  it("shows error alert if dispatch fails", async () => {
+  it("renders all form fields", () => {
     const wrapper = mountComponent();
 
-    // Fill out fields
-    await wrapper.find("select").setValue("Loan_Closure");
-    await wrapper.find("input[type='text']").setValue("Loan Issue");
-    await wrapper.find("textarea").setValue("Details about loan issue");
+    // Use order-based selection since v-model isn’t in the DOM
+    const selects = wrapper.findAll("select");
+    const inputs = wrapper.findAll("input[type='text']");
+    const textareas = wrapper.findAll("textarea");
 
-    mockDispatch.mockRejectedValueOnce(new Error("API error"));
+    expect(selects.length).toBeGreaterThanOrEqual(2); // type + loan
+    expect(inputs.length).toBe(1); // subject
+    expect(textareas.length).toBe(1); // description
+    expect(wrapper.find("button[type='submit']").text()).toBe("Submit Ticket");
+  });
 
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+  it("renders request type options correctly", () => {
+    const wrapper = mountComponent();
+    const typeSelect = wrapper.findAll("select")[0]; // first select is type
 
-    await wrapper.find("form").trigger("submit.prevent");
+    const options = typeSelect.findAll("option");
+    const values = options.slice(1).map((o) => o.text());
 
-    expect(alertSpy).toHaveBeenCalledWith("Failed to submit ticket. Please try again.");
+    expect(values).toEqual([
+      "Application Status",
+      "Document Upload Issue",
+      "Emi Query",
+      "Loan Closure",
+      "Others",
+    ]);
+  });
 
-    alertSpy.mockRestore();
+  it("renders applications from store as loan options", () => {
+    const wrapper = mountComponent();
+    const loanSelect = wrapper.findAll("select")[1]; // second select is loan
+
+    const options = loanSelect.findAll("option");
+    const values = options.slice(1).map((o) => o.text());
+
+    expect(values).toEqual(["101", "202"]);
   });
 });

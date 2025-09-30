@@ -1,11 +1,15 @@
 package tech.zetapioneers.loan_application.concreteservice;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
 import tech.zetapioneers.loan_application.entities.LoanApplication;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
+import tech.zetapioneers.loan_application.exceptions.InvalidLoanRequestException;
 import tech.zetapioneers.loan_application.repositories.LoanApplicationRepository;
+import tech.zetapioneers.loan_application.repositories.RepaymentScheduleRepository;
 import tech.zetapioneers.loan_application.repositories.UserRepository;
 
 import java.util.ArrayList;
@@ -15,6 +19,8 @@ import java.util.List;
 public class LoanApplicationServiceImpl {
     private LoanApplicationRepository loanApplicationRepository;
     private UserRepository userRepository;
+    @Autowired
+    RepaymentScheduleRepository repaymentScheduleRepository;
 
     public LoanApplicationServiceImpl(LoanApplicationRepository loanApplicationRepository, UserRepository userRepository){
         this.loanApplicationRepository = loanApplicationRepository;
@@ -22,8 +28,28 @@ public class LoanApplicationServiceImpl {
     }
 
     public Long addLoanApplication(LoanApplicationResponse loanApplicationResponse){
+       //active loan <=5 -->updated
+       //requested loan amount <= income*60 (5 years total monthly income) - total already approved loan amount
+
         LoanApplication loanApplication = new LoanApplication();
         User user = userRepository.findById(loanApplicationResponse.getUserId()).get();
+
+        List<LoanApplication> userLoans=loanApplicationRepository.findAllByUser(user);
+            List<LoanApplication> activeApprovedLoans = userLoans.stream()
+                    .filter(loan -> loan.getStatus() == LoanStatus.APPROVED) // approved loans
+                    .filter(loan ->
+                            repaymentScheduleRepository.findByLoan_Id(loan.getId()).stream()
+                                    .anyMatch(schedule -> schedule.getBalanceRemaining() > 0 && !schedule.getIsPaid())
+                    ).toList();
+            double totalSum = activeApprovedLoans.stream()
+                    .map(LoanApplication::getAmount)
+                    .reduce(0.0, (sum, amount) -> sum + amount);
+            double approvalAmount = loanApplicationResponse.getIncome() * 60;   //5 years range
+
+            if (activeApprovedLoans.size() >= 5)
+                throw new InvalidLoanRequestException("Maximum active loan should be less than 5.");
+            if (loanApplicationResponse.getAmount() > approvalAmount - totalSum)
+                throw new InvalidLoanRequestException("Exceed the loan amount limit");
         if(!user.getIncome().equals(loanApplicationResponse.getIncome())){
             user.setIncome(loanApplication.getIncome());
             userRepository.save(user);
