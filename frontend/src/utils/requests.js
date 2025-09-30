@@ -40,7 +40,7 @@ export async function makeRequestWithToken(type, endpoint, body) {
     if (!token) {
         console.warn("No token found. Redirecting to login.");
         window.location.href = "/login-form";
-        return { error: "No token" }; // ✅ Prevents null return
+        return { error: "No token" }; 
     }
 
     const config = {
