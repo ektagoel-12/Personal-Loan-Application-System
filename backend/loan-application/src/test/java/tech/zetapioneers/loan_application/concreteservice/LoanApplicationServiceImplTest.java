@@ -42,6 +42,7 @@ class LoanApplicationServiceImplTest {
         user = new User();
         user.setId(1L);
         user.setName("John Doe");
+        user.setIncome(1000000.00);
 
         loanApplication = new LoanApplication();
         loanApplication.setId(100L);
