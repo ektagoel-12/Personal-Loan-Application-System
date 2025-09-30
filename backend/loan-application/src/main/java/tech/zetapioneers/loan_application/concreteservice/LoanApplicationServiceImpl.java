@@ -31,7 +31,7 @@ public class LoanApplicationServiceImpl {
     }
 
     public Long addLoanApplication(LoanApplicationResponse loanApplicationResponse){
-       //active loan <=5 -->updated by premansu
+       //active loan <=5 -->updated
        //requested loan amount <= income*60 (5 years total monthly income) - total already approved loan amount
 
         LoanApplication loanApplication = new LoanApplication();
