@@ -50,7 +50,7 @@ public class LoanApplicationServiceImpl {
                     .reduce(0.0, (sum, amount) -> sum + amount);
             double approvalAmount = loanApplicationResponse.getIncome() * 120;   //5 years range
 
-            if (activeApprovedLoans.size() == 5)
+            if (activeApprovedLoans.size() >= 5)
                 throw new InvalidLoanRepuestException("Maximum active loan should be less than 5.");
             if (loanApplicationResponse.getAmount() > approvalAmount - totalSum)
                 throw new InvalidLoanRepuestException("Exceed the loan amount limit");

@@ -1,95 +1,72 @@
-import { describe, it, beforeEach, expect, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { createStore } from "vuex";
-import { createMemoryHistory, createRouter } from "vue-router";
 import RaiseTicketView from "@/views/RaiseTicketView.vue";
 
-// ✅ Mock toast
-vi.mock("vue-toastification", () => ({
-  useToast: () => ({
-    error: vi.fn(),
-    success: vi.fn(),
-  }),
+// Mock Vuex useStore
+vi.mock("vuex", () => ({
+  useStore: () => mockStore,
 }));
 
-// ✅ Mock routes
-const routes = [{ path: "/user-ticket-view", component: { template: "<div>User Tickets</div>" } }];
-const router = createRouter({
-  history: createMemoryHistory(),
-  routes,
-});
+let mockStore;
 
-describe("RaiseTicketView.vue", () => {
-  let store;
-  let actions;
-
-  beforeEach(async () => {
-    actions = {
-      submitTicket: vi.fn().mockResolvedValue(true),
-    };
-
-    store = createStore({
+describe("RaiseTicketView.vue (static tests)", () => {
+  beforeEach(() => {
+    mockStore = {
       getters: {
-        currentUser: () => ({ id: 1, name: "Test User" }),
+        applications: [{ id: 101 }, { id: 202 }],
+        currentUser: { id: 1 },
       },
-      actions,
-    });
-
-    router.push("/");
-    await router.isReady();
+      dispatch: vi.fn(),
+    };
   });
 
-  it("renders form title", () => {
-    const wrapper = mount(RaiseTicketView, {
-      global: {
-        plugins: [store, router],
-      },
+  const mountComponent = () =>
+    mount(RaiseTicketView, {
+      global: {},
     });
 
+  it("renders heading", () => {
+    const wrapper = mountComponent();
     expect(wrapper.find("h2").text()).toBe("Raise a Support Ticket");
   });
 
-  // it("shows validation error if fields are empty", async () => {
-  //   const toastMock = {
-  //     error: vi.fn(),
-  //     success: vi.fn(),
-  //   };
-  //   vi.mocked(require("vue-toastification").useToast).mockReturnValue(toastMock);
+  it("renders all form fields", () => {
+    const wrapper = mountComponent();
 
-  //   const wrapper = mount(RaiseTicketView, {
-  //     global: {
-  //       plugins: [store, router],
-  //     },
-  //   });
+    // Use order-based selection since v-model isn’t in the DOM
+    const selects = wrapper.findAll("select");
+    const inputs = wrapper.findAll("input[type='text']");
+    const textareas = wrapper.findAll("textarea");
 
-  //   await wrapper.find("form").trigger("submit.prevent");
+    expect(selects.length).toBeGreaterThanOrEqual(2); // type + loan
+    expect(inputs.length).toBe(1); // subject
+    expect(textareas.length).toBe(1); // description
+    expect(wrapper.find("button[type='submit']").text()).toBe("Submit Ticket");
+  });
 
-  //   expect(toastMock.error).toHaveBeenCalledWith(" Please fill out all fields before submitting.");
-  // });
+  it("renders request type options correctly", () => {
+    const wrapper = mountComponent();
+    const typeSelect = wrapper.findAll("select")[0]; // first select is type
 
-  // it("dispatches submitTicket and redirects on success", async () => {
-  //   const toastMock = {
-  //     error: vi.fn(),
-  //     success: vi.fn(),
-  //   };
-  //   vi.mocked(require("vue-toastification").useToast).mockReturnValue(toastMock);
+    const options = typeSelect.findAll("option");
+    const values = options.slice(1).map((o) => o.text());
 
-  //   const wrapper = mount(RaiseTicketView, {
-  //     global: {
-  //       plugins: [store, router],
-  //     },
-  //   });
+    expect(values).toEqual([
+      "Application Status",
+      "Document Upload Issue",
+      "Emi Query",
+      "Loan Closure",
+      "Others",
+    ]);
+  });
 
-  //   // Fill form
-  //   await wrapper.find("select").setValue("Application_Status");
-  //   await wrapper.find("input[type='text']").setValue("Test Subject");
-  //   await wrapper.find("textarea").setValue("This is a test description.");
+  it("renders applications from store as loan options", () => {
+    const wrapper = mountComponent();
+    const loanSelect = wrapper.findAll("select")[1]; // second select is loan
 
-  //   // Submit form
-  //   await wrapper.find("form").trigger("submit.prevent");
+    const options = loanSelect.findAll("option");
+    const values = options.slice(1).map((o) => o.text());
 
-  //   expect(actions.submitTicket).toHaveBeenCalled();
-  //   expect(toastMock.success).toHaveBeenCalledWith("Ticket submitted successfully!");
-  //   expect(wrapper.vm.$router.currentRoute.value.path).toBe("/user-ticket-view");
-  // });
+    expect(values).toEqual(["101", "202"]);
+  });
 });
