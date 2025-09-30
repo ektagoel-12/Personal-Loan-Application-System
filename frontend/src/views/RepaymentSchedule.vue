@@ -37,7 +37,6 @@
       <div class="border border-secondary rounded-2xl p-6 mt-4 bg-white shadow-sm">
         <div class="mb-4">
           <h2 class="flex items-center gap-2 text-lg font-semibold text-primary">
-            <ArrowLeft class="w-5 h-5" />
             Select Approved Loan
           </h2>
           <p class="text-gray-500">
