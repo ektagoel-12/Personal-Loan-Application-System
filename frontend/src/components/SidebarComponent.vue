@@ -1,73 +1,109 @@
 <template>
-<aside class="h-screen w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
-  <!-- Header -->
-  <div v-if="user.role === 'USER'" class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
-    <AArrowUp  class="h-5 w-5 text-purple-600" />
-    <span class="font-semibold text-lg text-gray-900 hover:text-purple-600 transition cursor-pointer"
-          @click="router.push('/applyLoan')">
-      Apply Loan
-    </span>
+  <aside class=" hidden lg:block h-screen w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm lg:w-64 md:w-48">
+    <!-- Header -->
+    <div v-if="user.role === 'USER'" class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
+      <AArrowUp class="h-5 w-5 text-purple-600" />
+      <span
+        class="font-semibold text-lg text-gray-900 hover:text-purple-600 transition cursor-pointer"
+        @click="router.push('/applyLoan')"
+      >
+        Apply Loan
+      </span>
+    </div>
+
+    <!-- Menu Items -->
+    <nav class="flex-1 overflow-y-auto ">
+      <ul class="p-2 space-y-1">
+        <li v-for="item in menuItems" :key="item.key">
+          <button
+            @click="onSectionChange(item.key)"
+            class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+            :class="[
+              activeSection === item.key
+                ? 'bg-purple-100 text-purple-700'
+                : 'text-gray-700 hover:bg-gray-100',
+            ]"
+          >
+            <component
+              :is="item.icon"
+              class="h-4 w-4 mr-2"
+              :class="activeSection === item.key ? 'text-purple-600' : 'text-gray-500'"
+            />
+            <span>{{ item.title }}</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+  </aside>
+
+  <!-- Mobile Sidebar Toggle Button -->
+  <div
+    class="lg:hidden fixed bottom-4 right-4 bg-purple-600 p-4 rounded-full shadow-lg text-white z-50"
+    @click="isSidebarOpen = !isSidebarOpen"
+  >
+    <!-- Lucide Menu Icon -->
+    <Menu class="h-6 w-6" />
   </div>
 
-  <!-- Menu Items -->
-  <nav class="flex-1 overflow-y-auto">
-    <ul class="p-2 space-y-1">
-      <li v-for="item in menuItems" :key="item.key">
-        <button
-          @click="onSectionChange(item.key)"
-          class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-          :class="[
-            activeSection === item.key
-              ? 'bg-purple-100 text-purple-700'
-              : 'text-gray-700 hover:bg-gray-100',
-          ]"
-        >
-          <component :is="item.icon" class="h-4 w-4 mr-2"
-                     :class="activeSection === item.key ? 'text-purple-600' : 'text-gray-500'" />
-          <span>{{ item.title }}</span>
-        </button>
-      </li>
-    </ul>
-  </nav>
-
-  <!-- Footer -->
-  <div class="p-2 border-t border-gray-200">
-    <button
-      @click="onSectionChange('settings')"
-      class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-      :class="activeSection === 'settings'
-        ? 'bg-purple-100 text-purple-700'
-        : 'text-gray-700 hover:bg-gray-100'"
+  <!-- Mobile Sidebar -->
+  <div
+    v-if="isSidebarOpen"
+    class="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40"
+    @click="isSidebarOpen = false"
+  >
+    <aside
+      class="w-64 bg-white border-r border-gray-200 h-full absolute top-0 left-0 shadow-sm z-50"
     >
-      <Settings class="h-4 w-4 mr-2"
-                :class="activeSection === 'settings' ? 'text-purple-600' : 'text-gray-500'" />
-      <span>Settings</span>
-    </button>
-  </div>
-</aside>
+      <!-- Mobile Header -->
+      <div v-if="user.role === 'USER'" class="px-6 py-4 flex items-center gap-2 border-b border-gray-200">
+        <AArrowUp class="h-5 w-5 text-purple-600" />
+        <span
+          class="font-semibold text-lg text-gray-900 hover:text-purple-600 transition cursor-pointer"
+          @click="router.push('/applyLoan')"
+        >
+          Apply Loan
+        </span>
+      </div>
 
+      <!-- Menu Items (Same as above) -->
+      <nav class="flex-1 overflow-y-auto">
+        <ul class="p-2 space-y-1">
+          <li v-for="item in menuItems" :key="item.key">
+            <button
+              @click="onSectionChange(item.key)"
+              class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+              :class="[
+                activeSection === item.key
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'text-gray-700 hover:bg-gray-100',
+              ]"
+            >
+              <component
+                :is="item.icon"
+                class="h-4 w-4 mr-2"
+                :class="activeSection === item.key ? 'text-purple-600' : 'text-gray-500'"
+              />
+              <span>{{ item.title }}</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+    </aside>
+  </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import {
-  FileText,
-  Calculator,
-  MessageSquare,
-  Settings,
-  Users,
-  TrendingUp,
-  AArrowUp
-} from 'lucide-vue-next'
+import { FileText, Calculator, MessageSquare, Settings, Users, TrendingUp, AArrowUp, Menu } from 'lucide-vue-next' // Importing Menu icon
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 const store = useStore()
 
-
-const user = ref(store.getters.currentUser);
-
-const router = useRouter();
+const user = ref(store.getters.currentUser)
+const router = useRouter()
 
 const activeSection = ref('dashboard')
 const onSectionChange = (section) => {
@@ -91,4 +127,7 @@ const adminItems = [
 ]
 
 const menuItems = computed(() => (user.value.role === 'ADMIN' ? adminItems : customerItems))
+
+// Mobile Sidebar State
+const isSidebarOpen = ref(false)
 </script>
