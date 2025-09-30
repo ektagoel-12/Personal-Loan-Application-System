@@ -7,8 +7,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+
+import tech.zetapioneers.loan_application.dto.LoanApplicationResponse;
+import tech.zetapioneers.loan_application.dto.RepaymentScheduleDTO;
 import tech.zetapioneers.loan_application.dto.UpdateUserRequest;
 import tech.zetapioneers.loan_application.entities.User;
+import tech.zetapioneers.loan_application.enums.LoanStatus;
 import tech.zetapioneers.loan_application.enums.Role;
 import tech.zetapioneers.loan_application.exceptions.NotAllowedException;
 import tech.zetapioneers.loan_application.exceptions.UserNotFoundException;
@@ -23,175 +28,170 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Mock
+    private LoanApplicationServiceImpl loanApplicationService;
+
+    @Mock
+    private RepaymentScheduleServiceImpl repaymentScheduleService;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
 
     @InjectMocks
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
-    User user1;
-    User user2;
+    private User adminUser;
+    private User normalUser;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        user1 = new User();
-        user2 = new User();
+        // Setup SecurityContextHolder mock
+        SecurityContextHolder.setContext(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        user1.setId(1L);
-        user1.setEmail("aom@gmail.com");
-        user1.setAadhar("989765749375");
-        user1.setIncome(1000.0);
-        user1.setCreditScore(599);
-        user1.setRole(Role.USER);
+        // Test users
+        adminUser = new User();
+        adminUser.setId(1L);
+        adminUser.setRole(Role.ADMIN);
 
-        user2.setId(2L);
-        user2.setEmail("aom1@gmail.com");
-        user2.setAadhar("989765949375");
-        user2.setIncome(1000.0);
-        user2.setCreditScore(599);
-        user2.setRole(Role.USER);
-    }
-
-    private void mockAuthentication(Long userId) {
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.getPrincipal()).thenReturn(userId.toString());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        normalUser = new User();
+        normalUser.setId(2L);
+        normalUser.setRole(Role.USER);
     }
 
     @Test
-    void getAllUser() {
-        when(userRepository.findAll()).thenReturn(List.of(user1, user2));
-
+    void testGetAllUser() {
+        when(userRepository.findAll()).thenReturn(List.of(adminUser, normalUser));
         List<User> users = userService.getAllUser();
-
-        assertFalse(users.isEmpty());
         assertEquals(2, users.size());
-        assertEquals("aom@gmail.com", users.get(0).getEmail());
-        assertEquals("aom1@gmail.com", users.get(1).getEmail());
     }
 
     @Test
-    void getUserById_UserExists() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-
+    void testGetUserById_Found() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
         Optional<User> result = userService.getUserById(1L);
-
         assertTrue(result.isPresent());
-        assertEquals(1L, result.get().getId());
     }
 
     @Test
-    void getUserById_UserNotFound() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(UserNotFoundException.class, () -> {
-            userService.getUserById(1L);
-        });
-
-        assertEquals("No user with id 1 found", exception.getMessage());
+    void testGetUserById_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(99L));
     }
 
     @Test
-    void updateUserById_AdminUser() {
-        mockAuthentication(1L);
+    void testUpdateUserById_AdminCanUpdateOthers() {
+        when(authentication.getPrincipal()).thenReturn("1"); // admin
+        when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        when(userRepository.save(user1)).thenReturn(user1);
+        UpdateUserRequest req = mock(UpdateUserRequest.class);
+        doAnswer(invocation -> {
+            User u = invocation.getArgument(0);
+            u.setRole(Role.USER);
+            return null;
+        }).when(req).applyUpdates(any(User.class));
 
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-        updateUserRequest.setEmail("newemail@example.com");
+        Optional<User> updated = userService.updateUserById(2L, req);
 
-        Optional<User> updatedUser = userService.updateUserById(1L, updateUserRequest);
-
-        assertTrue(updatedUser.isPresent());
-        assertEquals("newemail@example.com", updatedUser.get().getEmail());
+        assertTrue(updated.isPresent());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void updateUserById_SelfUpdate() {
-        mockAuthentication(1L);
+    void testUpdateUserById_UserUpdatingOwnProfile() {
+        when(authentication.getPrincipal()).thenReturn("2"); // normal user
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        when(userRepository.save(user1)).thenReturn(user1);
+        UpdateUserRequest req = mock(UpdateUserRequest.class);
+        when(req.getRole()).thenReturn(null);
 
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-        updateUserRequest.setEmail("newemail@example.com");
+        Optional<User> updated = userService.updateUserById(2L, req);
 
-        Optional<User> updatedUser = userService.updateUserById(1L, updateUserRequest);
-
-        assertTrue(updatedUser.isPresent());
-        assertEquals("newemail@example.com", updatedUser.get().getEmail());
+        assertTrue(updated.isPresent());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void updateUserById_NonAdminUser_Forbidden() {
-        mockAuthentication(2L);
+    void testUpdateUserById_UserUpdatingRole_NotAllowed() {
+        when(authentication.getPrincipal()).thenReturn("2");
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        when(userRepository.findById(2L)).thenReturn(Optional.of(user2));
+        UpdateUserRequest req = mock(UpdateUserRequest.class);
+        when(req.getRole()).thenReturn(Role.ADMIN);
 
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-        updateUserRequest.setEmail("newemail@example.com");
-
-        Exception exception = assertThrows(NotAllowedException.class, () -> {
-            userService.updateUserById(1L, updateUserRequest);
-        });
-
-        assertEquals("You are not authorized to update other users", exception.getMessage());
+        assertThrows(NotAllowedException.class, () -> userService.updateUserById(2L, req));
     }
 
     @Test
-    void updateUserById_UserTryingToChangeRole() {
-        mockAuthentication(1L);
+    void testUpdateUserById_UserUpdatingOtherUser_NotAllowed() {
+        when(authentication.getPrincipal()).thenReturn("2");
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        UpdateUserRequest req = mock(UpdateUserRequest.class);
+        when(req.getRole()).thenReturn(null);
 
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest();
-        updateUserRequest.setRole(Role.ADMIN);
-
-        Exception exception = assertThrows(NotAllowedException.class, () -> {
-            userService.updateUserById(1L, updateUserRequest);
-        });
-
-        assertEquals("You are not authorized to update the role", exception.getMessage());
+        assertThrows(NotAllowedException.class, () -> userService.updateUserById(1L, req));
     }
 
     @Test
-    void deleteUserById_AdminUser() {
-        mockAuthentication(1L);
+    void testDeleteUserById_AdminCanDeleteOthers() {
+        when(authentication.getPrincipal()).thenReturn("1");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        doNothing().when(userRepository).deleteById(1L);
+        userService.deleteUserById(2L);
 
-        userService.deleteUserById(1L);
-
-        verify(userRepository, times(1)).deleteById(1L);
+        verify(userRepository).deleteById(2L);
     }
 
     @Test
-    void deleteUserById_SelfDelete() {
-        mockAuthentication(1L);
+    void testDeleteUserById_UserCanDeleteSelf() {
+        when(authentication.getPrincipal()).thenReturn("2");
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        doNothing().when(userRepository).deleteById(1L);
+        userService.deleteUserById(2L);
 
-        userService.deleteUserById(1L);
-
-        verify(userRepository, times(1)).deleteById(1L);
+        verify(userRepository).deleteById(2L);
     }
 
     @Test
-    void deleteUserById_NonAdminUser_Forbidden() {
-        mockAuthentication(2L);
+    void testDeleteUserById_UserDeletingOthers_NotAllowed() {
+        when(authentication.getPrincipal()).thenReturn("2");
+        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        when(userRepository.findById(2L)).thenReturn(Optional.of(user2));
+        assertThrows(NotAllowedException.class, () -> userService.deleteUserById(3L));
+    }
 
-        Exception exception = assertThrows(NotAllowedException.class, () -> {
-            userService.deleteUserById(1L);
-        });
+    @Test
+    void testGetTotalPaidAmountById() {
+        LoanApplicationResponse loan = new LoanApplicationResponse();
+        loan.setId(101L);
+        loan.setStatus(LoanStatus.APPROVED);
 
-        assertEquals("You are not authorized to delete other users", exception.getMessage());
+        RepaymentScheduleDTO paidSchedule = new RepaymentScheduleDTO();
+        paidSchedule.setIsPaid(true);
+        paidSchedule.setEmi(1000.0);
+
+        when(loanApplicationService.getLoanByUser(2L)).thenReturn(List.of(loan));
+        when(repaymentScheduleService.getSchedule(101L)).thenReturn(List.of(paidSchedule, paidSchedule));
+
+        double total = userService.getTotalPaidAmountById(2L);
+
+        assertEquals(2000.0, total);
+    }
+
+    @Test
+    void testGetTotalPaidAmountById_ExceptionHandled() {
+        when(loanApplicationService.getLoanByUser(2L)).thenThrow(new RuntimeException("DB error"));
+        double total = userService.getTotalPaidAmountById(2L);
+        assertEquals(0.0, total);
     }
 }

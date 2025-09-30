@@ -19,6 +19,7 @@ vi.mock('lucide-vue-next', () => ({
   DollarSign: { name: 'DollarSign', template: '<div>DollarSign</div>' },
   TrendingDown: { name: 'TrendingDown', template: '<div>TrendingDown</div>' },
   Calculator: { name: 'Calculator', template: '<div>Calculator</div>' },
+  IndianRupee : {name : 'IndianRupee' , template : '<div>Indian Rupee</div>'}
 }));
 
 describe('RepaymentSchedule', () => {
@@ -41,7 +42,7 @@ const mockLoans = [
     tenure: 60,
     status: 'APPROVED',
     appliedDate: '15/01/2024',
-    lastUpdated: '15/01/2024', // ✅ added
+    lastUpdated: '15/01/2024', //  added
     loanType: 'Home Loan',
   },
   {
@@ -52,7 +53,7 @@ const mockLoans = [
     tenure: 36,
     status: 'APPROVED',
     appliedDate: '20/02/2024',
-    lastUpdated: '20/02/2024', // ✅ added
+    lastUpdated: '20/02/2024', //  added
     loanType: 'Personal Loan',
   },
   {
@@ -63,7 +64,7 @@ const mockLoans = [
     tenure: 48,
     status: 'PENDING',
     appliedDate: '10/03/2024',
-    lastUpdated: '10/03/2024', // ✅ added
+    lastUpdated: '10/03/2024', //  added
     loanType: 'Education Loan',
   },
 ];

@@ -14,7 +14,7 @@ const loan = ref({
   userId: store.state.user.id,
   name : store.state.user.name,
   creditScore: store.state.user.creditScore,
-  income: 0,
+  income: store.state.user.income,
   amount: 0,
   purpose: "",
   status:"PENDING",
@@ -41,7 +41,7 @@ const interestPerLoan = store.state.interestRate
 const interestRate = computed(() => interestPerLoan[loan.value.purpose]?.rate || 0);
 
 const emi = computed(()=>{
-    console.log(interestRate.value)
+    
     let P = loan.value.amount;
     let R = interestRate.value / 100 / 12;
     let N = loan.value.tenure * 12 ; // Get tenure in months
@@ -56,16 +56,19 @@ const emi = computed(()=>{
 const eligibilityScore = computed(() => {
   let score = 0;
 
-  if (loan.value.income >= 50000) score += 30;
-  else if (loan.value.income >= 30000) score += 20;
+  if (loan.value.income >= 50000) score += 25;
+  else if (loan.value.income >= 30000) score += 15;
   else if (loan.value.income >= 20000) score += 10;
 
-  if (loan.value.creditScore >= 750) score += 35;
-  else if (loan.value.creditScore >= 700) score += 25;
-  else if (loan.value.creditScore >= 650) score += 15;
+  if (loan.value.creditScore >= 750) score += 30;
+  else if (loan.value.creditScore >= 700) score += 20;
+  else if (loan.value.creditScore >= 650) score += 10;
 
-  if (loan.value.amount !== 0 && loan.value.amount <= loan.value.income * 5) score += 30;
+  if (loan.value.amount !== 0 && loan.value.amount <= loan.value.income * 5) score += 25;
   else if (loan.value.amount !== 0 && loan.value.amount <= loan.value.income * 8) score += 20;
+
+  if(loan.value.employmentType === 'Salaried') score+=15
+  else if(loan.value.employmentType === 'Business') scores+=10
 
   return Math.min(score, 100);
 });
@@ -145,8 +148,13 @@ function prevStep() {
 }
 
 function applyLoan() {
+
+  if((store.getters.totalBorrowed + loan.value.amount) > loan.value.income*30){
+     toast.error("Sorry!! This application exceeds your borrowing capacity. Please close ongoing loans to increase your borrowing capactiy.")
+     return;
+  }
   store.dispatch("addApplication",loan.value);
-  router.push("/loan").then(toast.success("Loan Applied Successfully"))
+  router.push("/loan")
 }
 </script>
 
@@ -204,9 +212,11 @@ function applyLoan() {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm text-gray-600 mb-1">Monthly Income (₹)</label>
-            <input v-model="loan.income" type="number"
+            <input disabled v-model="loan.income" type="number"
               class="w-full border border-[#f3e8ff] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#7e22ce] focus:border-[#7e22ce]" />
-          </div>
+            <div v-if="loan.income !== store.state.user.income" class="text-xs font-light italic lowercase text-purple-300">
+              your income will be updated to this.</div>         
+           </div>
           <div>
             <label class="block text-sm text-gray-600 mb-1">Credit Score</label>
             <input v-model="loan.creditScore" type="number"
@@ -292,6 +302,9 @@ function applyLoan() {
         </div>
       </div> <!-- Eligibility Score -->
       <div class="bg-white rounded-2xl shadow-md border border-[#f3e8ff] p-6">
+         <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-[#1f2937]">
+           Eligibility Score
+        </h3>
         <p
           :class="['text-2xl font-semibold', { 'text-red-600': eligibilityScore < 40, 'text-yellow-500': eligibilityScore >= 40 && eligibilityScore < 70, 'text-green-600': eligibilityScore >= 70 }]">
           {{ eligibilityScore }}/100 </p>

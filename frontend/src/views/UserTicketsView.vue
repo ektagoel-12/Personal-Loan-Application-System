@@ -91,9 +91,6 @@ const raiseTicket = () => {
       </select>
 
       <!-- Sort Toggle -->
-      <div class="flex items-center gap-3">
-        <ArrowDownUp class="w-4 h-4 text-gray-400" />
-
         <div
           @click="sortByLatest = sortByLatest === 'desc' ? 'asc' : 'desc'"
           class="relative inline-flex items-center cursor-pointer select-none"
@@ -114,7 +111,6 @@ const raiseTicket = () => {
             </span>
           </div>
         </div>
-      </div>
     </div>
 
     <!-- Tickets List -->

@@ -1,6 +1,8 @@
 import axios from "axios"
+import { useToast } from "vue-toastification";
 
 const base_url = "http://localhost:8080"
+const toast = useToast()
 
 export async function makeRequestWithoutToken(type, endpoint, body) {
     const url = base_url + endpoint;
@@ -38,7 +40,7 @@ export async function makeRequestWithToken(type, endpoint, body) {
     if (!token) {
         console.warn("No token found. Redirecting to login.");
         window.location.href = "/login-form";
-        return { error: "No token" }; // ✅ Prevents null return
+        return { error: "No token" }; 
     }
 
     const config = {
@@ -87,6 +89,9 @@ export async function makeRequestWithToken(type, endpoint, body) {
                 localStorage.removeItem("currUser")
                 window.location.href = "/login-form";  // Redirect to login page
             }
+        }
+        else if( error?.response?.data?.error === "Loan is not created"){
+            toast.error(error.response.data.message)
         }
     }
 
