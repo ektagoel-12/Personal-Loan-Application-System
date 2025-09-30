@@ -108,13 +108,28 @@ const filteredTickets = computed(() => {
         <option>CLOSED</option>
       </select>
 
-      <button
-        @click="sortByLatest = sortByLatest === 'desc' ? 'asc' : 'desc'"
-        class="bg-[#f3e8ff] text-[#7e22ce] px-4 py-2 rounded-lg font-medium hover:bg-[#e9d5ff] transition"
-      >
-        Sort by Latest Update:
-        {{ sortByLatest === 'desc' ? 'Newest First' : 'Oldest First' }}
-      </button>
+      <!-- Sort Toggle -->
+        <div
+          @click="sortByLatest = sortByLatest === 'desc' ? 'asc' : 'desc'"
+          class="relative inline-flex items-center cursor-pointer select-none"
+        >
+          <!-- Track -->
+          <div
+            class="w-32 h-8 rounded-full transition-colors duration-300"
+            :class="sortByLatest === 'desc' ? 'bg-[#f3e8ff]' : 'bg-gray-100'"
+          ></div>
+
+          <!-- Handle -->
+          <div
+            class="absolute left-0.5 top-0.5 w-14 h-7 bg-white rounded-full shadow-sm transition-transform duration-300 flex items-center justify-center border border-gray-200"
+            :class="sortByLatest === 'desc' ? 'translate-x-16' : 'translate-x-0'"
+          >
+            <span class="text-xs font-medium text-gray-600">
+              {{ sortByLatest === 'desc' ? 'New' : 'Old' }}
+            </span>
+          </div>
+        </div>
+
     </div>
 
     <!-- Tickets List -->
