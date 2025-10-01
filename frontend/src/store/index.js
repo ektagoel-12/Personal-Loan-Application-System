@@ -87,6 +87,9 @@ const store = createStore({
     const ticket = state.allTickets.find(t => t.id === id);
     if (ticket) ticket.response = response;
   },
+
+
+  
   ADD_EMIPAID(state,{loanId,count}){
     state.emisPaid[loanId] = count
   },

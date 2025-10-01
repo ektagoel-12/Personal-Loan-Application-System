@@ -7,18 +7,16 @@ import TicketPopup from "./TicketDetailsView.vue";
 const store = useStore();
 const toast = useToast();
 
-// Popup state
+
 const showTicketPopup = ref(false);
 const selectedTicketId = ref(null);
 
-// Filter & Sort state
 const filterStatus = ref("All");
 const sortByLatest = ref("desc");
 
-// Status options for admin dropdown
 const statusOptions = ["OPEN", "RESOLVED", "CLOSED"];
 
-// Fetch tickets on mount and store in Vuex
+
 onMounted(async () => {
   try {
     await store.dispatch("fetchAllTickets"); // fetch all tickets for admin
@@ -27,7 +25,7 @@ onMounted(async () => {
   }
 });
 
-// Style badge based on status
+
 const statusClass = (status) => {
   switch (status) {
     case "Open": return "bg-yellow-100 text-yellow-800";
@@ -38,7 +36,7 @@ const statusClass = (status) => {
   }
 }
 
-// Open popup
+
 const openPopup = (id) => {
   selectedTicketId.value = Number(id);
   showTicketPopup.value = true;
@@ -69,16 +67,16 @@ const updateResponse = async (ticket) => {
   }
 };
 
-// Computed filtered & sorted tickets from Vuex
+
 const filteredTickets = computed(() => {
   let filtered = store.getters.allTickets || [];
 
-  // Filter by status
+
   if (filterStatus.value !== "All") {
     filtered = filtered.filter(ticket => ticket.status === filterStatus.value);
   }
 
-  // Sort by updatedAt
+
   filtered.sort((a, b) => {
     const dateA = new Date(a.updatedAt);
     const dateB = new Date(b.updatedAt);
@@ -91,7 +89,7 @@ const filteredTickets = computed(() => {
 
 <template>
   <div class="max-w-6xl mx-auto p-6 bg-white font-inter text-gray-800 relative">
-    <!-- Topbar -->
+  
     <h2 class="text-3xl font-bold mb-6 text-[#1f2937] text-center">
        Admin Ticket Dashboard
     </h2>
@@ -139,7 +137,7 @@ const filteredTickets = computed(() => {
         :key="ticket.id"
         class="bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-lg transition duration-200"
       >
-        <!-- Header -->
+\
         <div class="flex justify-between items-start mb-4">
           <div>
             <h3 class="text-xl font-semibold text-gray-900">
@@ -172,16 +170,16 @@ const filteredTickets = computed(() => {
           </div>
         </div>
 
-        <!-- Description -->
+
         <p class="text-gray-700 mb-4">{{ ticket.description }}</p>
 
-        <!-- Meta Info -->
+
         <div class="flex items-center text-xs text-gray-500 space-x-6 mb-4">
           <p>Created: {{ new Date(ticket.createAt).toLocaleString() }}</p>
           <p>Updated: {{ new Date(ticket.updatedAt).toLocaleString() }}</p>
         </div>
 
-        <!-- Admin Response -->
+
         <div class="mt-3">
           <label class="block text-sm font-medium text-gray-700 mb-1"
             >Admin Response</label
@@ -194,7 +192,7 @@ const filteredTickets = computed(() => {
           ></textarea>
 
           <div class="mt-3 flex justify-between items-center">
-            <!-- Left: Update Response -->
+        
             <button
               @click="updateResponse(ticket)"
               class="bg-[#7e22ce] text-white px-5 py-2 rounded-lg hover:bg-[#6b21a8] transition-colors duration-200 shadow-sm"
@@ -202,7 +200,6 @@ const filteredTickets = computed(() => {
               Update Response
             </button>
 
-            <!-- Right: View Details -->
             <button
               @click="openPopup(ticket.id)"
               class="bg-[#eab308] text-[#1f2937] px-5 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200 shadow-sm"
@@ -218,7 +215,7 @@ const filteredTickets = computed(() => {
       <p class="text-lg">No tickets available 🚫</p>
     </div>
 
-    <!-- Ticket Popup -->
+
     <TicketPopup
       v-if="showTicketPopup"
       :ticket-id="selectedTicketId"
