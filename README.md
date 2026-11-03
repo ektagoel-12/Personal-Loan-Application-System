@@ -6,6 +6,10 @@ This project simulates real-world loan management systems with features like **c
 
 ---
 
+
+https://github.com/user-attachments/assets/5f7d7de7-415e-4bca-8a28-8f5339344627
+
+
 ## Features
 
 ### User (Viewer Role)
